@@ -1,0 +1,70 @@
+Modernator in Haskell
+
+an application for hosting singular Q&A sessions.
+
+Main models and their actions:
+Question
+- ask question
+- upvote question
+- answer question: removes question from list of upvoted questions, only moderators
+
+Session
+- create session
+- lock session
+- delete session
+- join session
+
+
+By role:
+Answerer
+- answer question
+- lock session
+- delete session
+
+Questioner
+- ask question
+- upvote question
+
+Anyone
+- create session, the person who creates a session becomes the answerer
+- join session, a person who joins a session becomes a questioner
+
+
+Models and their attributes
+Session:
+- id
+- name
+- expiration_time (optional), only present after a session has been locked
+
+Question
+- id
+- question
+- votes
+
+Answerer
+- session_id
+- id
+- name
+
+Questioner
+- session_id
+- id
+- name (optional), users can be anonymous
+
+TODO
+- real auth, so users can't just change the session cookie to change users
+- investigate using the built-in auth handler
+- adjust ToJSON instances of types that don't use record fields
+- docs
+- generating JS client requests
+- mock api
+- deployment
+- general cleanup, de-duplication, organization, patterns
+- acidstate migrations
+
+Feature:
+- automated expiration and removal of sessions
+- acidstate checkpoints and archives
+- logging
+
+client side app

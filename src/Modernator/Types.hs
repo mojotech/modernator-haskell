@@ -1,0 +1,144 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving, DeriveGeneric #-}
+module Modernator.Types where
+
+import Data.Time.Clock (UTCTime)
+import Data.Text (Text)
+import Data.IxSet
+
+-- | GHC.Generics used for deriving ToJSON instances
+import GHC.Generics (Generic)
+
+-- | Some typeclasses we'll need
+import Data.Aeson (ToJSON, FromJSON)
+import Web.HttpApiData (FromHttpApiData)
+import Servant.Common.Text (FromText)
+
+-- | Keep track of any domain specific exceptions so we can translate them to
+-- generic HTTP exceptions later.
+data AppError = QuestionNotFound
+              | NotAuthorizedForSession
+              | MustBeAnswerer
+              | MustBeQuestioner
+              | AnswererNotFound
+              | QuestionerNotFound
+              | SessionNotFound
+              | SessionAlreadyLocked
+    deriving (Show, Generic, Eq, Ord)
+
+instance ToJSON AppError
+
+-- | A question has an id, number of votes, text, and answered status
+data Question = Question QuestionId SessionId Votes Text Answered
+    deriving (Show, Generic, Eq, Ord)
+
+-- | A QuestionId is represented as an integer, but we should not be able to
+-- perform arithmetic and other numeric operations on it, as it's not a number
+-- in our domain, it's an identifier.
+newtype QuestionId = QuestionId Integer
+    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromText)
+
+-- | The number of votes is represented as an integer. Like the QuestionId, it
+-- also disallows arithmetic and other mathematical operations on it. In our
+-- domain, votes can only be incremented, which is functionality provided by
+-- the Enum typeclass.
+newtype Votes = Votes Integer
+    deriving (Show, ToJSON, Enum, Eq, Ord)
+
+-- | A question's answered status is conceptually a boolean, but we use a more
+-- descriptive type here for better documenting code.
+data Answered = Answered | NotAnswered
+    deriving (Show, Generic, Eq, Ord)
+
+-- | JSON instances for those we can't derive using deriving.
+instance ToJSON Question
+instance ToJSON Answered
+
+-- | We represent the set of questions as an indexed set, which allows
+-- efficient queries and updates using custom indexes; similar to SQL indexes.
+-- Questions are indexed on id and answered status.
+type QuestionDB = IxSet Question
+instance Indexable Question where
+    empty = ixSet [ ixFun (\ (Question id _ _ _ _) -> [id])
+                  , ixFun (\ (Question _ _ _ _ a) -> [a])
+                  , ixFun (\ (Question _ sid _ _ _) -> [sid])
+                  ]
+
+newtype AnswererId = AnswererId Integer
+    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromText, FromJSON)
+
+data Answerer = Answerer AnswererId SessionId Text
+    deriving (Show, Generic, Eq, Ord)
+
+instance ToJSON Answerer
+
+type AnswererDB = IxSet Answerer
+instance Indexable Answerer where
+    empty = ixSet [ ixFun (\ (Answerer id _ _) -> [id])
+                  , ixFun (\ (Answerer _ sid _) -> [sid])
+                  ]
+
+newtype SessionId = SessionId Integer
+    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromText, FromJSON)
+
+data LockedStatus = Locked | Unlocked
+    deriving (Show, Generic, Eq, Ord)
+instance ToJSON LockedStatus
+
+data Session = Session SessionId Text (Maybe UTCTime) LockedStatus
+    deriving (Show, Eq, Ord)
+
+type SessionDB = IxSet Session
+instance Indexable Session where
+    empty = ixSet [ ixFun (\ (Session id _ _ _) -> [id])
+                  , ixFun (\ (Session _ _ _ locked) -> [locked])
+                  ]
+
+newtype QuestionerId = QuestionerId Integer
+    deriving (Show, FromHttpApiData, ToJSON, FromJSON, Enum, Eq, Ord, FromText)
+
+data Questioner = Questioner QuestionerId SessionId (Maybe Text)
+    deriving (Show, Generic, Eq, Ord)
+instance ToJSON Questioner
+
+type QuestionerDB = IxSet Questioner
+instance Indexable Questioner where
+    empty = ixSet [ ixFun (\ (Questioner id _ _) -> [id])
+                  , ixFun (\ (Questioner _ sid _) -> [sid])
+                  ]
+
+-- | The state of our application. This is persisted using AcidState and handed
+-- to each request handler.
+data App = App
+    { questions :: QuestionDB
+    , nextQuestionId :: QuestionId
+    , answerers :: AnswererDB
+    , nextAnswererId :: AnswererId
+    , sessions :: SessionDB
+    , nextSessionId :: SessionId
+    , questioners :: QuestionerDB
+    , nextQuestionerId :: QuestionerId
+    }
+    deriving (Show)
+
+-- | The default application state, an empty set of questions.
+emptyApp = App
+    { questions = empty
+    , nextQuestionId = QuestionId 1
+    , answerers = empty
+    , nextAnswererId = AnswererId 1
+    , sessions = empty
+    , nextSessionId = SessionId 1
+    , questioners = empty
+    , nextQuestionerId = QuestionerId 1
+    }
+
+-- | A helper to upvote a question.
+upvote :: Question -> Question
+upvote (Question id sid v t a) = Question id sid (succ v) t a
+
+-- | A helper to answer a question. Note that we don't specify that only
+-- unanswered questions can be answered. Fortunately this is idempotent now so
+-- it doesn't matter, but if we add more logic around answering questions that
+-- constraint might need tightening.
+answer :: Question -> Question
+answer (Question id sid v t _) = Question id sid v t Answered
