@@ -14,5 +14,5 @@ mkDerivation {
   ];
   buildTools = buildTools;
   description = "An application for hosting targeted Q&A sessions like Reddit AMA's";
-  license = stdenv.lib.licenses.unfree;
+  license = stdenv.lib.licenses.mit;
 }
