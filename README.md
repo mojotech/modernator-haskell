@@ -28,3 +28,7 @@ installed.
 # Dependencies
 
 * GHC 7.10.2
+
+# Helpful Links
+[Servant Documentation](http://haskell-servant.readthedocs.io/en/stable/)
+
