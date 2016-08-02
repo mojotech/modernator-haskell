@@ -1,4 +1,4 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving, DeriveGeneric #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving, DeriveGeneric, FlexibleInstances #-}
 module Modernator.Types where
 
 import Data.Time.Clock (UTCTime)
@@ -12,6 +12,8 @@ import GHC.Generics (Generic)
 import Data.Aeson (ToJSON, FromJSON)
 import Web.HttpApiData (FromHttpApiData)
 import Servant.Common.Text (FromText)
+import Data.Swagger.ParamSchema (ToParamSchema, toParamSchema)
+import Data.Swagger.Schema (ToSchema)
 
 -- | Keep track of any domain specific exceptions so we can translate them to
 -- generic HTTP exceptions later.
@@ -30,24 +32,29 @@ instance ToJSON AppError
 -- | A question has an id, number of votes, text, and answered status
 data Question = Question QuestionId SessionId Votes Text Answered
     deriving (Show, Generic, Eq, Ord)
+instance ToSchema Question
 
 -- | A QuestionId is represented as an integer, but we should not be able to
 -- perform arithmetic and other numeric operations on it, as it's not a number
 -- in our domain, it's an identifier.
 newtype QuestionId = QuestionId Integer
-    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromText)
+    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromText, Generic)
+instance ToParamSchema QuestionId
+instance ToSchema QuestionId
 
 -- | The number of votes is represented as an integer. Like the QuestionId, it
 -- also disallows arithmetic and other mathematical operations on it. In our
 -- domain, votes can only be incremented, which is functionality provided by
 -- the Enum typeclass.
 newtype Votes = Votes Integer
-    deriving (Show, ToJSON, Enum, Eq, Ord)
+    deriving (Show, ToJSON, Enum, Eq, Ord, Generic)
+instance ToSchema Votes
 
 -- | A question's answered status is conceptually a boolean, but we use a more
 -- descriptive type here for better documenting code.
 data Answered = Answered | NotAnswered
     deriving (Show, Generic, Eq, Ord)
+instance ToSchema Answered
 
 -- | JSON instances for those we can't derive using deriving.
 instance ToJSON Question
@@ -64,12 +71,15 @@ instance Indexable Question where
                   ]
 
 newtype AnswererId = AnswererId Integer
-    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromText, FromJSON)
+    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromText, FromJSON, Generic)
+instance ToParamSchema AnswererId
+instance ToSchema AnswererId
 
 data Answerer = Answerer AnswererId SessionId Text
     deriving (Show, Generic, Eq, Ord)
 
 instance ToJSON Answerer
+instance ToSchema Answerer
 
 type AnswererDB = IxSet Answerer
 instance Indexable Answerer where
@@ -78,7 +88,9 @@ instance Indexable Answerer where
                   ]
 
 newtype SessionId = SessionId Integer
-    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromText, FromJSON)
+    deriving (Generic, Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromText, FromJSON)
+instance ToParamSchema SessionId
+instance ToSchema SessionId
 
 data LockedStatus = Locked | Unlocked
     deriving (Show, Generic, Eq, Ord)
@@ -94,11 +106,14 @@ instance Indexable Session where
                   ]
 
 newtype QuestionerId = QuestionerId Integer
-    deriving (Show, FromHttpApiData, ToJSON, FromJSON, Enum, Eq, Ord, FromText)
+    deriving (Show, FromHttpApiData, ToJSON, FromJSON, Enum, Eq, Ord, FromText, Generic)
+instance ToParamSchema QuestionerId
+instance ToSchema QuestionerId
 
 data Questioner = Questioner QuestionerId SessionId (Maybe Text)
     deriving (Show, Generic, Eq, Ord)
 instance ToJSON Questioner
+instance ToSchema Questioner
 
 type QuestionerDB = IxSet Questioner
 instance Indexable Questioner where

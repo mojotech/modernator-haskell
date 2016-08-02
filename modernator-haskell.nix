@@ -1,5 +1,6 @@
 { mkDerivation, acid-state, aeson, base, http-api-data, ixset, mtl
 , safecopy, servant, servant-server, stdenv, text, warp, time
+, servant-swagger, swagger2
 , buildTools ? []
 }:
 mkDerivation {
@@ -11,6 +12,7 @@ mkDerivation {
   executableHaskellDepends = [
     acid-state aeson base http-api-data ixset mtl safecopy servant
     servant-server text warp time
+    servant-swagger swagger2
   ];
   buildTools = buildTools;
   description = "An application for hosting targeted Q&A sessions like Reddit AMA's";
