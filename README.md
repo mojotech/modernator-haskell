@@ -25,6 +25,11 @@ cabal build`, using `cabal install` to make the package available in your
 executable paths. However this will not make sure any runtime dependencies are
 installed.
 
+# Environment Variables
+
+* `MODERNATOR_PORT` - Specify the port to bind to
+* `MODERNATOR_STATE_DIR` - Specify the location of the acid state directory
+
 # Dependencies
 
 * GHC 7.10.2
