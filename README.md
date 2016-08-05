@@ -22,7 +22,7 @@ dependencies required by the project.
 If you're running NixOS, some of the Haskell packages may be unavailable in the
 latest nixos channels. You'll need to use an updated set of package definitions
 to use when building and pass them in when building e.g. `nix-build default.nix
---argstr "nixpkgs=<my_pkg_set>"`
+--arg nixpkgs "import <my_pkg_set> {}"`
 
 ## Cabal
 You can also build the project using the traditional Haskell `cabal configure &&
