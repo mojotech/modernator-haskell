@@ -30,6 +30,27 @@ cabal build`, using `cabal install` to make the package available in your
 executable paths. However this will not make sure any runtime dependencies are
 installed.
 
+## Deployment
+I've set up the project to be easily deployable using NixOps. You can deploy and
+manipulate the application in a local VirtualBox VM with the following set of
+commands.
+
+* `nixops create network.nix infrastructure-vbox.nix --name modernator` - Create
+  the deployment.
+* `nixops deploy -d modernator` - Perform the provisioning and build the
+  instance
+* `nixops destroy -d modernator` - Destroy the instance
+* `nixops delete -d modernator` - Delete the deployment
+
+Again, for NixOS users you might need a more recent set of Nix package
+definitions. When creating the deployment, do `nixops create -I
+nixpkgs=/path/to/your/pkgs network.nix infrastructure-vbox.nix --name
+modernator`.
+
+You can deploy to an EC2 instance by first running `nixops create network.nix
+infrastructure-ec2.nix --name modernator-ec2` and then repeating the deploy
+command.
+
 # Environment Variables
 
 * `MODERNATOR_PORT` - Specify the port to bind to
