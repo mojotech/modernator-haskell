@@ -6,6 +6,7 @@ import System.Environment (lookupEnv)
 import Text.Read (readMaybe)
 import Data.Maybe (fromMaybe, mapMaybe)
 import Data.List (intersperse)
+import Network.Wai.Middleware.RequestLogger
 
 prettyArg s = fmap ((s ++) . show)
 
@@ -17,4 +18,4 @@ main = do
                            ]
     putStrLn $ "Running modernator-haskell on " ++ (concat $ intersperse " and " args)
     app <- mkApp stateDir
-    run port app
+    run port $ logStdoutDev app
