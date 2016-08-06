@@ -11,7 +11,6 @@ import GHC.Generics (Generic)
 -- | Some typeclasses we'll need
 import Data.Aeson (ToJSON, FromJSON)
 import Web.HttpApiData (FromHttpApiData)
-import Servant.Common.Text (FromText)
 import Data.Swagger.ParamSchema (ToParamSchema, toParamSchema)
 import Data.Swagger.Schema (ToSchema)
 
@@ -38,7 +37,7 @@ instance ToSchema Question
 -- perform arithmetic and other numeric operations on it, as it's not a number
 -- in our domain, it's an identifier.
 newtype QuestionId = QuestionId Integer
-    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromText, Generic)
+    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, Generic)
 instance ToParamSchema QuestionId
 instance ToSchema QuestionId
 
@@ -71,7 +70,7 @@ instance Indexable Question where
                   ]
 
 newtype AnswererId = AnswererId Integer
-    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromText, FromJSON, Generic)
+    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromJSON, Generic)
 instance ToParamSchema AnswererId
 instance ToSchema AnswererId
 
@@ -88,7 +87,7 @@ instance Indexable Answerer where
                   ]
 
 newtype SessionId = SessionId Integer
-    deriving (Generic, Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromText, FromJSON)
+    deriving (Generic, Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromJSON)
 instance ToParamSchema SessionId
 instance ToSchema SessionId
 
@@ -106,7 +105,7 @@ instance Indexable Session where
                   ]
 
 newtype QuestionerId = QuestionerId Integer
-    deriving (Show, FromHttpApiData, ToJSON, FromJSON, Enum, Eq, Ord, FromText, Generic)
+    deriving (Show, FromHttpApiData, ToJSON, FromJSON, Enum, Eq, Ord, Generic)
 instance ToParamSchema QuestionerId
 instance ToSchema QuestionerId
 
