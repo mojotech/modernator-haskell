@@ -1,4 +1,4 @@
-{-# LANGUAGE DataKinds, TypeOperators, TypeFamilies, UndecidableInstances, FlexibleInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE DataKinds, TypeOperators, TypeFamilies, UndecidableInstances, FlexibleInstances, MultiParamTypeClasses, EmptyDataDecls #-}
 module Modernator.API where
 
 import Servant
@@ -10,10 +10,12 @@ import Servant.Swagger.UI
 
 type SwaggerSchemaEndpoint = "swagger.js" :> Get '[JSON] Swagger
 
+type BasicAPI = "sessions" :> SessionsAPI
+
 data API'
 type API = SwaggerUI "ui" SwaggerSchemaEndpoint API'
            :<|> SwaggerSchemaEndpoint
-           :<|> "sessions" :> SessionsAPI
+           :<|> BasicAPI
 
 instance HasServer API' context where
     type ServerT API' m = ServerT API m
@@ -23,6 +25,9 @@ type instance IsElem' e API' = IsElem e API
 
 api :: Proxy API
 api = Proxy
+
+basicAPI :: Proxy BasicAPI
+basicAPI = Proxy
 
 server a = swaggerUIServer :<|> return swaggerDoc :<|> sessionsServer a
 

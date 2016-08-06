@@ -42,3 +42,32 @@ executable modernator-haskell
                        wai-extra
   hs-source-dirs:      src
   default-language:    Haskell2010
+
+Test-Suite test
+  type:                exitcode-stdio-1.0
+  main-is:             Spec.hs
+  hs-source-dirs:      src
+  build-depends:       base >=4.8 && <4.10,
+                       servant,
+                       servant-server,
+                       aeson,
+                       http-api-data,
+                       ixset,
+                       acid-state,
+                       text,
+                       warp,
+                       safecopy,
+                       mtl,
+                       transformers,
+                       wai,
+                       time,
+                       bytestring-conversion,
+                       either,
+                       servant-swagger,
+                       bytestring,
+                       swagger2,
+                       servant-swagger-ui,
+                       wai-extra,
+                       hspec,
+                       QuickCheck,
+                       quickcheck-instances

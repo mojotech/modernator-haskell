@@ -52,7 +52,7 @@ instance ToSchema Votes
 -- | A question's answered status is conceptually a boolean, but we use a more
 -- descriptive type here for better documenting code.
 data Answered = Answered | NotAnswered
-    deriving (Show, Generic, Eq, Ord)
+    deriving (Show, Generic, Eq, Ord, Enum, Bounded)
 instance ToSchema Answered
 
 -- | JSON instances for those we can't derive using deriving.
