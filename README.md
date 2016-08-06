@@ -51,6 +51,12 @@ You can deploy to an EC2 instance by first running `nixops create network.nix
 infrastructure-ec2.nix --name modernator-ec2` and then repeating the deploy
 command.
 
+# Useful Commands
+
+* `cabal repl` - Launch a GHCi session with all source files loaded
+* `cabal run` - Build (if necessary) and run the application
+* `cabal test` - Build (if necessary) and run the test suite
+
 # Environment Variables
 
 * `MODERNATOR_PORT` - Specify the port to bind to
