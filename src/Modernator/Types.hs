@@ -11,6 +11,7 @@ import GHC.Generics (Generic)
 -- | Some typeclasses we'll need
 import Web.HttpApiData (FromHttpApiData)
 import Data.Swagger.ParamSchema (ToParamSchema, toParamSchema)
+import Data.Serialize (Serialize)
 
 -- | For custom Swagger Schemas
 import Data.Aeson hiding ((.=))
@@ -103,7 +104,7 @@ instance Indexable Question where
                   ]
 
 newtype AnswererId = AnswererId Integer
-    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromJSON, Generic)
+    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromJSON, Generic, Serialize)
 instance ToParamSchema AnswererId
 instance ToSchema AnswererId
 
@@ -151,7 +152,7 @@ instance Indexable Session where
                   ]
 
 newtype QuestionerId = QuestionerId Integer
-    deriving (Show, FromHttpApiData, ToJSON, FromJSON, Enum, Eq, Ord, Generic)
+    deriving (Show, FromHttpApiData, ToJSON, FromJSON, Enum, Eq, Ord, Generic, Serialize)
 instance ToParamSchema QuestionerId
 instance ToSchema QuestionerId
 
