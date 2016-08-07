@@ -39,7 +39,30 @@ instance ToJSON AppError
 -- | A question has an id, number of votes, text, and answered status
 data Question = Question QuestionId SessionId Votes Text Answered
     deriving (Show, Generic, Eq, Ord)
-instance ToSchema Question
+instance ToSchema Question where
+    declareNamedSchema _ = do
+        questionIdSchema <- declareSchemaRef (Proxy :: Proxy QuestionId)
+        sessionIdSchema <- declareSchemaRef (Proxy :: Proxy SessionId)
+        textSchema <- declareSchemaRef (Proxy :: Proxy Text)
+        votesSchema <- declareSchemaRef (Proxy :: Proxy Votes)
+        answeredSchema <- declareSchemaRef (Proxy :: Proxy Answered)
+        return $ NamedSchema (Just "Question") $ mempty
+            & type_ .~ SwaggerObject
+            & properties .~ [ ("questionId", questionIdSchema)
+                            , ("sessionId", sessionIdSchema)
+                            , ("questionVotes", votesSchema)
+                            , ("questionText", textSchema)
+                            , ("questionAnswered", answeredSchema)
+                            ]
+            & required .~ ["questionId", "sessionId", "questionVotes", "questionText", "questionAnswered"]
+instance ToJSON Question where
+    toJSON (Question qId sId votes text answered) =
+        object [ "questionId" Aeson..= qId
+               , "sessionId" Aeson..= sId
+               , "questionVotes" Aeson..= votes
+               , "questionText" Aeson..= text
+               , "questionAnswered" Aeson..= answered
+               ]
 
 -- | A QuestionId is represented as an integer, but we should not be able to
 -- perform arithmetic and other numeric operations on it, as it's not a number
@@ -61,11 +84,13 @@ instance ToSchema Votes
 -- descriptive type here for better documenting code.
 data Answered = Answered | NotAnswered
     deriving (Show, Generic, Eq, Ord, Enum, Bounded)
-instance ToSchema Answered
-
--- | JSON instances for those we can't derive using deriving.
-instance ToJSON Question
-instance ToJSON Answered
+instance ToSchema Answered where
+    declareNamedSchema _ = do
+        boolSchema <- declareSchema (Proxy :: Proxy Bool)
+        return $ NamedSchema (Just "Answered") boolSchema
+instance ToJSON Answered where
+    toJSON Answered = toJSON True
+    toJSON NotAnswered = toJSON False
 
 -- | We represent the set of questions as an indexed set, which allows
 -- efficient queries and updates using custom indexes; similar to SQL indexes.
