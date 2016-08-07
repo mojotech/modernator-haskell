@@ -16,3 +16,6 @@ withError (Left NotAuthorizedForSession) = throwError $ err401 { errBody = "Not 
 withError (Left MustBeAnswerer) = throwError $ err401 { errBody = "Requires answerer" }
 withError (Left MustBeQuestioner) = throwError $ err401 { errBody = "Requires questioner" }
 withError (Left SessionAlreadyLocked) = throwError $ err400 { errBody = "Cannot lock session. Already locked." }
+
+unitToNoContent :: () -> NoContent
+unitToNoContent () = NoContent
