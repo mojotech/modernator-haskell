@@ -1,4 +1,4 @@
-{-# LANGUAGE DataKinds, TypeOperators, TypeFamilies, UndecidableInstances, FlexibleInstances, MultiParamTypeClasses, EmptyDataDecls #-}
+{-# LANGUAGE DataKinds, TypeOperators, TypeFamilies, UndecidableInstances, FlexibleInstances, MultiParamTypeClasses, EmptyDataDecls, OverloadedStrings  #-}
 module Modernator.API where
 
 import Servant
@@ -7,6 +7,8 @@ import Data.Proxy
 import Data.Swagger
 import Servant.Swagger
 import Servant.Swagger.UI
+import Data.Swagger.Lens
+import Control.Lens
 
 type SwaggerSchemaEndpoint = "swagger.js" :> Get '[JSON] Swagger
 
@@ -33,3 +35,8 @@ server a = swaggerUIServer :<|> return swaggerDoc :<|> sessionsServer a
 
 swaggerDoc :: Swagger
 swaggerDoc = toSwagger (Proxy :: Proxy SessionsAPI)
+    & basePath .~ Just "/sessions"
+    & info.title .~ "Sessions API"
+    & info.version .~ "0.1"
+    & info.description ?~ "This is an API for creating/joining Q&A sessions and asking questions"
+    & info.license ?~ "MIT"
