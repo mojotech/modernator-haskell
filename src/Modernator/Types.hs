@@ -85,8 +85,21 @@ instance ToSchema AnswererId
 data Answerer = Answerer AnswererId SessionId Text
     deriving (Show, Generic, Eq, Ord)
 
-instance ToJSON Answerer
-instance ToSchema Answerer
+instance ToJSON Answerer where
+    toJSON (Answerer aId sId name) =
+        object ["answererId" Aeson..= aId, "sessionId" Aeson..= sId, "name" Aeson..= name]
+instance ToSchema Answerer where
+    declareNamedSchema _ = do
+        answererIdSchema <- declareSchemaRef (Proxy :: Proxy AnswererId)
+        sessionIdSchema <- declareSchemaRef (Proxy :: Proxy SessionId)
+        textSchema <- declareSchemaRef (Proxy :: Proxy Text)
+        return $ NamedSchema (Just "Answerer") $ mempty
+            & type_ .~ SwaggerObject
+            & properties .~ [ ("answererId", answererIdSchema)
+                            , ("sessionId", sessionIdSchema)
+                            , ("name", textSchema)
+                            ]
+            & required .~ ["answererId", "sessionId", "name"]
 
 type AnswererDB = IxSet Answerer
 instance Indexable Answerer where
