@@ -28,10 +28,6 @@ type API = SwaggerUI "ui" SwaggerSchemaEndpoint API'
            :<|> SwaggerSchemaEndpoint
            :<|> BasicAPI
 
-instance HasServer API' context where
-    type ServerT API' m = ServerT API m
-    route _ = route (Proxy :: Proxy API)
-
 type instance IsElem' e API' = IsElem e API
 
 api :: Proxy API
