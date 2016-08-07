@@ -21,7 +21,8 @@ instance ToJSON SessionCookie
 instance FromJSON SessionCookie
 instance ToByteString SessionCookie where
     builder = builder . encode
-instance ToParamSchema SessionCookie
+instance ToParamSchema SessionCookie where
+    toParamSchema _ = toParamSchema (Proxy :: Proxy (Either AnswererId QuestionerId))
 instance FromHttpApiData SessionCookie where
     parseQueryParam = fmap SessionCookie . parseQueryParam
 
