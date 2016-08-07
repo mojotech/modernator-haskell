@@ -1,18 +1,26 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving, DeriveGeneric, FlexibleInstances #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving, DeriveGeneric, FlexibleInstances, OverloadedStrings, OverloadedLists #-}
 module Modernator.Types where
 
 import Data.Time.Clock (UTCTime)
 import Data.Text (Text)
-import Data.IxSet
+import Data.IxSet hiding (Proxy)
 
 -- | GHC.Generics used for deriving ToJSON instances
 import GHC.Generics (Generic)
 
 -- | Some typeclasses we'll need
-import Data.Aeson (ToJSON, FromJSON)
 import Web.HttpApiData (FromHttpApiData)
 import Data.Swagger.ParamSchema (ToParamSchema, toParamSchema)
-import Data.Swagger.Schema (ToSchema)
+
+-- | For custom Swagger Schemas
+import Data.Aeson hiding ((.=))
+import qualified Data.Aeson as Aeson
+import Data.Swagger.Schema
+import Control.Lens hiding (Indexable)
+import Data.Swagger.Internal
+import Data.Swagger.Lens
+import Data.Monoid (mempty)
+import Data.Proxy
 
 -- | Keep track of any domain specific exceptions so we can translate them to
 -- generic HTTP exceptions later.
@@ -111,8 +119,21 @@ instance ToSchema QuestionerId
 
 data Questioner = Questioner QuestionerId SessionId (Maybe Text)
     deriving (Show, Generic, Eq, Ord)
-instance ToJSON Questioner
-instance ToSchema Questioner
+instance ToJSON Questioner where
+    toJSON (Questioner qId sId name) =
+        object ["questionerId" Aeson..= qId, "sessionId" Aeson..= sId, "name" Aeson..= name]
+instance ToSchema Questioner where
+    declareNamedSchema _ = do
+        questionerIdSchema <- declareSchemaRef (Proxy :: Proxy QuestionerId)
+        sessionIdSchema <- declareSchemaRef (Proxy :: Proxy SessionId)
+        textSchema <- declareSchemaRef (Proxy :: Proxy Text)
+        return $ NamedSchema (Just "Questioner") $ mempty
+            & type_ .~ SwaggerObject
+            & properties .~ [ ("questionerId", questionerIdSchema)
+                            , ("sessionId", sessionIdSchema)
+                            , ("name", textSchema)
+                            ]
+            & required .~ ["questionerId", "sessionId"]
 
 type QuestionerDB = IxSet Questioner
 instance Indexable Questioner where
