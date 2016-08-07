@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveGeneric, OverloadedStrings, OverloadedLists #-}
 module Modernator.RequestBodies where
 
 import Modernator.Types
@@ -6,7 +6,12 @@ import Data.Text
 import Data.Time.Clock
 import Data.Aeson
 import GHC.Generics (Generic)
-import Data.Swagger.Schema (ToSchema)
+import Data.Swagger.Schema
+import Control.Lens
+import Data.Swagger.Internal
+import Data.Swagger.Lens
+import Data.Monoid (mempty)
+import Data.Proxy
 
 data SessionReq = SessionReq
     { sessionName :: Text
@@ -27,7 +32,12 @@ data JoinReq = JoinReq
 instance ToJSON JoinReq
 -- TODO input like { "ques": "foo" } parses correctly as Nothing. It should not.
 instance FromJSON JoinReq
-instance ToSchema JoinReq
+instance ToSchema JoinReq where
+    declareNamedSchema _ = do
+        textSchema <- declareSchemaRef (Proxy :: Proxy Text)
+        return $ NamedSchema (Just "JoinReq") $ mempty
+            & type_ .~ SwaggerObject
+            & properties .~ [("questionerName", textSchema)]
 
 data QuestionReq = QuestionReq
     { question :: Text

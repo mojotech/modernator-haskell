@@ -39,7 +39,8 @@ executable modernator-haskell
                        bytestring,
                        swagger2,
                        servant-swagger-ui,
-                       wai-extra
+                       wai-extra,
+                       lens
   hs-source-dirs:      src
   default-language:    Haskell2010
 
@@ -70,4 +71,5 @@ Test-Suite test
                        wai-extra,
                        hspec,
                        QuickCheck,
-                       quickcheck-instances
+                       quickcheck-instances,
+                       lens
