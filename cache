@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -eu
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+TMPDIR=$(mktemp -d)
+echo "===> Placing cache in: $TMPDIR"
+trap "rm -rf \"$TMPDIR\"" EXIT
+
+(
+    cd "$DIR"
+
+    nix-push --dest "$TMPDIR" --key-file ~/.nix-cache.danielwilsonthomas.com-1.key "$(nix-instantiate --add-root "$DIR/gc-roots/cache.drv" --indirect -E "import ./cache.nix")"
+
+    sed -i '/^\(System\|Deriver\): /d' "$TMPDIR/"* # Get rid of these, because they can vary in apparently-meaningless between systems
+
+    # This is for syncing the cache to s3.
+    nix-shell -E 'with import <nixpkgs> {}; runCommand "shell" { buildInputs = [ s3cmd ]; shellHook = "export SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt"; } ""' --run "s3cmd sync --no-delete-removed '$TMPDIR/' s3://nix-cache.danielwilsonthomas.com/"
+)
