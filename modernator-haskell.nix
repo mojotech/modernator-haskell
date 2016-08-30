@@ -8,7 +8,7 @@
 mkDerivation {
   pname = "modernator-haskell";
   version = "0.1.0.0";
-  src = ./.;
+  src = builtins.filterSource (path: type: baseNameOf path != ".git") ./.;
   isLibrary = false;
   isExecutable = true;
   executableHaskellDepends = [
