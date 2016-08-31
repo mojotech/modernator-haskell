@@ -3,6 +3,7 @@
 , servant-swagger, swagger2, servant-swagger-ui, either
 , servant-auth-cookie
 , quickcheck-instances
+, servant-aeson-specs
 , buildTools ? []
 }:
 mkDerivation {
@@ -17,6 +18,7 @@ mkDerivation {
     servant-swagger swagger2 servant-swagger-ui either
     servant-auth-cookie
     quickcheck-instances
+    servant-aeson-specs
   ];
   buildTools = buildTools;
   description = "An application for hosting targeted Q&A sessions like Reddit AMA's";

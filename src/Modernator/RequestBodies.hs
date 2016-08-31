@@ -18,7 +18,7 @@ data SessionReq = SessionReq
     , sessionExpiration :: Maybe UTCTime
     , answererName :: Text
     }
-    deriving (Generic, Show)
+    deriving (Generic, Show, Eq)
 
 instance ToJSON SessionReq
 instance FromJSON SessionReq
@@ -27,7 +27,7 @@ instance ToSchema SessionReq
 data JoinReq = JoinReq
     { questionerName :: Maybe Text
     }
-    deriving (Generic, Show)
+    deriving (Generic, Show, Eq)
 
 instance ToJSON JoinReq
 -- TODO input like { "ques": "foo" } parses correctly as Nothing. It should not.
@@ -42,7 +42,7 @@ instance ToSchema JoinReq where
 data QuestionReq = QuestionReq
     { question :: Text
     }
-    deriving (Generic, Show)
+    deriving (Generic, Show, Eq)
 
 instance ToJSON QuestionReq
 instance FromJSON QuestionReq

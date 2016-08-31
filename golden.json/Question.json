@@ -1,0 +1,1405 @@
+{
+    "seed": 7.669027119484523627e18,
+    "samples": [
+        {
+            "questionVotes": 10.0,
+            "questionText": "LN\u0016\u0015\u0004F~\u0016L-ÿn5Géwæ I",
+            "questionAnswered": false,
+            "sessionId": 0.0,
+            "questionId": 9.0
+        },
+        {
+            "questionVotes": 11.0,
+            "questionText": "\u001dæ}\u0019F¹\u000e",
+            "questionAnswered": true,
+            "sessionId": -10.0,
+            "questionId": -17.0
+        },
+        {
+            "questionVotes": 6.0,
+            "questionText": "Â",
+            "questionAnswered": true,
+            "sessionId": 30.0,
+            "questionId": 3.0
+        },
+        {
+            "questionVotes": -19.0,
+            "questionText": "Q\rTg6\u001f]`Wpe®",
+            "questionAnswered": true,
+            "sessionId": 20.0,
+            "questionId": 28.0
+        },
+        {
+            "questionVotes": -28.0,
+            "questionText": "1sDý\u001ehYd\nJ\u000bYl",
+            "questionAnswered": true,
+            "sessionId": -27.0,
+            "questionId": -3.0
+        },
+        {
+            "questionVotes": -6.0,
+            "questionText": "\u0002Vc\u0000mói",
+            "questionAnswered": true,
+            "sessionId": 5.0,
+            "questionId": 13.0
+        },
+        {
+            "questionVotes": 0.0,
+            "questionText": "\u0005\u001e\nÜF,Hsï~K'xDÂ\u0015eE­¹¹.#$s",
+            "questionAnswered": true,
+            "sessionId": -28.0,
+            "questionId": -17.0
+        },
+        {
+            "questionVotes": -25.0,
+            "questionText": "\u0005ïT5LkL\u0002y1Y\u0016\u001d!ü\u0005XWS.8%%\u0000\u001c\u001d",
+            "questionAnswered": true,
+            "sessionId": -18.0,
+            "questionId": 8.0
+        },
+        {
+            "questionVotes": -11.0,
+            "questionText": "Ý",
+            "questionAnswered": true,
+            "sessionId": -3.0,
+            "questionId": 11.0
+        },
+        {
+            "questionVotes": 26.0,
+            "questionText": "\u0012\u001eúk\u001f\u000fðR\u0010.k*",
+            "questionAnswered": false,
+            "sessionId": 18.0,
+            "questionId": 23.0
+        },
+        {
+            "questionVotes": -18.0,
+            "questionText": "",
+            "questionAnswered": false,
+            "sessionId": -9.0,
+            "questionId": 3.0
+        },
+        {
+            "questionVotes": 14.0,
+            "questionText": "\nAVs",
+            "questionAnswered": false,
+            "sessionId": 19.0,
+            "questionId": -15.0
+        },
+        {
+            "questionVotes": 5.0,
+            "questionText": "\u0011",
+            "questionAnswered": false,
+            "sessionId": -6.0,
+            "questionId": -12.0
+        },
+        {
+            "questionVotes": -8.0,
+            "questionText": "BjdkØ¨1µQÙ6C©¶/\t)ML",
+            "questionAnswered": true,
+            "sessionId": -30.0,
+            "questionId": 14.0
+        },
+        {
+            "questionVotes": 15.0,
+            "questionText": "BXod8\u0003;.Ü",
+            "questionAnswered": false,
+            "sessionId": 24.0,
+            "questionId": 27.0
+        },
+        {
+            "questionVotes": 22.0,
+            "questionText": "\u0006\n?Ü?\u0006\u001f\u001a\u00188",
+            "questionAnswered": false,
+            "sessionId": -21.0,
+            "questionId": -14.0
+        },
+        {
+            "questionVotes": -11.0,
+            "questionText": ",\t\u000e",
+            "questionAnswered": true,
+            "sessionId": 14.0,
+            "questionId": 1.0
+        },
+        {
+            "questionVotes": 28.0,
+            "questionText": "iJ]¬»\u0001\u0017A|\u0002-Ë¬Ö(RCÔ,\u000e¾¿1t",
+            "questionAnswered": false,
+            "sessionId": -10.0,
+            "questionId": 22.0
+        },
+        {
+            "questionVotes": 4.0,
+            "questionText": "Æ\"\u00100'µ*Ë'p",
+            "questionAnswered": true,
+            "sessionId": 17.0,
+            "questionId": -10.0
+        },
+        {
+            "questionVotes": 30.0,
+            "questionText": "-wX>ÿ\u00015ü\u0012iGV6h[xFuu",
+            "questionAnswered": false,
+            "sessionId": -13.0,
+            "questionId": -16.0
+        },
+        {
+            "questionVotes": 28.0,
+            "questionText": "\u0019ÓmjQmq7uî",
+            "questionAnswered": true,
+            "sessionId": 1.0,
+            "questionId": 23.0
+        },
+        {
+            "questionVotes": -18.0,
+            "questionText": "ë 5¼9,\u0008",
+            "questionAnswered": false,
+            "sessionId": -26.0,
+            "questionId": -20.0
+        },
+        {
+            "questionVotes": 8.0,
+            "questionText": "\\%RqY\u001cø\u0016å\"h\n\\k_Q\u0013Î5\u0002\u001a\\L\u000f;0ZiÉ",
+            "questionAnswered": false,
+            "sessionId": -28.0,
+            "questionId": 17.0
+        },
+        {
+            "questionVotes": -24.0,
+            "questionText": "\u001c+\u00155w\u001a7+d\u000fÄ5@\rPî\u0019HIcH\u000eP",
+            "questionAnswered": true,
+            "sessionId": 19.0,
+            "questionId": -7.0
+        },
+        {
+            "questionVotes": -4.0,
+            "questionText": "",
+            "questionAnswered": true,
+            "sessionId": -5.0,
+            "questionId": -20.0
+        },
+        {
+            "questionVotes": 21.0,
+            "questionText": "Ð\u001fEéHz åU\"·pò6a",
+            "questionAnswered": false,
+            "sessionId": -8.0,
+            "questionId": 24.0
+        },
+        {
+            "questionVotes": -9.0,
+            "questionText": "ÛýN\\M\u0001L|õ/àn\u0005³^0T^\u001d\u0017,t\u000e",
+            "questionAnswered": true,
+            "sessionId": 12.0,
+            "questionId": 5.0
+        },
+        {
+            "questionVotes": -14.0,
+            "questionText": "\"es]sÅR71&>U¥ÆnE^_8G¯4",
+            "questionAnswered": false,
+            "sessionId": -18.0,
+            "questionId": -7.0
+        },
+        {
+            "questionVotes": -18.0,
+            "questionText": "*\\",
+            "questionAnswered": false,
+            "sessionId": -26.0,
+            "questionId": 17.0
+        },
+        {
+            "questionVotes": -18.0,
+            "questionText": "Ï+-ý~¦LWo\u0001\"<\u001fmL.va",
+            "questionAnswered": false,
+            "sessionId": -5.0,
+            "questionId": 28.0
+        },
+        {
+            "questionVotes": 16.0,
+            "questionText": "\u000b@",
+            "questionAnswered": true,
+            "sessionId": -21.0,
+            "questionId": -10.0
+        },
+        {
+            "questionVotes": 28.0,
+            "questionText": "#]Â\r\u0001*4p\t\u001céÏä:\u0017ÈZä?Xw\u0004+Å\u0014l",
+            "questionAnswered": true,
+            "sessionId": -18.0,
+            "questionId": -27.0
+        },
+        {
+            "questionVotes": -20.0,
+            "questionText": "´l|îK¨V\u00047]çìÈi",
+            "questionAnswered": false,
+            "sessionId": 16.0,
+            "questionId": -8.0
+        },
+        {
+            "questionVotes": 27.0,
+            "questionText": "]Ç`Å;´ò0:úR\u0018³«Óq2TÄÛ\u0000.-",
+            "questionAnswered": true,
+            "sessionId": -7.0,
+            "questionId": -16.0
+        },
+        {
+            "questionVotes": -18.0,
+            "questionText": "±\u001bJøA]\u0017v´",
+            "questionAnswered": true,
+            "sessionId": 12.0,
+            "questionId": 27.0
+        },
+        {
+            "questionVotes": -27.0,
+            "questionText": "×qv\u0014",
+            "questionAnswered": true,
+            "sessionId": -9.0,
+            "questionId": 27.0
+        },
+        {
+            "questionVotes": -10.0,
+            "questionText": " Óê\u0002$\u0010Ö)\u000fÃ",
+            "questionAnswered": true,
+            "sessionId": 26.0,
+            "questionId": -12.0
+        },
+        {
+            "questionVotes": -24.0,
+            "questionText": "Y/\u0019\u001eÆÜi",
+            "questionAnswered": false,
+            "sessionId": 10.0,
+            "questionId": 30.0
+        },
+        {
+            "questionVotes": -27.0,
+            "questionText": "v>Ø\u0007r\u0005\u0019y\u0005g²ÅÍ \u000f\u000f*#IvKA$2",
+            "questionAnswered": false,
+            "sessionId": -17.0,
+            "questionId": -1.0
+        },
+        {
+            "questionVotes": -17.0,
+            "questionText": "·<\u0012\u000e_GP`\u0013v:«}'½\u000f:\t9HKR\u0018p8Â",
+            "questionAnswered": false,
+            "sessionId": 9.0,
+            "questionId": 27.0
+        },
+        {
+            "questionVotes": -19.0,
+            "questionText": "",
+            "questionAnswered": false,
+            "sessionId": 1.0,
+            "questionId": 9.0
+        },
+        {
+            "questionVotes": -26.0,
+            "questionText": "¢\u0016PO)æ¼*Óþmz,f9\u0007nvð\u0015",
+            "questionAnswered": false,
+            "sessionId": -25.0,
+            "questionId": 12.0
+        },
+        {
+            "questionVotes": 27.0,
+            "questionText": "$\u0000é|\u0019\r*V\u001e($\u0011Û½\u0005HÐ",
+            "questionAnswered": true,
+            "sessionId": 13.0,
+            "questionId": -29.0
+        },
+        {
+            "questionVotes": -2.0,
+            "questionText": "Uûü¯v\u000fR½D|Û\u0015ZÁ}A\u0013l(",
+            "questionAnswered": false,
+            "sessionId": -23.0,
+            "questionId": -27.0
+        },
+        {
+            "questionVotes": 2.0,
+            "questionText": "ªÊ",
+            "questionAnswered": false,
+            "sessionId": 20.0,
+            "questionId": 19.0
+        },
+        {
+            "questionVotes": -2.0,
+            "questionText": "{,Ir=!*{rz](vXh$â?\u001cb Rc,ôþD",
+            "questionAnswered": true,
+            "sessionId": -22.0,
+            "questionId": -16.0
+        },
+        {
+            "questionVotes": -11.0,
+            "questionText": "µ±¤{e*Ó1qI\u0002¸¡ç\u0004",
+            "questionAnswered": false,
+            "sessionId": 5.0,
+            "questionId": 26.0
+        },
+        {
+            "questionVotes": -12.0,
+            "questionText": "8g ç&{ }n>",
+            "questionAnswered": true,
+            "sessionId": 19.0,
+            "questionId": 6.0
+        },
+        {
+            "questionVotes": -7.0,
+            "questionText": "Yllg!\nÐw£\"J\u000f\u0005p]t3c+uM\u0008",
+            "questionAnswered": false,
+            "sessionId": 15.0,
+            "questionId": 15.0
+        },
+        {
+            "questionVotes": 0.0,
+            "questionText": "\u0011õDA!52+¦d@ÇMZ0VýFI'\u000f]",
+            "questionAnswered": true,
+            "sessionId": -19.0,
+            "questionId": -11.0
+        },
+        {
+            "questionVotes": 1.0,
+            "questionText": "\u0015>\u0000ðWÛes\u0016z",
+            "questionAnswered": false,
+            "sessionId": -9.0,
+            "questionId": -15.0
+        },
+        {
+            "questionVotes": 22.0,
+            "questionText": "j'ÜL[[À\u0012¨",
+            "questionAnswered": false,
+            "sessionId": 21.0,
+            "questionId": 21.0
+        },
+        {
+            "questionVotes": 30.0,
+            "questionText": "ülD=\u0004~\u0001Ðb>fR=.záWG`öw\u001b+L:\u000e",
+            "questionAnswered": false,
+            "sessionId": -11.0,
+            "questionId": -5.0
+        },
+        {
+            "questionVotes": 22.0,
+            "questionText": ":HWB\u0004\nL\u0002\u0010\u001aç\"}H;o\u0014\u00166hu=\n",
+            "questionAnswered": true,
+            "sessionId": 19.0,
+            "questionId": -29.0
+        },
+        {
+            "questionVotes": 17.0,
+            "questionText": "÷+<",
+            "questionAnswered": false,
+            "sessionId": 10.0,
+            "questionId": -4.0
+        },
+        {
+            "questionVotes": -3.0,
+            "questionText": "r\u0019s\",Â,\u0017\\]\u00133\u0012\u0004\\*Y\t/ë>",
+            "questionAnswered": true,
+            "sessionId": 8.0,
+            "questionId": -19.0
+        },
+        {
+            "questionVotes": -23.0,
+            "questionText": "\u0006c\u001dâ\u0000x\u0019#\u0018sËxgB\u00172oc\n+Ï\u001cY>",
+            "questionAnswered": true,
+            "sessionId": -6.0,
+            "questionId": -3.0
+        },
+        {
+            "questionVotes": 30.0,
+            "questionText": "\u000cni\u0004o¡*r3b\u001a\u0001ß\u0013\u000bµ",
+            "questionAnswered": false,
+            "sessionId": -17.0,
+            "questionId": -29.0
+        },
+        {
+            "questionVotes": -9.0,
+            "questionText": "bgcx\u0001z\u0012\u0004ß\u0017rn\t%",
+            "questionAnswered": true,
+            "sessionId": -28.0,
+            "questionId": 14.0
+        },
+        {
+            "questionVotes": -11.0,
+            "questionText": "\u00116Ò1Z\u000eB\u001b\\f=S ÿ\u000bsRAÿ\tÍi@QvE:2",
+            "questionAnswered": false,
+            "sessionId": -6.0,
+            "questionId": 23.0
+        },
+        {
+            "questionVotes": 7.0,
+            "questionText": "rîdm|",
+            "questionAnswered": false,
+            "sessionId": -1.0,
+            "questionId": -29.0
+        },
+        {
+            "questionVotes": 14.0,
+            "questionText": "cN¾\u0003\u0008-ax}-ÌXônìt\u0008W2÷",
+            "questionAnswered": false,
+            "sessionId": 27.0,
+            "questionId": 3.0
+        },
+        {
+            "questionVotes": -28.0,
+            "questionText": "¥(½\r-\u0018\u0006/08\u000czd(]\u0013+e\u0015øp",
+            "questionAnswered": false,
+            "sessionId": -23.0,
+            "questionId": -18.0
+        },
+        {
+            "questionVotes": 9.0,
+            "questionText": "N.(Î5@\u000cf9Z\u0016oAQ}",
+            "questionAnswered": true,
+            "sessionId": -2.0,
+            "questionId": 0.0
+        },
+        {
+            "questionVotes": -25.0,
+            "questionText": "giÔàfAiVQ#,¾nn¶\\Àf³«kï,",
+            "questionAnswered": true,
+            "sessionId": -27.0,
+            "questionId": 27.0
+        },
+        {
+            "questionVotes": -27.0,
+            "questionText": "ðV¬5\u0013",
+            "questionAnswered": false,
+            "sessionId": 13.0,
+            "questionId": 16.0
+        },
+        {
+            "questionVotes": 29.0,
+            "questionText": "A´l£C:\u001b\u0010\"r\u0007á3µ¥H)]I$b",
+            "questionAnswered": true,
+            "sessionId": -29.0,
+            "questionId": -1.0
+        },
+        {
+            "questionVotes": 8.0,
+            "questionText": "/r«",
+            "questionAnswered": false,
+            "sessionId": -29.0,
+            "questionId": 30.0
+        },
+        {
+            "questionVotes": -6.0,
+            "questionText": "æ`C\u000e\u0014mH?Nv<",
+            "questionAnswered": true,
+            "sessionId": 21.0,
+            "questionId": -12.0
+        },
+        {
+            "questionVotes": -16.0,
+            "questionText": "\u0017aé9|¸¨Äg\u0002}T?Cm\u00114\u0013^æM[1J",
+            "questionAnswered": false,
+            "sessionId": 17.0,
+            "questionId": 22.0
+        },
+        {
+            "questionVotes": 6.0,
+            "questionText": "\u001f\u0007â~ß\rgV}^,âVYf!+¬H",
+            "questionAnswered": false,
+            "sessionId": -14.0,
+            "questionId": 25.0
+        },
+        {
+            "questionVotes": 25.0,
+            "questionText": "\"VDgT'.]Z6\u000c",
+            "questionAnswered": false,
+            "sessionId": -19.0,
+            "questionId": 15.0
+        },
+        {
+            "questionVotes": 20.0,
+            "questionText": "FÆ³Yvi\n3mØdÎxQ(\u0018\r",
+            "questionAnswered": false,
+            "sessionId": -29.0,
+            "questionId": -22.0
+        },
+        {
+            "questionVotes": -28.0,
+            "questionText": "É\u000c5¦@µ)AÇ%Ê{s",
+            "questionAnswered": false,
+            "sessionId": -17.0,
+            "questionId": -24.0
+        },
+        {
+            "questionVotes": -14.0,
+            "questionText": "\u0007KÃ°C\u001cî/\r-ooxí¸_t6[0H",
+            "questionAnswered": true,
+            "sessionId": 27.0,
+            "questionId": 29.0
+        },
+        {
+            "questionVotes": 1.0,
+            "questionText": "÷CÓ\u0015N×`=X=l6\t",
+            "questionAnswered": true,
+            "sessionId": 15.0,
+            "questionId": 12.0
+        },
+        {
+            "questionVotes": 9.0,
+            "questionText": "N\u0014Ñçê[\u0015&U\u0012\u0001*hÃ\u0014j5Ì",
+            "questionAnswered": false,
+            "sessionId": 17.0,
+            "questionId": -29.0
+        },
+        {
+            "questionVotes": -5.0,
+            "questionText": "!OT{\u001c",
+            "questionAnswered": true,
+            "sessionId": 6.0,
+            "questionId": 21.0
+        },
+        {
+            "questionVotes": 11.0,
+            "questionText": "'s",
+            "questionAnswered": true,
+            "sessionId": -8.0,
+            "questionId": 26.0
+        },
+        {
+            "questionVotes": -21.0,
+            "questionText": "ø¡O\u00116\u0008?\u001b\u0005P\u0011û/\u0011H|[Wï(\u001egckw",
+            "questionAnswered": false,
+            "sessionId": -10.0,
+            "questionId": -28.0
+        },
+        {
+            "questionVotes": 24.0,
+            "questionText": "]+@Ìx|fO\u0004\u0014°i",
+            "questionAnswered": true,
+            "sessionId": -2.0,
+            "questionId": -30.0
+        },
+        {
+            "questionVotes": 3.0,
+            "questionText": "\tC{\u0000\u00106OZAB\u000cvV^@>g®ZEp\tÒ4p",
+            "questionAnswered": false,
+            "sessionId": 8.0,
+            "questionId": 9.0
+        },
+        {
+            "questionVotes": 27.0,
+            "questionText": "½|",
+            "questionAnswered": true,
+            "sessionId": 29.0,
+            "questionId": -14.0
+        },
+        {
+            "questionVotes": 27.0,
+            "questionText": "G¡\u0015%\u001dï\t\u0015÷Y\u000bv",
+            "questionAnswered": false,
+            "sessionId": 21.0,
+            "questionId": 0.0
+        },
+        {
+            "questionVotes": 15.0,
+            "questionText": "\u000e\u00158)||Å4e2^ÿpZzi|gû|\u000co}Yaù",
+            "questionAnswered": true,
+            "sessionId": 8.0,
+            "questionId": 23.0
+        },
+        {
+            "questionVotes": -23.0,
+            "questionText": "<Jj)",
+            "questionAnswered": false,
+            "sessionId": 16.0,
+            "questionId": -13.0
+        },
+        {
+            "questionVotes": -21.0,
+            "questionText": "y\u000c\u0018\tQ¥WS_\u001f}Q~´O7\u0014i\u0011\u0008pG¶ý",
+            "questionAnswered": true,
+            "sessionId": -20.0,
+            "questionId": -29.0
+        },
+        {
+            "questionVotes": 7.0,
+            "questionText": "QÑ]¥\u0017w{\u000fÐ\u0006G\u0006f~©drPÐO\u000b",
+            "questionAnswered": true,
+            "sessionId": -16.0,
+            "questionId": -22.0
+        },
+        {
+            "questionVotes": 4.0,
+            "questionText": "\tó©q.\u000c-<ñ\u0006WØ",
+            "questionAnswered": false,
+            "sessionId": -30.0,
+            "questionId": 2.0
+        },
+        {
+            "questionVotes": 4.0,
+            "questionText": "4g×m^Ae2\u0012",
+            "questionAnswered": true,
+            "sessionId": 12.0,
+            "questionId": -1.0
+        },
+        {
+            "questionVotes": 17.0,
+            "questionText": "rqË\u0008\u0005\u001b£Ä+&@hN5",
+            "questionAnswered": false,
+            "sessionId": -21.0,
+            "questionId": -13.0
+        },
+        {
+            "questionVotes": -9.0,
+            "questionText": "9",
+            "questionAnswered": false,
+            "sessionId": 11.0,
+            "questionId": 5.0
+        },
+        {
+            "questionVotes": 6.0,
+            "questionText": "\u0001\u000e(\"ª\u0014\u0019 ²X",
+            "questionAnswered": true,
+            "sessionId": -24.0,
+            "questionId": -13.0
+        },
+        {
+            "questionVotes": -2.0,
+            "questionText": "\u0010ð6V¯\u000cD4!",
+            "questionAnswered": false,
+            "sessionId": 26.0,
+            "questionId": 12.0
+        },
+        {
+            "questionVotes": -7.0,
+            "questionText": "6dWz",
+            "questionAnswered": false,
+            "sessionId": 26.0,
+            "questionId": -2.0
+        },
+        {
+            "questionVotes": -19.0,
+            "questionText": "côwv¡@\u0017\u0018ÚÞðåô\u001b¯F[ò4|v@õ}1",
+            "questionAnswered": true,
+            "sessionId": -24.0,
+            "questionId": 25.0
+        },
+        {
+            "questionVotes": 17.0,
+            "questionText": "\u001cï<\u000cGØ²·mL",
+            "questionAnswered": true,
+            "sessionId": 0.0,
+            "questionId": -9.0
+        },
+        {
+            "questionVotes": -14.0,
+            "questionText": "\u001c{;d\u000c\u000c)pE\u0001\\Ïuå\u001d¢âycþ",
+            "questionAnswered": false,
+            "sessionId": -3.0,
+            "questionId": -17.0
+        },
+        {
+            "questionVotes": 16.0,
+            "questionText": "\u001e-åOj",
+            "questionAnswered": false,
+            "sessionId": -10.0,
+            "questionId": 28.0
+        },
+        {
+            "questionVotes": -8.0,
+            "questionText": ";\u0013¾\\Vmª)/\u000bSçJ{UWMÃcI,ÅvÅY-/@",
+            "questionAnswered": true,
+            "sessionId": 25.0,
+            "questionId": -25.0
+        },
+        {
+            "questionVotes": -5.0,
+            "questionText": "Z\u0013liÇf\\P<,\u0004yÕFGü~fsÔ;/]cè5\u0019P",
+            "questionAnswered": false,
+            "sessionId": -2.0,
+            "questionId": 9.0
+        },
+        {
+            "questionVotes": 19.0,
+            "questionText": "B09»7|ªx,e%\\|ü",
+            "questionAnswered": false,
+            "sessionId": -10.0,
+            "questionId": 4.0
+        },
+        {
+            "questionVotes": 21.0,
+            "questionText": "éUXo!K'ë*VLl( ÕÀK£¾ÝÈëq¨\u000bh",
+            "questionAnswered": false,
+            "sessionId": 2.0,
+            "questionId": 13.0
+        },
+        {
+            "questionVotes": -23.0,
+            "questionText": "%\u0019äçe|§PMÁ\u000c+r80a",
+            "questionAnswered": true,
+            "sessionId": 0.0,
+            "questionId": -19.0
+        },
+        {
+            "questionVotes": -9.0,
+            "questionText": "B@¤o*\u0013L",
+            "questionAnswered": true,
+            "sessionId": 6.0,
+            "questionId": 17.0
+        },
+        {
+            "questionVotes": 26.0,
+            "questionText": "#\u00178\u0016\u0018\u0002\rË!&cqU\\",
+            "questionAnswered": false,
+            "sessionId": -19.0,
+            "questionId": 25.0
+        },
+        {
+            "questionVotes": -24.0,
+            "questionText": "]0igy`3aaã\u0001¿\u0003^Às\u0018",
+            "questionAnswered": true,
+            "sessionId": 23.0,
+            "questionId": -27.0
+        },
+        {
+            "questionVotes": 6.0,
+            "questionText": "\u000c2¸ëC\u0008Ù*\u001f?¶\u0019Äù¦lJB\rsi#ëpóÍI",
+            "questionAnswered": true,
+            "sessionId": -15.0,
+            "questionId": -9.0
+        },
+        {
+            "questionVotes": -23.0,
+            "questionText": "e\n\"\"+\u0008nS;\r",
+            "questionAnswered": true,
+            "sessionId": 10.0,
+            "questionId": 7.0
+        },
+        {
+            "questionVotes": 19.0,
+            "questionText": "",
+            "questionAnswered": true,
+            "sessionId": -5.0,
+            "questionId": -26.0
+        },
+        {
+            "questionVotes": 25.0,
+            "questionText": "ap\u001a'_>ZÈNtkþP",
+            "questionAnswered": false,
+            "sessionId": 22.0,
+            "questionId": 2.0
+        },
+        {
+            "questionVotes": -17.0,
+            "questionText": "o\u0005;å÷RqK0p",
+            "questionAnswered": true,
+            "sessionId": -29.0,
+            "questionId": -2.0
+        },
+        {
+            "questionVotes": 19.0,
+            "questionText": "¯u\u000b§h\u00049;4÷!Î/«4",
+            "questionAnswered": true,
+            "sessionId": -4.0,
+            "questionId": 18.0
+        },
+        {
+            "questionVotes": 0.0,
+            "questionText": "^ª(\u00115&<<7/~",
+            "questionAnswered": false,
+            "sessionId": 20.0,
+            "questionId": -16.0
+        },
+        {
+            "questionVotes": 22.0,
+            "questionText": "F))<ú.PüuD¼9ÓÔ\u001b\u0014DLÞx\u001dkR",
+            "questionAnswered": false,
+            "sessionId": 15.0,
+            "questionId": 25.0
+        },
+        {
+            "questionVotes": -29.0,
+            "questionText": "`&",
+            "questionAnswered": true,
+            "sessionId": 14.0,
+            "questionId": -23.0
+        },
+        {
+            "questionVotes": 3.0,
+            "questionText": "ITnÑ\u0011\u0006\u0011H#\u0016V\u0016¢Ys\u001f\u0017À1e\u001b=",
+            "questionAnswered": false,
+            "sessionId": -3.0,
+            "questionId": 4.0
+        },
+        {
+            "questionVotes": 14.0,
+            "questionText": "`",
+            "questionAnswered": false,
+            "sessionId": 9.0,
+            "questionId": 16.0
+        },
+        {
+            "questionVotes": -12.0,
+            "questionText": "Î#\u0003Ck",
+            "questionAnswered": false,
+            "sessionId": -12.0,
+            "questionId": 30.0
+        },
+        {
+            "questionVotes": 4.0,
+            "questionText": "T\tu¿\u000eM;Ø0Xa0\n\u0004",
+            "questionAnswered": false,
+            "sessionId": 12.0,
+            "questionId": -12.0
+        },
+        {
+            "questionVotes": 27.0,
+            "questionText": "q³",
+            "questionAnswered": true,
+            "sessionId": -27.0,
+            "questionId": 22.0
+        },
+        {
+            "questionVotes": 12.0,
+            "questionText": "y<x9\u000b\r>x\u000f#\u0000fJT_\u000båU¶w±D[\u000fD",
+            "questionAnswered": false,
+            "sessionId": -10.0,
+            "questionId": 0.0
+        },
+        {
+            "questionVotes": -30.0,
+            "questionText": "H6\u001f\u0015PÓÖ\u0006#GkÏ1\u001b5¦n1K»B",
+            "questionAnswered": false,
+            "sessionId": -17.0,
+            "questionId": 27.0
+        },
+        {
+            "questionVotes": 11.0,
+            "questionText": "TV\u001b5Ý@\u001cQt7ÑB\u000c'",
+            "questionAnswered": true,
+            "sessionId": -24.0,
+            "questionId": -25.0
+        },
+        {
+            "questionVotes": -22.0,
+            "questionText": "]fUG>ýx3\u0000Qx5¼dHY",
+            "questionAnswered": true,
+            "sessionId": 16.0,
+            "questionId": 13.0
+        },
+        {
+            "questionVotes": -28.0,
+            "questionText": "xR\u000cÄn\u0002\u0013\u0006:¡qÔVeña\u0002O^7~",
+            "questionAnswered": true,
+            "sessionId": -30.0,
+            "questionId": 3.0
+        },
+        {
+            "questionVotes": -29.0,
+            "questionText": "'1MD\u000c\u0012¯\u0008W]éíà\u0002\u0001\u001c",
+            "questionAnswered": false,
+            "sessionId": -10.0,
+            "questionId": -17.0
+        },
+        {
+            "questionVotes": -12.0,
+            "questionText": "K*ç",
+            "questionAnswered": false,
+            "sessionId": 1.0,
+            "questionId": 14.0
+        },
+        {
+            "questionVotes": 28.0,
+            "questionText": "+ÿ­6k\u0012!I\u001ejb/l²#U=R\"\u001e|S_",
+            "questionAnswered": false,
+            "sessionId": 23.0,
+            "questionId": -8.0
+        },
+        {
+            "questionVotes": 28.0,
+            "questionText": "^sä«ô\u0008RY\u0003Ö}\u0013º",
+            "questionAnswered": true,
+            "sessionId": -29.0,
+            "questionId": -3.0
+        },
+        {
+            "questionVotes": -21.0,
+            "questionText": ">*vì\u001b\rI[cì¤L\u0004èaF\u0017Ü6×\u00186<",
+            "questionAnswered": true,
+            "sessionId": -12.0,
+            "questionId": -19.0
+        },
+        {
+            "questionVotes": 8.0,
+            "questionText": "po\u0012b\u001f\u0017S7[öli",
+            "questionAnswered": true,
+            "sessionId": -23.0,
+            "questionId": 30.0
+        },
+        {
+            "questionVotes": 28.0,
+            "questionText": "B\rÎ\u000cU\u001cH_xË\u0007>ïvv¸D·\u0007yi\u0010ú>",
+            "questionAnswered": true,
+            "sessionId": -17.0,
+            "questionId": 14.0
+        },
+        {
+            "questionVotes": 23.0,
+            "questionText": "ªz'BÔDL^Ã\u0013F",
+            "questionAnswered": false,
+            "sessionId": -25.0,
+            "questionId": 4.0
+        },
+        {
+            "questionVotes": 16.0,
+            "questionText": "|Î4pC&\u001eñ·}3'\u00054\u0017p5tw\u0013\u0016k¹h`£Öuß",
+            "questionAnswered": false,
+            "sessionId": 26.0,
+            "questionId": 12.0
+        },
+        {
+            "questionVotes": -18.0,
+            "questionText": "8Smt#Ux00öz@}\u0000_G°",
+            "questionAnswered": true,
+            "sessionId": 13.0,
+            "questionId": 29.0
+        },
+        {
+            "questionVotes": -19.0,
+            "questionText": "M\u0007\u0007B\u0016M*]DR_g\"û¾)M",
+            "questionAnswered": true,
+            "sessionId": -9.0,
+            "questionId": -14.0
+        },
+        {
+            "questionVotes": 20.0,
+            "questionText": "KD|ü46`5g44èa\rp\u0001",
+            "questionAnswered": false,
+            "sessionId": 6.0,
+            "questionId": 8.0
+        },
+        {
+            "questionVotes": 18.0,
+            "questionText": "Kg>\u0002\u0017ii6\u0016EE\u0010\u0000\u00132ÏY\u0001¶_­",
+            "questionAnswered": true,
+            "sessionId": 22.0,
+            "questionId": 6.0
+        },
+        {
+            "questionVotes": -12.0,
+            "questionText": "\rW%'´\u0018*\tÚhuc,\u000b7a£Ñ*\u000fð8\r\u0004",
+            "questionAnswered": true,
+            "sessionId": 18.0,
+            "questionId": -27.0
+        },
+        {
+            "questionVotes": 6.0,
+            "questionText": "oÅã$ýÂjf\u0006\u0018ùUÕ\u0016",
+            "questionAnswered": false,
+            "sessionId": 25.0,
+            "questionId": -4.0
+        },
+        {
+            "questionVotes": 5.0,
+            "questionText": "HÀÄbjXV!\u001f¯\u0004Á'\u001fÞ",
+            "questionAnswered": true,
+            "sessionId": -30.0,
+            "questionId": -10.0
+        },
+        {
+            "questionVotes": -16.0,
+            "questionText": "uT\u00033Mö&\u0013´?|",
+            "questionAnswered": false,
+            "sessionId": 1.0,
+            "questionId": 16.0
+        },
+        {
+            "questionVotes": 10.0,
+            "questionText": "@k[ýiÝW",
+            "questionAnswered": true,
+            "sessionId": 11.0,
+            "questionId": 18.0
+        },
+        {
+            "questionVotes": 1.0,
+            "questionText": "}a¡\rù\u000f\u001bUU\u0010E<\u0002a´",
+            "questionAnswered": false,
+            "sessionId": -13.0,
+            "questionId": 10.0
+        },
+        {
+            "questionVotes": -13.0,
+            "questionText": "\u0016\u0008¹Ké\u0006^g\u001eWÅ\u0002#m\u0019\u0002ÚFB\r.\u000c^v",
+            "questionAnswered": true,
+            "sessionId": -4.0,
+            "questionId": 0.0
+        },
+        {
+            "questionVotes": -6.0,
+            "questionText": "MÚçnU}TQM½%2Ð«CggHlÏZ]Un®\u0017È\u000bQ",
+            "questionAnswered": true,
+            "sessionId": -28.0,
+            "questionId": 2.0
+        },
+        {
+            "questionVotes": -28.0,
+            "questionText": "*|&.#R<h$\u001e\u0016æ~",
+            "questionAnswered": false,
+            "sessionId": 11.0,
+            "questionId": -21.0
+        },
+        {
+            "questionVotes": -5.0,
+            "questionText": "cãã\u001d\u000fY",
+            "questionAnswered": true,
+            "sessionId": 15.0,
+            "questionId": -4.0
+        },
+        {
+            "questionVotes": -23.0,
+            "questionText": "[Y|-\u00006µâX!Z.ÄdEåçp\u0005z\nVç\"ÌÒJò\u0015",
+            "questionAnswered": false,
+            "sessionId": 2.0,
+            "questionId": -12.0
+        },
+        {
+            "questionVotes": 13.0,
+            "questionText": "eTC\u0006K\u0001\u0006",
+            "questionAnswered": true,
+            "sessionId": 2.0,
+            "questionId": -23.0
+        },
+        {
+            "questionVotes": 3.0,
+            "questionText": "§ä<S\nprêHf\u000b#lP4$Û",
+            "questionAnswered": false,
+            "sessionId": 23.0,
+            "questionId": -1.0
+        },
+        {
+            "questionVotes": 9.0,
+            "questionText": "VH:^Q\"ØM@",
+            "questionAnswered": false,
+            "sessionId": 21.0,
+            "questionId": -7.0
+        },
+        {
+            "questionVotes": 13.0,
+            "questionText": "ó·D³2\u000ez\u0001v&\u001c*m+pwJ2/MÞP{W­ô~h",
+            "questionAnswered": false,
+            "sessionId": 16.0,
+            "questionId": -4.0
+        },
+        {
+            "questionVotes": 3.0,
+            "questionText": "\u0000\u0008l\u0011ûWL\u000bj;Lx;Ð\u0000sT´~;ù\u001f",
+            "questionAnswered": true,
+            "sessionId": 17.0,
+            "questionId": -6.0
+        },
+        {
+            "questionVotes": -16.0,
+            "questionText": ";+\u0004óº~qraæÝ^»-\u0007TEv\u00023¼VÈ",
+            "questionAnswered": true,
+            "sessionId": 17.0,
+            "questionId": -29.0
+        },
+        {
+            "questionVotes": 14.0,
+            "questionText": "8{,",
+            "questionAnswered": false,
+            "sessionId": -18.0,
+            "questionId": 21.0
+        },
+        {
+            "questionVotes": -17.0,
+            "questionText": "Rià\u0005X&fcZ",
+            "questionAnswered": false,
+            "sessionId": 30.0,
+            "questionId": -5.0
+        },
+        {
+            "questionVotes": -25.0,
+            "questionText": "",
+            "questionAnswered": true,
+            "sessionId": 14.0,
+            "questionId": 11.0
+        },
+        {
+            "questionVotes": -21.0,
+            "questionText": "³×K,ÃÝå6w,ÂV8gJ1",
+            "questionAnswered": false,
+            "sessionId": -3.0,
+            "questionId": 10.0
+        },
+        {
+            "questionVotes": 11.0,
+            "questionText": "ÏQ\núþC88GiF",
+            "questionAnswered": true,
+            "sessionId": 26.0,
+            "questionId": 14.0
+        },
+        {
+            "questionVotes": 11.0,
+            "questionText": "1\u001d\u0004U_u\u0018ß=\u0004\u0015Vªïvt1Y%\u0002yB",
+            "questionAnswered": true,
+            "sessionId": 7.0,
+            "questionId": 13.0
+        },
+        {
+            "questionVotes": 23.0,
+            "questionText": "øÅ]",
+            "questionAnswered": false,
+            "sessionId": -21.0,
+            "questionId": -30.0
+        },
+        {
+            "questionVotes": -27.0,
+            "questionText": "d£,S\r",
+            "questionAnswered": true,
+            "sessionId": 28.0,
+            "questionId": 4.0
+        },
+        {
+            "questionVotes": 11.0,
+            "questionText": "Í\u0013aoo\u000cåc |wMfÒ\nÅrfM3bW&\r/]7",
+            "questionAnswered": false,
+            "sessionId": 7.0,
+            "questionId": -15.0
+        },
+        {
+            "questionVotes": -13.0,
+            "questionText": ">ùì",
+            "questionAnswered": false,
+            "sessionId": -12.0,
+            "questionId": 4.0
+        },
+        {
+            "questionVotes": 1.0,
+            "questionText": "WÍ©RqPci7\u0013pÐxkVyTsK»èS)",
+            "questionAnswered": true,
+            "sessionId": 25.0,
+            "questionId": -16.0
+        },
+        {
+            "questionVotes": -11.0,
+            "questionText": "\u0014\u001arÚ1$=mezpg\"c¯",
+            "questionAnswered": false,
+            "sessionId": -9.0,
+            "questionId": 16.0
+        },
+        {
+            "questionVotes": 19.0,
+            "questionText": "\u0007#\u0018¸\n\u0018h\u001c×\rk·\u0013Za7\u0007\u0018¼}gG\u001f",
+            "questionAnswered": true,
+            "sessionId": -4.0,
+            "questionId": 24.0
+        },
+        {
+            "questionVotes": 2.0,
+            "questionText": "\u001c\u0017ó",
+            "questionAnswered": true,
+            "sessionId": -11.0,
+            "questionId": -29.0
+        },
+        {
+            "questionVotes": -18.0,
+            "questionText": "ûxÔ?XbXpdûÙ\u000e§\u000b\" A=Xy±QM\u000c\u001d",
+            "questionAnswered": true,
+            "sessionId": -18.0,
+            "questionId": 17.0
+        },
+        {
+            "questionVotes": -6.0,
+            "questionText": "{9s^]÷\u001b\u001e~`\rP",
+            "questionAnswered": false,
+            "sessionId": 25.0,
+            "questionId": 14.0
+        },
+        {
+            "questionVotes": -10.0,
+            "questionText": "\u0005)t\u0001LId4°",
+            "questionAnswered": true,
+            "sessionId": -12.0,
+            "questionId": 23.0
+        },
+        {
+            "questionVotes": -27.0,
+            "questionText": "",
+            "questionAnswered": true,
+            "sessionId": -12.0,
+            "questionId": -8.0
+        },
+        {
+            "questionVotes": -18.0,
+            "questionText": "<\u0014¯j\u0005T\u0019\u000c\u0015qj\u0017\u0001\u0001+S÷",
+            "questionAnswered": false,
+            "sessionId": -27.0,
+            "questionId": 13.0
+        },
+        {
+            "questionVotes": 27.0,
+            "questionText": "æ\u000c>sö\u001c¾½6AÞÏ\u000e\n.Bùi^±V",
+            "questionAnswered": false,
+            "sessionId": -26.0,
+            "questionId": -21.0
+        },
+        {
+            "questionVotes": 20.0,
+            "questionText": "Wï",
+            "questionAnswered": true,
+            "sessionId": 21.0,
+            "questionId": -20.0
+        },
+        {
+            "questionVotes": 20.0,
+            "questionText": "\tq\nnh\nB]>R\r²V\u001fc\rJî\u0013m\u000bqÌj¯É",
+            "questionAnswered": true,
+            "sessionId": -28.0,
+            "questionId": 16.0
+        },
+        {
+            "questionVotes": -2.0,
+            "questionText": "'\u001d\u000b\u0008Ã'5q\u0015@n\u0002822\n",
+            "questionAnswered": false,
+            "sessionId": 26.0,
+            "questionId": -13.0
+        },
+        {
+            "questionVotes": 29.0,
+            "questionText": "$\u0011²tjE\u0010âÖQ ®I]",
+            "questionAnswered": true,
+            "sessionId": 7.0,
+            "questionId": -10.0
+        },
+        {
+            "questionVotes": 12.0,
+            "questionText": "\u0014è\u0013:µ­\u000e@S\u0008\u000ePî",
+            "questionAnswered": false,
+            "sessionId": -11.0,
+            "questionId": -8.0
+        },
+        {
+            "questionVotes": 10.0,
+            "questionText": "!2qcV­s\u0005ÆO8gëxZq£\u0007,",
+            "questionAnswered": true,
+            "sessionId": -16.0,
+            "questionId": -4.0
+        },
+        {
+            "questionVotes": 11.0,
+            "questionText": "3[¶bìW\u0008\u001bu\u000e\u0010R",
+            "questionAnswered": false,
+            "sessionId": -2.0,
+            "questionId": -12.0
+        },
+        {
+            "questionVotes": -16.0,
+            "questionText": "'Q°\u0018",
+            "questionAnswered": true,
+            "sessionId": 3.0,
+            "questionId": 28.0
+        },
+        {
+            "questionVotes": -22.0,
+            "questionText": "}ÚX`K°NðéM\u001dDÏtnA\rÂ«w§3 *vO",
+            "questionAnswered": true,
+            "sessionId": -21.0,
+            "questionId": -8.0
+        },
+        {
+            "questionVotes": 16.0,
+            "questionText": "",
+            "questionAnswered": true,
+            "sessionId": -26.0,
+            "questionId": -29.0
+        },
+        {
+            "questionVotes": -11.0,
+            "questionText": "*Y®,pù\u001a`\u000c:",
+            "questionAnswered": true,
+            "sessionId": 6.0,
+            "questionId": -5.0
+        },
+        {
+            "questionVotes": 24.0,
+            "questionText": "RgNSâ&NH\u0008",
+            "questionAnswered": true,
+            "sessionId": -28.0,
+            "questionId": 26.0
+        },
+        {
+            "questionVotes": -28.0,
+            "questionText": "\u001c\u000c\u001cf7ê9<Nß+f3½\u000c:\u0002\u0005\u0007ZuM(§\tÞ",
+            "questionAnswered": true,
+            "sessionId": -13.0,
+            "questionId": 17.0
+        },
+        {
+            "questionVotes": 29.0,
+            "questionText": "08=ùH xkÁj\u0007",
+            "questionAnswered": true,
+            "sessionId": -21.0,
+            "questionId": 1.0
+        },
+        {
+            "questionVotes": -27.0,
+            "questionText": "]Ú\n\u001c,",
+            "questionAnswered": true,
+            "sessionId": -24.0,
+            "questionId": 30.0
+        },
+        {
+            "questionVotes": 3.0,
+            "questionText": "\u001eS6vs{9\u0011P\u0003î¿KP\u0006",
+            "questionAnswered": false,
+            "sessionId": -3.0,
+            "questionId": 24.0
+        },
+        {
+            "questionVotes": -10.0,
+            "questionText": "¨þ\u0014W\u001d\u0015p",
+            "questionAnswered": true,
+            "sessionId": -9.0,
+            "questionId": 16.0
+        },
+        {
+            "questionVotes": 9.0,
+            "questionText": "\u001cp0",
+            "questionAnswered": true,
+            "sessionId": -21.0,
+            "questionId": -21.0
+        },
+        {
+            "questionVotes": -19.0,
+            "questionText": "¥P~\u001fý\u000fG]£ûy`O(",
+            "questionAnswered": false,
+            "sessionId": 8.0,
+            "questionId": -1.0
+        },
+        {
+            "questionVotes": -24.0,
+            "questionText": "ê9å\\ªwYÂÚA\"òè\u000cÇÞIX2XzsdS=0",
+            "questionAnswered": true,
+            "sessionId": 26.0,
+            "questionId": 0.0
+        },
+        {
+            "questionVotes": -1.0,
+            "questionText": "µ Tt\u001b\u0005Õ%bFMT\u0003Z=Åtóh\u001dEx1\u000c",
+            "questionAnswered": false,
+            "sessionId": 0.0,
+            "questionId": -16.0
+        },
+        {
+            "questionVotes": -10.0,
+            "questionText": "l>2À ª\u001aC¯t\u0006;",
+            "questionAnswered": true,
+            "sessionId": 9.0,
+            "questionId": 11.0
+        },
+        {
+            "questionVotes": -11.0,
+            "questionText": "7É",
+            "questionAnswered": false,
+            "sessionId": 28.0,
+            "questionId": 21.0
+        },
+        {
+            "questionVotes": -27.0,
+            "questionText": "5=¿F\u0001\u0018eú'$4q\u000f¤\u001e\u0006\u000exW|\u0019Ûn",
+            "questionAnswered": true,
+            "sessionId": -12.0,
+            "questionId": -27.0
+        }
+    ]
+}

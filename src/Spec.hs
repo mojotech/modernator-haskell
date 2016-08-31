@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts, GADTs, TypeOperators, DataKinds, FlexibleInstances, KindSignatures, ScopedTypeVariables #-}
 module Main where
 
 import Servant.Swagger.Test
@@ -7,10 +8,27 @@ import Test.QuickCheck
 import Test.QuickCheck.Instances ()
 import Modernator.RequestBodies
 import Modernator.Types
+import Servant.Aeson.GenericSpecs (apiRoundtripSpecs, apiGoldenSpecs)
+import Servant.API
+import Servant.Aeson.Internal
+import GHC.TypeLits
+import Data.Proxy
+
+-- These instances are necessary because they're missing from the servant-aeson-specs library
+instance MkTypeSpecs a => HasGenericSpecs (Verb (method :: StdMethod) returnStatus contentTypes (Headers hs a)) where
+    collectRoundtripSpecs _ = mkTypeSpecs (Proxy :: Proxy a)
+
+instance HasGenericSpecs rest  => HasGenericSpecs (AuthProtect (sym :: Symbol) :> rest) where
+    collectRoundtripSpecs _ = collectRoundtripSpecs (Proxy :: Proxy rest)
+
+instance HasGenericSpecs rest  => HasGenericSpecs (Capture (sym :: Symbol) x :> rest) where
+    collectRoundtripSpecs _ = collectRoundtripSpecs (Proxy :: Proxy rest)
 
 spec :: Spec
 spec = describe "Swagger" $ do
   context "ToJSON matches ToSchema" $ validateEveryToJSON basicAPI
+  context "ToJSON . FromJSON $ x = x" $ apiRoundtripSpecs basicAPI
+  context "JSON hasn't changed" $ apiGoldenSpecs basicAPI
 
 main = hspec spec
 

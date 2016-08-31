@@ -16,6 +16,7 @@ import Data.Serialize (Serialize)
 -- | For custom Swagger Schemas
 import Data.Aeson hiding ((.=))
 import qualified Data.Aeson as Aeson
+import qualified Data.Aeson.Types as Aeson
 import Data.Swagger.Schema
 import Control.Lens hiding (Indexable)
 import Data.Swagger.Internal
@@ -56,6 +57,15 @@ instance ToSchema Question where
                             , ("questionAnswered", answeredSchema)
                             ]
             & required .~ ["questionId", "sessionId", "questionVotes", "questionText", "questionAnswered"]
+instance FromJSON Question where
+    parseJSON (Aeson.Object v) =
+        Question <$>
+            v Aeson..: "questionId" <*>
+            v Aeson..: "sessionId" <*>
+            v Aeson..: "questionVotes" <*>
+            v Aeson..: "questionText" <*>
+            v Aeson..: "questionAnswered"
+    parseJSON wat = Aeson.typeMismatch "Question" wat
 instance ToJSON Question where
     toJSON (Question qId sId votes text answered) =
         object [ "questionId" Aeson..= qId
@@ -69,7 +79,7 @@ instance ToJSON Question where
 -- perform arithmetic and other numeric operations on it, as it's not a number
 -- in our domain, it's an identifier.
 newtype QuestionId = QuestionId Integer
-    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, Generic)
+    deriving (Show, FromHttpApiData, ToJSON, FromJSON, Enum, Eq, Ord, Generic)
 instance ToParamSchema QuestionId
 instance ToSchema QuestionId
 
@@ -78,7 +88,7 @@ instance ToSchema QuestionId
 -- domain, votes can only be incremented, which is functionality provided by
 -- the Enum typeclass.
 newtype Votes = Votes Integer
-    deriving (Show, ToJSON, Enum, Eq, Ord, Generic)
+    deriving (Show, ToJSON, Enum, Eq, Ord, Generic, FromJSON)
 instance ToSchema Votes
 
 -- | A question's answered status is conceptually a boolean, but we use a more
@@ -89,6 +99,10 @@ instance ToSchema Answered where
     declareNamedSchema _ = do
         boolSchema <- declareSchema (Proxy :: Proxy Bool)
         return $ NamedSchema (Just "Answered") boolSchema
+instance FromJSON Answered where
+    parseJSON (Aeson.Bool True) = pure Answered
+    parseJSON (Aeson.Bool False) = pure NotAnswered
+    parseJSON wat = Aeson.typeMismatch "Answered" wat
 instance ToJSON Answered where
     toJSON Answered = toJSON True
     toJSON NotAnswered = toJSON False
@@ -110,6 +124,14 @@ instance ToSchema AnswererId
 
 data Answerer = Answerer AnswererId SessionId Text
     deriving (Show, Generic, Eq, Ord)
+
+instance FromJSON Answerer where
+    parseJSON (Aeson.Object v) =
+        Answerer <$>
+            v Aeson..: "answererId" <*>
+            v Aeson..: "sessionId" <*>
+            v Aeson..: "name"
+    parseJSON wat = Aeson.typeMismatch "Answerer" wat
 
 instance ToJSON Answerer where
     toJSON (Answerer aId sId name) =
@@ -158,6 +180,13 @@ instance ToSchema QuestionerId
 
 data Questioner = Questioner QuestionerId SessionId (Maybe Text)
     deriving (Show, Generic, Eq, Ord)
+instance FromJSON Questioner where
+    parseJSON (Aeson.Object v) =
+        Questioner <$>
+            v Aeson..: "questionerId" <*>
+            v Aeson..: "sessionId" <*>
+            v Aeson..: "name"
+    parseJSON wat = Aeson.typeMismatch "Questioner" wat
 instance ToJSON Questioner where
     toJSON (Questioner qId sId name) =
         object ["questionerId" Aeson..= qId, "sessionId" Aeson..= sId, "name" Aeson..= name]
