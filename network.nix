@@ -18,7 +18,6 @@
     {
       environment.systemPackages = with pkgs; [ screen htop app ];
 
-      # Only open up port 22 for ssh, this isn't a webserver...
       networking.firewall.enable = true;
       networking.firewall.allowedTCPPorts = [ 22 80 8080 ];
       networking.firewall.allowPing = true;
