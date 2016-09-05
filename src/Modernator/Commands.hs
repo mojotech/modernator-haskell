@@ -139,7 +139,6 @@ deleteSession answererId sessionId = do
         session <- hoistEither $ maybe (Left SessionNotFound) Right sessionM
         -- authorization
         hoistEither $ authorized answerer session
-        -- TODO make sure we delete all questions linked to that session as well
         return app { sessions = Ix.deleteIx sessionId (sessions app)
                    , answerers = Ix.deleteIx sessionId (answerers app)
                    , questioners = Ix.getLT sessionId (questioners app) Ix.||| Ix.getGT sessionId (questioners app)
