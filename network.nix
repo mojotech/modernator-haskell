@@ -43,13 +43,19 @@
         };
       };
 
-      # And lastly we ensure the user we run our application as is created
+      # And lastly we ensure the user and group we run our application as is created
       users.extraUsers = {
         modernator = {
           home = "/home/modernator";
           createHome = true;
           shell = "/bin/sh";
           password = "password";
+        };
+      };
+
+      users.extraGroups = {
+        modernator = {
+          members = [ "modernator" ];
         };
       };
     };
