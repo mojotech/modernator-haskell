@@ -67,5 +67,6 @@ command.
 * GHC 7.10.2
 
 # Helpful Links
-[Servant Documentation](http://haskell-servant.readthedocs.io/en/stable/)
 
+* [Servant Documentation](http://haskell-servant.readthedocs.io/en/stable/)
+* [AcidState Documentatoin](http://acid-state.seize.it/)
