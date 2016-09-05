@@ -20,6 +20,7 @@ import Data.Swagger.ParamSchema (ToParamSchema, toParamSchema)
 
 type instance AuthServerData (AuthProtect "answerer-auth") = AnswererCookie
 type instance AuthServerData (AuthProtect "questioner-auth") = QuestionerCookie
+type instance AuthServerData (AuthProtect "any-auth") = AnyCookie
 
 type SessionsAPI =
     ReqBody '[JSON] SessionReq :> Post '[JSON] (Headers '[Header "Set-Cookie" ByteString] Answerer)
@@ -29,6 +30,7 @@ type SessionsAPI =
     :<|> AuthProtect "questioner-auth" :> Capture "session_id" SessionId :> "questions" :> "ask" :> ReqBody '[JSON] QuestionReq :> Post '[JSON] Question
     :<|> AuthProtect "questioner-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "upvote" :> Post '[JSON] Question
     :<|> AuthProtect "answerer-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "answer" :> Post '[JSON] Question
+    :<|> AuthProtect "any-auth" :> Capture "session_id" SessionId :> Get '[JSON] FullSession
 
 sessionsAPI :: Proxy SessionsAPI
 sessionsAPI = Proxy
@@ -37,7 +39,7 @@ sessionsServer ::
     (AnswererCookie -> Answerer -> Handler (Headers '[Header "Set-Cookie" ByteString] Answerer)) ->
     (QuestionerCookie -> Questioner -> Handler (Headers '[Header "Set-Cookie" ByteString] Questioner)) ->
     AcidState App -> Server SessionsAPI
-sessionsServer addAnswererSession addQuestionerSession app = newSessionH :<|> lockSessionH :<|> deleteSessionH :<|> joinSessionH :<|> askQH :<|> upvoteQH :<|> answerQH
+sessionsServer addAnswererSession addQuestionerSession app = newSessionH :<|> lockSessionH :<|> deleteSessionH :<|> joinSessionH :<|> askQH :<|> upvoteQH :<|> answerQH :<|> fullSessionH
     where
         newSessionH req = do
             answerer@(Answerer id _ _) <- liftIO . newSessionHandler app $ req
@@ -50,6 +52,7 @@ sessionsServer addAnswererSession addQuestionerSession app = newSessionH :<|> lo
         askQH cookie sessionId = withError <=< liftIO . askQuestionHandler app cookie sessionId
         upvoteQH cookie sessionId = withError <=< liftIO . upvoteQuestionHandler app cookie sessionId
         answerQH cookie sessionId = withError <=< fmap (fmap unitToNoContent) . liftIO . answerQuestionHandler app cookie sessionId
+        fullSessionH cookie = withError <=< liftIO . fullSessionHandler app cookie
 
 newSessionHandler :: AcidState App -> SessionReq -> IO Answerer
 newSessionHandler app (SessionReq name expiration answererName) = update app (NewSession name expiration answererName)
@@ -71,6 +74,9 @@ upvoteQuestionHandler app (QuestionerCookie questionerId) sessionId questionId =
 
 answerQuestionHandler :: AcidState App -> AnswererCookie -> SessionId -> QuestionId -> IO (Either AppError Question)
 answerQuestionHandler app (AnswererCookie  answererId) sessionId questionId = update app (AnswerQuestion questionId sessionId answererId)
+
+fullSessionHandler :: AcidState App -> AnyCookie -> SessionId -> IO (Either AppError FullSession)
+fullSessionHandler app cookie sessionId = query app (GetFullSession (anyCookieToIds cookie) sessionId)
 
 instance ToParamSchema ByteString where
     toParamSchema _ = toParamSchema (Proxy :: Proxy String)

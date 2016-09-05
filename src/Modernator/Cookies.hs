@@ -27,3 +27,8 @@ instance ToJSON QuestionerCookie
 instance FromJSON QuestionerCookie
 instance ToParamSchema QuestionerCookie
 instance Serialize QuestionerCookie
+
+type AnyCookie = Either AnswererCookie QuestionerCookie
+
+anyCookieToIds (Left a) = Left $ answererId a
+anyCookieToIds (Right q) = Right $ questionerId q

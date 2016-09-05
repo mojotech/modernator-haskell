@@ -166,4 +166,30 @@ joinSession sessionId name = do
 getState :: Query App App
 getState = ask
 
-$(makeAcidic ''App ['addQuestion, 'upvoteQuestion, 'answerQuestion, 'newSession, 'lockSession, 'getState, 'deleteSession, 'joinSession])
+doAuthorizeAnswerer :: App -> SessionId -> AnswererId -> Either AppError ()
+doAuthorizeAnswerer app sId aId = do
+    let answererM = Ix.getOne (Ix.getEQ aId (answerers app))
+        sessionM = Ix.getOne (Ix.getEQ sId (sessions app))
+    answerer <- maybe (Left AnswererNotFound) Right answererM
+    session <- maybe (Left SessionNotFound) Right sessionM
+    authorized answerer session
+    return ()
+
+doAuthorizeQuestioner :: App -> SessionId -> QuestionerId -> Either AppError ()
+doAuthorizeQuestioner app sId qId = do
+    let questionerM = Ix.getOne (Ix.getEQ qId (questioners app))
+        sessionM = Ix.getOne (Ix.getEQ sId (sessions app))
+    questioner <- maybe (Left QuestionerNotFound) Right questionerM
+    session <- maybe (Left SessionNotFound) Right sessionM
+    joined questioner session
+    return ()
+
+getFullSession :: Either AnswererId QuestionerId -> SessionId -> Query App (Either AppError FullSession)
+getFullSession authId sId = do
+    app <- ask
+    let authed = either (doAuthorizeAnswerer app sId) (doAuthorizeQuestioner app sId) authId
+    runEitherT $ do
+        hoistEither $ authed
+        hoistEither $ maybe (Left SessionNotFound) Right $ getFullSessionFromApp app sId
+
+$(makeAcidic ''App ['addQuestion, 'upvoteQuestion, 'answerQuestion, 'newSession, 'lockSession, 'getState, 'deleteSession, 'joinSession, 'getFullSession])

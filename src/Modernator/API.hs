@@ -57,3 +57,6 @@ instance (HasSwagger sub) => HasSwagger (AuthProtect "answerer-auth" :> sub) whe
 
 instance (HasSwagger sub) => HasSwagger (AuthProtect "questioner-auth" :> sub) where
     toSwagger _ = toSwagger (Proxy :: Proxy (Servant.Header "Cookie" ByteString :> sub))
+
+instance (HasSwagger sub) => HasSwagger (AuthProtect "any-auth" :> sub) where
+    toSwagger _ = toSwagger (Proxy :: Proxy (Servant.Header "Cookie" ByteString :> sub))

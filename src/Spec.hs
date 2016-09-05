@@ -67,3 +67,12 @@ instance Arbitrary Answerer where
 
 instance Arbitrary AnswererId where
     arbitrary = AnswererId <$> arbitrary
+
+instance Arbitrary FullSession where
+    arbitrary = FullSession <$> arbitrary <*> arbitrary <*> arbitrary <*> arbitrary
+
+instance Arbitrary Session where
+    arbitrary = Session <$> arbitrary <*> arbitrary <*> arbitrary <*> arbitrary
+
+instance Arbitrary LockedStatus where
+    arbitrary = arbitraryBoundedEnum

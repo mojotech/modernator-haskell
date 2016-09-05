@@ -18,5 +18,6 @@ $(deriveSafeCopy 1 'base ''SessionId)
 $(deriveSafeCopy 1 'base ''LockedStatus)
 $(deriveSafeCopy 1 'base ''Answerer)
 $(deriveSafeCopy 1 'base ''AnswererId)
+$(deriveSafeCopy 1 'base ''FullSession)
 
 $(deriveSafeCopy 1 'base ''App)

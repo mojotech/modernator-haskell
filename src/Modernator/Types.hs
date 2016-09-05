@@ -1,9 +1,10 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving, DeriveGeneric, FlexibleInstances, OverloadedStrings, OverloadedLists #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving, DeriveGeneric, FlexibleInstances, OverloadedStrings, OverloadedLists, TemplateHaskell #-}
 module Modernator.Types where
 
 import Data.Time.Clock (UTCTime)
 import Data.Text (Text)
 import Data.IxSet hiding (Proxy)
+import qualified Data.IxSet as Ix
 
 -- | GHC.Generics used for deriving ToJSON instances
 import GHC.Generics (Generic)
@@ -161,11 +162,45 @@ instance ToParamSchema SessionId
 instance ToSchema SessionId
 
 data LockedStatus = Locked | Unlocked
-    deriving (Show, Generic, Eq, Ord)
+    deriving (Show, Generic, Eq, Ord, Bounded, Enum)
 instance ToJSON LockedStatus
+instance FromJSON LockedStatus
+instance ToSchema LockedStatus
 
 data Session = Session SessionId Text (Maybe UTCTime) LockedStatus
     deriving (Show, Eq, Ord)
+
+instance ToSchema Session where
+    declareNamedSchema _ = do
+        sessionIdSchema <- declareSchemaRef (Proxy :: Proxy SessionId)
+        textSchema <- declareSchemaRef (Proxy :: Proxy Text)
+        timeSchema <- declareSchemaRef (Proxy :: Proxy UTCTime)
+        lockedSchema <- declareSchemaRef (Proxy :: Proxy LockedStatus)
+        return $ NamedSchema (Just "Session") $ mempty
+            & type_ .~ SwaggerObject
+            & properties .~ [ ("sessionId", sessionIdSchema)
+                            , ("name", textSchema)
+                            , ("createdAt", timeSchema)
+                            , ("locked", lockedSchema)
+                            ]
+            & required .~ [ "sessionId", "name", "locked"]
+
+instance FromJSON Session where
+    parseJSON (Aeson.Object v) =
+        Session <$>
+            v Aeson..: "sessionId" <*>
+            v Aeson..: "name" <*>
+            v Aeson..: "createdAt" <*>
+            v Aeson..: "locked"
+    parseJSON wat = Aeson.typeMismatch "Session" wat
+instance ToJSON Session where
+    toJSON (Session sId name created locked) =
+        object
+            [ "sessionId" Aeson..= sId
+            , "name" Aeson..= name
+            , "createdAt" Aeson..= created
+            , "locked" Aeson..= locked
+            ]
 
 type SessionDB = IxSet Session
 instance Indexable Session where
@@ -245,3 +280,35 @@ upvote (Question id sid v t a) = Question id sid (succ v) t a
 -- constraint might need tightening.
 answer :: Question -> Question
 answer (Question id sid v t _) = Question id sid v t Answered
+
+data FullSession = FullSession
+    { fullSession_session :: Session
+    , fullSession_answerer :: Answerer
+    , fullSession_questioners :: [Questioner]
+    , fullSession_questions :: [Question]
+    }
+    deriving (Show, Eq)
+
+$(Aeson.deriveJSON Aeson.defaultOptions{ Aeson.fieldLabelModifier = drop 12 } ''FullSession)
+instance ToSchema FullSession where
+    declareNamedSchema _ = do
+        sessionSchema <- declareSchemaRef (Proxy :: Proxy Session)
+        answererSchema <- declareSchemaRef (Proxy :: Proxy Answerer)
+        questionersSchema <- declareSchemaRef (Proxy :: Proxy [Questioner])
+        questionsSchema <- declareSchemaRef (Proxy :: Proxy [Question])
+        return $ NamedSchema (Just "FullSession") $ mempty
+            & type_ .~ SwaggerObject
+            & properties .~ [ ("session", sessionSchema)
+                            , ("answerer", answererSchema)
+                            , ("questions", questionsSchema)
+                            , ("questioners", questionersSchema)
+                            ]
+            & required .~ [ "session", "answerer", "questions", "questioners" ]
+
+getFullSessionFromApp :: App -> SessionId -> Maybe FullSession
+getFullSessionFromApp  app sessionId =
+    FullSession
+        <$> (Ix.getOne . Ix.getEQ sessionId . sessions $ app)
+        <*> (Ix.getOne . Ix.getEQ sessionId . answerers $ app)
+        <*> pure (Ix.toList . Ix.getEQ sessionId . questioners $ app)
+        <*> pure (Ix.toList . Ix.getEQ sessionId . questions $ app)

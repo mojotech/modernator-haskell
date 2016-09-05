@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
 module Modernator.App where
 
 import Modernator.Types
@@ -19,7 +19,8 @@ app rng aKey qKey state =
     serveWithContext
         api
         ((defaultAuthHandler answererSettings aKey :: AuthHandler Request AnswererCookie) :.
-         (defaultAuthHandler questionerSettings qKey :: AuthHandler Request QuestionerCookie) :. EmptyContext)
+         (defaultAuthHandler questionerSettings qKey :: AuthHandler Request QuestionerCookie) :.
+         (anyAuthHandler (answererSettings, aKey) (questionerSettings, qKey) :: AuthHandler Request AnyCookie) :. EmptyContext)
         (server rng aKey qKey answererSettings questionerSettings state)
     where
         -- cookies are valid for 1 week
@@ -40,3 +41,9 @@ commonAppSetup state = do
     aKey <- mkServerKey 16 Nothing
     qKey <- mkServerKey 16 Nothing
     return $ app rng aKey qKey state
+
+anyAuthHandler :: (AuthCookieSettings, ServerKey) -> (AuthCookieSettings, ServerKey) -> AuthHandler Request AnyCookie
+anyAuthHandler (aSettings, aKey) (qSettings, qKey) = mkAuthHandler $ \ request -> do
+    (asession :: Maybe (Either AnswererCookie QuestionerCookie)) <- liftIO (fmap (fmap Left) $ getSession aSettings aKey request)
+    (qsession :: Maybe (Either AnswererCookie QuestionerCookie)) <- liftIO (fmap (fmap Right) $ getSession qSettings qKey request)
+    maybe (throwError err403) return (asession <|> qsession)
