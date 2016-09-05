@@ -28,7 +28,7 @@ type SessionsAPI =
     :<|> ReqBody '[JSON] JoinReq :> Capture "session_id" SessionId :> "join" :> Post '[JSON] (Headers '[Header "Set-Cookie" ByteString] Questioner)
     :<|> AuthProtect "questioner-auth" :> Capture "session_id" SessionId :> "questions" :> "ask" :> ReqBody '[JSON] QuestionReq :> Post '[JSON] Question
     :<|> AuthProtect "questioner-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "upvote" :> Post '[JSON] Question
-    :<|> AuthProtect "answerer-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "answer" :> PostNoContent '[PlainText] NoContent
+    :<|> AuthProtect "answerer-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "answer" :> Post '[JSON] Question
 
 sessionsAPI :: Proxy SessionsAPI
 sessionsAPI = Proxy
@@ -69,7 +69,7 @@ askQuestionHandler app (QuestionerCookie questionerId) sessionId (QuestionReq qu
 upvoteQuestionHandler :: AcidState App -> QuestionerCookie -> SessionId -> QuestionId -> IO (Either AppError Question)
 upvoteQuestionHandler app (QuestionerCookie questionerId) sessionId questionId = update app (UpvoteQuestion questionId sessionId questionerId)
 
-answerQuestionHandler :: AcidState App -> AnswererCookie -> SessionId -> QuestionId -> IO (Either AppError ())
+answerQuestionHandler :: AcidState App -> AnswererCookie -> SessionId -> QuestionId -> IO (Either AppError Question)
 answerQuestionHandler app (AnswererCookie  answererId) sessionId questionId = update app (AnswerQuestion questionId sessionId answererId)
 
 instance ToParamSchema ByteString where

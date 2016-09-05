@@ -62,24 +62,25 @@ upvoteQuestion questionId sessionId questionerId = do
             return $ Right question
         Left e -> return $ Left e
 
-answerQuestion :: QuestionId -> SessionId -> AnswererId -> Update App (Either AppError ())
-answerQuestion questionId sessionId answererId= do
+answerQuestion :: QuestionId -> SessionId -> AnswererId -> Update App (Either AppError Question)
+answerQuestion questionId sessionId answererId = do
     app <- get
     let questionM = Ix.getOne (Ix.getEQ questionId (questions app))
         sessionM = Ix.getOne (Ix.getEQ sessionId (sessions app))
         answererM = Ix.getOne (Ix.getEQ answererId (answerers app))
-    newState  <- runEitherT $ do
+    newQuestion <- runEitherT $ do
         answerer <- hoistEither $ maybe (Left AnswererNotFound) Right answererM
         session <- hoistEither $ maybe (Left SessionNotFound) Right sessionM
         question <- hoistEither $ maybe (Left QuestionNotFound) Right questionM
         hoistEither $ questionInSession question session
         hoistEither $ authorized answerer session
         hoistEither $ sessionUnlocked session
-        return app { questions = Ix.updateIx questionId (answer question) (questions app) }
-    case newState of
-        Right s -> do
-            put s
-            return $ Right ()
+        return $ answer question
+    case newQuestion of
+        Right question -> do
+            let newState = app { questions = Ix.updateIx questionId question (questions app) }
+            put newState
+            return $ Right question
         Left e -> return $ Left e
 
 newSession :: Text -> Maybe UTCTime -> Text -> Update App Answerer
