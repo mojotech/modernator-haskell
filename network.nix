@@ -12,7 +12,7 @@
     { config, pkgs, ... }:
     let
       # We import our custom packages from ./default passing pkgs as argument
-      app = import ./default.nix { nixpkgs = pkgs; };
+      app = import ./default.nix {};
       port = "8080";
     in
     {
