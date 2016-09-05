@@ -189,7 +189,7 @@ instance ToSchema Session where
             & type_ .~ SwaggerObject
             & properties .~ [ ("sessionId", sessionIdSchema)
                             , ("name", textSchema)
-                            , ("createdAt", timeSchema)
+                            , ("expiresAt", timeSchema)
                             , ("locked", lockedSchema)
                             ]
             & required .~ [ "sessionId", "name", "locked"]
@@ -199,15 +199,15 @@ instance FromJSON Session where
         Session <$>
             v Aeson..: "sessionId" <*>
             v Aeson..: "name" <*>
-            v Aeson..: "createdAt" <*>
+            v Aeson..: "expiresAt" <*>
             v Aeson..: "locked"
     parseJSON wat = Aeson.typeMismatch "Session" wat
 instance ToJSON Session where
-    toJSON (Session sId name created locked) =
+    toJSON (Session sId name expires locked) =
         object
             [ "sessionId" Aeson..= sId
             , "name" Aeson..= name
-            , "createdAt" Aeson..= created
+            , "expiresAt" Aeson..= expires
             , "locked" Aeson..= locked
             ]
 
