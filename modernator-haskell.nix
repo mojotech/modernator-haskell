@@ -2,6 +2,7 @@
 , safecopy, servant, servant-server, stdenv, text, warp, time
 , servant-swagger, swagger2, servant-swagger-ui, either
 , servant-auth-cookie
+, wai-websockets, websockets, stm
 , quickcheck-instances
 , servant-aeson-specs
 , buildTools ? []
@@ -17,6 +18,7 @@ mkDerivation {
     servant-server text warp time
     servant-swagger swagger2 servant-swagger-ui either
     servant-auth-cookie
+    wai-websockets websockets stm
     quickcheck-instances
     servant-aeson-specs
   ];

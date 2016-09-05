@@ -2,6 +2,7 @@
 module Modernator.App where
 
 import Modernator.Types
+import Modernator.Commands
 import Modernator.API
 import Network.Wai (Application)
 import Data.Acid
@@ -12,16 +13,20 @@ import Crypto.Random (drgNew)
 import Data.Default (def)
 import Modernator.Cookies
 import Network.Wai (Request)
+import Control.Concurrent.STM.TVar (newTVarIO, TVar)
+import qualified Data.IxSet as IxSet
+import Control.Applicative ((<|>))
+import Control.Monad.IO.Class (liftIO)
 
 -- | Serve our app
-app :: RandomSource -> ServerKey -> ServerKey -> AcidState App -> Application
-app rng aKey qKey state =
+app :: RandomSource -> ServerKey -> ServerKey -> AcidState App -> TVar SessionChannelDB -> Application
+app rng aKey qKey state sessionChannelDB =
     serveWithContext
         api
         ((defaultAuthHandler answererSettings aKey :: AuthHandler Request AnswererCookie) :.
          (defaultAuthHandler questionerSettings qKey :: AuthHandler Request QuestionerCookie) :.
          (anyAuthHandler (answererSettings, aKey) (questionerSettings, qKey) :: AuthHandler Request AnyCookie) :. EmptyContext)
-        (server rng aKey qKey answererSettings questionerSettings state)
+        (server rng aKey qKey answererSettings questionerSettings state sessionChannelDB)
     where
         -- cookies are valid for 1 week
         -- TODO: I think it's theoretically possible to make these cookies only
@@ -40,7 +45,13 @@ commonAppSetup state = do
     rng <- mkRandomSource drgNew 1000
     aKey <- mkServerKey 16 Nothing
     qKey <- mkServerKey 16 Nothing
-    return $ app rng aKey qKey state
+
+    -- Initialize session channels for existing sessions
+    sessionIds <- fmap (map (\ (Session id _ _ _) -> id) . IxSet.toList . sessions) $ query state GetState
+    channels <- mapM mkSessionChannel sessionIds
+    sessionChannelDB <- newTVarIO $ IxSet.fromList channels
+
+    return $ app rng aKey qKey state sessionChannelDB
 
 anyAuthHandler :: (AuthCookieSettings, ServerKey) -> (AuthCookieSettings, ServerKey) -> AuthHandler Request AnyCookie
 anyAuthHandler (aSettings, aKey) (qSettings, qKey) = mkAuthHandler $ \ request -> do

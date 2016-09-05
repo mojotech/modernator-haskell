@@ -5,6 +5,9 @@ import Data.Time.Clock (UTCTime)
 import Data.Text (Text)
 import Data.IxSet hiding (Proxy)
 import qualified Data.IxSet as Ix
+import Control.Concurrent.STM.TChan (TChan, newBroadcastTChan)
+import Control.Monad.STM (atomically)
+import Control.Concurrent.STM.TVar (TVar, readTVar)
 
 -- | GHC.Generics used for deriving ToJSON instances
 import GHC.Generics (Generic)
@@ -18,12 +21,16 @@ import Data.Serialize (Serialize)
 import Data.Aeson hiding ((.=))
 import qualified Data.Aeson as Aeson
 import qualified Data.Aeson.Types as Aeson
-import Data.Swagger.Schema
+import qualified Data.Aeson.TH as Aeson
+import Data.Aeson.TH (deriveJSON, defaultOptions)
+import Data.Swagger.Schema hiding (SchemaOptions)
 import Control.Lens hiding (Indexable)
 import Data.Swagger.Internal
 import Data.Swagger.Lens
 import Data.Monoid (mempty)
 import Data.Proxy
+import Control.Monad (fail)
+import Control.Monad.STM (atomically)
 
 -- | Keep track of any domain specific exceptions so we can translate them to
 -- generic HTTP exceptions later.
@@ -35,9 +42,11 @@ data AppError = QuestionNotFound
               | QuestionerNotFound
               | SessionNotFound
               | SessionAlreadyLocked
-    deriving (Show, Generic, Eq, Ord)
+    deriving (Show, Generic, Eq, Ord, Enum, Bounded)
 
+instance FromJSON AppError
 instance ToJSON AppError
+instance ToSchema AppError
 
 -- | A question has an id, number of votes, text, and answered status
 data Question = Question QuestionId SessionId Votes Text Answered
@@ -312,3 +321,85 @@ getFullSessionFromApp  app sessionId =
         <*> (Ix.getOne . Ix.getEQ sessionId . answerers $ app)
         <*> pure (Ix.toList . Ix.getEQ sessionId . questioners $ app)
         <*> pure (Ix.toList . Ix.getEQ sessionId . questions $ app)
+
+-- | Our Websocket message type. SessionExceptionMessages should be more specific than AppError
+data SessionMessage = SessionLocked | SessionExpired | SessionClosed | SessionExceptionMessage AppError | QuestionAsked Question | QuestionUpvoted Question | QuestionAnswered Question | SessionState FullSession
+    deriving (Show, Eq, Generic)
+instance ToSchema SessionMessage where
+    declareNamedSchema _ = do
+        answererSchema <- declareSchemaRef (Proxy :: Proxy Answerer)
+        exceptionSchema <- declareSchemaRef (Proxy :: Proxy AppError)
+        questionSchema <- declareSchemaRef (Proxy :: Proxy Question)
+        sessionSchema <- declareSchemaRef (Proxy :: Proxy FullSession)
+        let tagSchema = mempty
+                & enum_ .~ Just [ String "SessionLocked"
+                                , String "SessionExpired"
+                                , String "SessionClosed"
+                                , String "SessionExceptionMessage"
+                                , String "QuestionAsked"
+                                , String "QuestionUpvoted"
+                                , String "QuestionAnswered"
+                                , String "SessionState"
+                                ]
+                & type_ .~ SwaggerString
+        return $ NamedSchema (Just "SessionMessage") $ mempty
+            & type_ .~ SwaggerObject
+            & properties .~ [ ("tag", Inline tagSchema)
+                            , ("answerer", answererSchema)
+                            , ("exception", exceptionSchema)
+                            , ("question", questionSchema)
+                            , ("session", sessionSchema)
+                            ]
+            & required .~ ["tag"]
+            & description .~ (Just "This is a variant type (sum type, discriminated union) representing the possible session messages. The `tag` field determines which fields are additionally present. Unless otherwise specified, only the `tag` field is present. If `tag` is `SessionStarted`, `answerer` is present. If `tag` is `SessionExceptionMessage`, `exception` is present. If `tag` is `QuestionAsked`, `QuestionUpvoted` or `QuestionAnswered`, `question` is present. If `tag` is `SessionState`, `session` is present.")
+
+nullaryObject tag = object [ "tag" Aeson..= (Aeson.String tag) ]
+
+instance ToJSON SessionMessage where
+    toJSON SessionLocked = nullaryObject "SessionLocked"
+    toJSON SessionExpired = nullaryObject "SessionExpired"
+    toJSON SessionClosed = nullaryObject "SessionClosed"
+    toJSON (SessionExceptionMessage e) = object [ "tag" Aeson..= (Aeson.String "SessionExceptionMessage"), "exception" Aeson..= e ]
+    toJSON (QuestionAsked q) = object [ "tag" Aeson..= (Aeson.String "QuestionAsked"), "question" Aeson..= q ]
+    toJSON (QuestionUpvoted q) = object [ "tag" Aeson..= (Aeson.String "QuestionUpvoted"), "question" Aeson..= q ]
+    toJSON (QuestionAnswered q) = object [ "tag" Aeson..= (Aeson.String "QuestionAnswered"), "question" Aeson..= q ]
+    toJSON (SessionState s) = object [ "tag" Aeson..= (Aeson.String "SessionState"), "session" Aeson..= s ]
+
+instance FromJSON SessionMessage where
+    parseJSON (Object o) = do
+        tag <- o .: "tag"
+        case tag of
+            Just (String "SessionLocked") -> pure SessionLocked
+            Just (String "SessionExpired") -> pure SessionExpired
+            Just (String "SessionClosed") -> pure SessionClosed
+            Just (String "SessionExceptionMessage") -> SessionExceptionMessage <$> o .: "exception"
+            Just (String "QuestionAsked") -> QuestionAsked <$> o .: "question"
+            Just (String "QuestionUpvoted") -> QuestionUpvoted <$> o .: "question"
+            Just (String "QuestionAnswered") -> QuestionAnswered <$> o .: "question"
+            Just (String "SessionState") -> SessionState <$> o .: "session"
+            Just wat -> Aeson.typeMismatch "SessionMessage" wat
+            wat -> fail "tag field must be present"
+    parseJSON wat = Aeson.typeMismatch "SessionMessage" wat
+
+mkSessionChannel sessionId = do
+    chan <- atomically newBroadcastTChan
+    return $ SessionChannel (sessionId, chan)
+
+newtype SessionChannel = SessionChannel (SessionId, TChan SessionMessage)
+    deriving (Eq)
+
+-- | For our "database" of session channels
+type SessionChannelDB = IxSet SessionChannel
+instance Indexable SessionChannel where
+    empty = ixSet [ ixFun (\ (SessionChannel (id, _)) -> [id])
+                  ]
+instance Ord SessionChannel where
+    (SessionChannel (sId, _)) <= (SessionChannel (sId', _)) = sId <= sId'
+
+withSessionChannel :: TVar SessionChannelDB -> SessionId -> IO a -> (TChan SessionMessage -> IO a) -> IO a
+withSessionChannel sessionChannelDB sessionId no yes = do
+    sessionChannels <- atomically $ readTVar sessionChannelDB
+    let channelM = Ix.getOne (Ix.getEQ sessionId sessionChannels)
+    case channelM of
+        Nothing -> no
+        Just (SessionChannel (_, channel)) -> yes channel

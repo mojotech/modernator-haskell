@@ -3,6 +3,7 @@ module Modernator.API where
 
 import Servant
 import Modernator.SessionsAPI
+import Modernator.WebsocketsAPI
 import Modernator.Types
 import Modernator.Cookies
 import Data.Proxy
@@ -18,10 +19,11 @@ import GHC.TypeLits (KnownSymbol)
 import Control.Monad.IO.Class
 import Control.Monad.Catch
 import Data.Acid
+import Control.Concurrent.STM.TVar (TVar)
 
 type SwaggerSchemaEndpoint = "swagger.js" :> Get '[JSON] Swagger
 
-type BasicAPI = "sessions" :> SessionsAPI
+type BasicAPI = "sessions" :> (SessionsAPI :<|> WebsocketsAPI)
 
 data API'
 type API = SwaggerUI "ui" SwaggerSchemaEndpoint API'
@@ -36,8 +38,8 @@ api = Proxy
 basicAPI :: Proxy BasicAPI
 basicAPI = Proxy
 
-server :: RandomSource -> ServerKey -> ServerKey -> AuthCookieSettings -> AuthCookieSettings -> AcidState App -> Server API
-server rng answererKey questionerKey answererSettings questionerSettings app = swaggerUIServer :<|> return swaggerDoc :<|> sessionsServer answererSession questionerSession app
+server :: RandomSource -> ServerKey -> ServerKey -> AuthCookieSettings -> AuthCookieSettings -> AcidState App -> TVar SessionChannelDB -> Server API
+server rng answererKey questionerKey answererSettings questionerSettings app sessionChannelDB = swaggerUIServer :<|> return swaggerDoc :<|> sessionsServer answererSession questionerSession app sessionChannelDB :<|> websocketsServer app sessionChannelDB
     where
         answererSession :: (MonadIO m, MonadThrow m) => AnswererCookie -> Answerer -> m (Headers '[Servant.Header "Set-Cookie" ByteString] Answerer)
         answererSession = addSession answererSettings rng answererKey
@@ -45,8 +47,7 @@ server rng answererKey questionerKey answererSettings questionerSettings app = s
         questionerSession = addSession questionerSettings rng questionerKey
 
 swaggerDoc :: Swagger
-swaggerDoc = toSwagger (Proxy :: Proxy SessionsAPI)
-    & basePath .~ Just "/sessions"
+swaggerDoc = toSwagger (Proxy :: Proxy BasicAPI)
     & info.title .~ "Sessions API"
     & info.version .~ "0.1"
     & info.description ?~ "This is an API for creating/joining Q&A sessions and asking questions"
