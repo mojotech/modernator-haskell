@@ -19,10 +19,8 @@ manager](http://nixos.org/nix/) and use one of the following commands:
 Each of the above commands will automatically download and install all
 dependencies required by the project.
 
-If you're running NixOS, some of the Haskell packages may be unavailable in the
-latest nixos channels. You'll need to use an updated set of package definitions
-to use when building and pass them in when building e.g. `nix-build default.nix
---arg nixpkgs "import <my_pkg_set> {}"`
+I've pinned the application to a specific Nixpkgs version, so anyone building
+with Nix should have exactly the same libraries availabile.
 
 ## Cabal
 You can also build the project using the traditional Haskell `cabal configure &&
