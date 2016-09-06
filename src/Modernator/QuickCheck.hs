@@ -4,6 +4,7 @@ import Test.QuickCheck
 import Test.QuickCheck.Instances
 import Modernator.Types
 import Modernator.RequestBodies
+import Modernator.Cookies
 
 instance Arbitrary SessionReq where
     arbitrary = SessionReq <$> arbitrary <*> arbitrary <*> arbitrary
@@ -64,3 +65,9 @@ instance Arbitrary Session where
 
 instance Arbitrary LockedStatus where
     arbitrary = arbitraryBoundedEnum
+
+instance Arbitrary QuestionerCookie where
+    arbitrary = QuestionerCookie <$> arbitrary
+
+instance Arbitrary AnswererCookie where
+    arbitrary = AnswererCookie <$> arbitrary

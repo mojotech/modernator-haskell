@@ -5,6 +5,7 @@
 , wai-websockets, websockets, stm
 , quickcheck-instances
 , servant-aeson-specs
+, servant-mock
 , buildTools ? []
 }:
 mkDerivation {
@@ -21,6 +22,7 @@ mkDerivation {
     wai-websockets websockets stm
     quickcheck-instances
     servant-aeson-specs
+    servant-mock
   ];
   buildTools = buildTools;
   description = "An application for hosting targeted Q&A sessions like Reddit AMA's";
