@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, ScopedTypeVariables #-}
+{-# LANGUAGE OverloadedStrings, ScopedTypeVariables, DataKinds #-}
 module Modernator.App where
 
 import Modernator.Types
@@ -21,20 +21,7 @@ import Control.Monad.IO.Class (liftIO)
 -- | Serve our app
 app :: RandomSource -> ServerKey -> ServerKey -> AcidState App -> TVar SessionChannelDB -> Application
 app rng aKey qKey state sessionChannelDB =
-    serveWithContext
-        api
-        ((defaultAuthHandler answererSettings aKey :: AuthHandler Request AnswererCookie) :.
-         (defaultAuthHandler questionerSettings qKey :: AuthHandler Request QuestionerCookie) :.
-         (anyAuthHandler (answererSettings, aKey) (questionerSettings, qKey) :: AuthHandler Request AnyCookie) :. EmptyContext)
-        (server rng aKey qKey answererSettings questionerSettings state sessionChannelDB)
-    where
-        -- cookies are valid for 1 week
-        -- TODO: I think it's theoretically possible to make these cookies only
-        -- valid for specific session ids, since the session id is in the URL.
-        -- This will easily allow users to be authed to multiple sessions.
-        -- TODO: Should also have SecureOnly flag, but without https on localhost cookies won't be set
-        answererSettings = def { acsCookieFlags = ["HttpOnly"], acsSessionField = "modernator_answerer", acsMaxAge = fromIntegral (3600 * 24 * 7 :: Integer) }
-        questionerSettings = def { acsCookieFlags = ["HttpOnly"], acsSessionField = "modernator_questioner", acsMaxAge = fromIntegral (3600 * 24 * 7 :: Integer) }
+    serveWithContext api (appContext aKey qKey) (server rng aKey qKey answererSettings questionerSettings state sessionChannelDB)
 
 -- | Set up our application potentially with a path to the application state.
 mkApp :: Maybe FilePath -> IO Application
@@ -52,6 +39,26 @@ commonAppSetup state = do
     sessionChannelDB <- newTVarIO $ IxSet.fromList channels
 
     return $ app rng aKey qKey state sessionChannelDB
+
+type AppContext =
+    '[ AuthHandler Request AnswererCookie
+     , AuthHandler Request QuestionerCookie
+     , AuthHandler Request AnyCookie
+     ]
+
+appContext :: ServerKey -> ServerKey -> Context AppContext
+appContext aKey qKey =
+    ((defaultAuthHandler answererSettings aKey :: AuthHandler Request AnswererCookie) :.
+     (defaultAuthHandler questionerSettings qKey :: AuthHandler Request QuestionerCookie) :.
+     (anyAuthHandler (answererSettings, aKey) (questionerSettings, qKey) :: AuthHandler Request AnyCookie) :. EmptyContext)
+
+-- cookies are valid for 1 week
+-- TODO: I think it's theoretically possible to make these cookies only
+-- valid for specific session ids, since the session id is in the URL.
+-- This will easily allow users to be authed to multiple sessions.
+-- TODO: Should also have SecureOnly flag, but without https on localhost cookies won't be set
+answererSettings = def { acsCookieFlags = ["HttpOnly"], acsSessionField = "modernator_answerer", acsMaxAge = fromIntegral (3600 * 24 * 7 :: Integer) }
+questionerSettings = def { acsCookieFlags = ["HttpOnly"], acsSessionField = "modernator_questioner", acsMaxAge = fromIntegral (3600 * 24 * 7 :: Integer) }
 
 anyAuthHandler :: (AuthCookieSettings, ServerKey) -> (AuthCookieSettings, ServerKey) -> AuthHandler Request AnyCookie
 anyAuthHandler (aSettings, aKey) (qSettings, qKey) = mkAuthHandler $ \ request -> do
