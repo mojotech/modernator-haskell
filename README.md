@@ -22,6 +22,30 @@ dependencies required by the project.
 I've pinned the application to a specific Nixpkgs version, so anyone building
 with Nix should have exactly the same libraries availabile.
 
+### Using the Binary Cache
+
+I've set up a binary cache that can be used to speed up the build time of the
+project. If you're on NixOS you can add the following lines to
+`/etc/nixos/configuration.nix`:
+
+```
+nix.trustedBinaryCaches = [ "http://nix-cache.danielwilsonthomas.com" ];
+nix.binaryCachePublicKeys = [ "nix-cache.danielwilsonthomas.com-1:QM4lCC4Z8uywH15CMs0Rt+0EvuqGL1kqxBFritTwIMY=" ];
+```
+
+If you already have those keys set up you can add them to the existing list.
+
+If you're just using the Nix package manager, you can add the following to your
+`nix.conf` file:
+
+```
+trusted-binary-caches = http://nix-cache.danielwilsonthomas.com
+binary-cache-public-keys = nix-cache.danielwilsonthomas.com-1:QM4lCC4Z8uywH15CMs0Rt+0EvuqGL1kqxBFritTwIMY=
+```
+
+In either case when you run any of `nix-build`, `nix-env --install`, or
+`nix-shell` you should pass `--option extra-binary-caches http://nix-cache.danielwilsonthomas.com`
+
 ## Cabal
 You can also build the project using the traditional Haskell `cabal configure &&
 cabal build`, using `cabal install` to make the package available in your
