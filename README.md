@@ -73,6 +73,11 @@ You can deploy to an EC2 instance by first running `nixops create network.nix
 infrastructure-ec2.nix --name modernator-ec2` and then repeating the deploy
 command.
 
+### Generating Elm Files
+
+Once the project is build, run `generate-elm output/directory` to generate the
+client Elm bindings.
+
 # Useful Commands
 
 * `cabal repl` - Launch a GHCi session with all source files loaded
