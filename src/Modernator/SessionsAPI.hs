@@ -23,6 +23,7 @@ import Control.Concurrent.STM.TVar (readTVar, TVar, modifyTVar')
 import qualified Data.IxSet as Ix
 import Data.Maybe (fromJust)
 import Control.Monad.Error.Class (MonadError)
+import Control.Monad.Trans.Except (withExceptT, ExceptT)
 
 type instance AuthServerData (AuthProtect "answerer-auth") = AnswererCookie
 type instance AuthServerData (AuthProtect "questioner-auth") = QuestionerCookie
@@ -41,11 +42,14 @@ type SessionsAPI =
 sessionsAPI :: Proxy SessionsAPI
 sessionsAPI = Proxy
 
-sendSessionMessage :: TVar SessionChannelDB -> SessionId -> (a -> SessionMessage) -> a -> IO (Either AppError a)
-sendSessionMessage sessionChannelDB sessionId messageFn a =
-    withSessionChannel sessionChannelDB sessionId
+sendSessionMessage :: MonadIO m => TVar SessionChannelDB -> SessionId -> (a -> SessionMessage) -> a -> ExceptT AppError m a
+sendSessionMessage sessionChannelDB sessionId messageFn a = do
+    r <- liftIO $ withSessionChannel sessionChannelDB sessionId
         (return $ Left SessionNotFound)
         (\ chan -> atomically (writeTChan chan (messageFn a)) >> return (Right a))
+    case r of
+        Left e -> throwError e
+        Right a -> return a
 
 sessionsServer ::
     (AnswererCookie -> Answerer -> Handler (Headers '[Header "Set-Cookie" ByteString] Answerer)) ->
@@ -62,26 +66,26 @@ sessionsServer addAnswererSession addQuestionerSession app sessionChannelDB = ne
             addAnswererSession (AnswererCookie id) answerer
         lockSessionH c id = do
             withError <=< liftIO . sessionLockHandler app c $ id
-            withError <=< liftIO . sendSessionMessage sessionChannelDB id (const SessionLocked) $ ()
+            withExceptT withError' $ sendSessionMessage sessionChannelDB id (const SessionLocked) ()
             return NoContent
         deleteSessionH c id = do
             withError <=< liftIO . sessionDeleteHandler app c $ id
-            withError <=< liftIO . sendSessionMessage sessionChannelDB id (const SessionClosed) $ ()
+            withExceptT withError' $ sendSessionMessage sessionChannelDB id (const SessionClosed) ()
             return NoContent
         joinSessionH req sessionId = do
             questioner@(Questioner id _ _) <- withError <=< liftIO . sessionJoinHandler app req $ sessionId
             addQuestionerSession (QuestionerCookie id) questioner
         askQH cookie sessionId req = do
             question <- withError <=< liftIO . askQuestionHandler app cookie sessionId $ req
-            withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionAsked $ question
+            withExceptT withError' $ sendSessionMessage sessionChannelDB sessionId QuestionAsked question
             return question
         upvoteQH cookie sessionId req = do
             question <- withError <=< liftIO . upvoteQuestionHandler app cookie sessionId $ req
-            withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionUpvoted $ question
+            withExceptT withError' $ sendSessionMessage sessionChannelDB sessionId QuestionUpvoted question
             return question
         answerQH cookie sessionId req = do
             question <- withError <=< liftIO . answerQuestionHandler app cookie sessionId $ req
-            withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionAnswered $ question
+            withExceptT withError' $ sendSessionMessage sessionChannelDB sessionId QuestionAnswered question
             return question
         fullSessionH cookie = withError <=< liftIO . fullSessionHandler app cookie
 
