@@ -1,6 +1,11 @@
 Feature: Once a user has joined a Session they are then able to ask Questions
   of the Answerer.
 
+  Answerers cannot ask Questions. This is so that they cannot abuse the system
+  to only ask Questions they want to hear. However, there's nothing stopping
+  the same person from logging on in two different sessions as both Answerer
+  and Questioner.
+
   See the following files for more information:
 
   - [Questioners](Questioners.feature)

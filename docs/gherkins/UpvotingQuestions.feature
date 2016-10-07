@@ -3,6 +3,11 @@ Feature: When a Session has many Questions it can be difficult for the Answerer
   they value a Question by upvoting it. This increases the number of votes on
   the question.
 
+  Answerers cannot upvote Questions. This is so that they cannot abuse the
+  system to only answer Questions they want to answer. However, there's nothing
+  stopping the same person from logging on in two different sessions as both
+  Answerer and Questioner.
+
   See the following files for more information:
 
   - [Answerers](Answerers.feature)
