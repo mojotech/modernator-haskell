@@ -13,7 +13,7 @@ import Data.Proxy
 import Data.Acid
 import Data.Time.Clock
 import Data.Aeson
-import Control.Monad.IO.Class (liftIO)
+import Control.Monad.IO.Class (liftIO, MonadIO)
 import Control.Monad ((<=<))
 import Data.ByteString (ByteString)
 import Data.Swagger.ParamSchema (ToParamSchema, toParamSchema)
@@ -23,6 +23,7 @@ import Control.Concurrent.STM.TVar (readTVar, TVar, modifyTVar')
 import qualified Data.IxSet as Ix
 import Data.Maybe (fromJust)
 import Control.Monad.Error.Class (MonadError)
+import Control.Monad.Trans.Except (withExceptT, ExceptT)
 
 type instance AuthServerData (AuthProtect "answerer-auth") = AnswererCookie
 type instance AuthServerData (AuthProtect "questioner-auth") = QuestionerCookie
@@ -41,11 +42,16 @@ type SessionsAPI =
 sessionsAPI :: Proxy SessionsAPI
 sessionsAPI = Proxy
 
-sendSessionMessage :: TVar SessionChannelDB -> SessionId -> (a -> SessionMessage) -> a -> IO (Either AppError a)
-sendSessionMessage sessionChannelDB sessionId messageFn a =
-    withSessionChannel sessionChannelDB sessionId
+sendSessionMessage :: MonadIO m => TVar SessionChannelDB -> SessionId -> (a -> SessionMessage) -> a -> ExceptT AppError m a
+sendSessionMessage sessionChannelDB sessionId messageFn a = do
+    r <- liftIO $ withSessionChannel sessionChannelDB sessionId
         (return $ Left SessionNotFound)
         (\ chan -> atomically (writeTChan chan (messageFn a)) >> return (Right a))
+    case r of
+        Left e -> throwError e
+        Right a -> return a
+
+appToServant = withExceptT withError
 
 sessionsServer ::
     (AnswererCookie -> Answerer -> Handler (Headers '[Header "Set-Cookie" ByteString] Answerer)) ->
@@ -56,58 +62,68 @@ sessionsServer ::
 sessionsServer addAnswererSession addQuestionerSession app sessionChannelDB = newSessionH :<|> lockSessionH :<|> deleteSessionH :<|> joinSessionH :<|> askQH :<|> upvoteQH :<|> answerQH :<|> fullSessionH
     where
         newSessionH req = do
-            answerer@(Answerer id sId _) <- liftIO . newSessionHandler app $ req
-            sessionChan <- liftIO $ mkSessionChannel sId
-            liftIO $ atomically $ modifyTVar' sessionChannelDB (Ix.insert sessionChan)
+            answerer@(Answerer id _ _) <- liftIO $ newSessionHandler app req sessionChannelDB
             addAnswererSession (AnswererCookie id) answerer
         lockSessionH c id = do
-            withError <=< liftIO . sessionLockHandler app c $ id
-            withError <=< liftIO . sendSessionMessage sessionChannelDB id (const SessionLocked) $ ()
+            appToServant $ sessionLockHandler app c id sessionChannelDB
             return NoContent
         deleteSessionH c id = do
-            withError <=< liftIO . sessionDeleteHandler app c $ id
-            withError <=< liftIO . sendSessionMessage sessionChannelDB id (const SessionClosed) $ ()
+            appToServant $ sessionDeleteHandler app c id sessionChannelDB
             return NoContent
         joinSessionH req sessionId = do
-            questioner@(Questioner id _ _) <- withError <=< liftIO . sessionJoinHandler app req $ sessionId
+            questioner@(Questioner id _ _) <- appToServant $ sessionJoinHandler app req sessionId
             addQuestionerSession (QuestionerCookie id) questioner
         askQH cookie sessionId req = do
-            question <- withError <=< liftIO . askQuestionHandler app cookie sessionId $ req
-            withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionAsked $ question
+            question <- appToServant $ askQuestionHandler app cookie sessionId req sessionChannelDB
             return question
         upvoteQH cookie sessionId req = do
-            question <- withError <=< liftIO . upvoteQuestionHandler app cookie sessionId $ req
-            withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionUpvoted $ question
+            question <- appToServant $  upvoteQuestionHandler app cookie sessionId req sessionChannelDB
             return question
         answerQH cookie sessionId req = do
-            question <- withError <=< liftIO . answerQuestionHandler app cookie sessionId $ req
-            withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionAnswered $ question
+            question <- appToServant $ answerQuestionHandler app cookie sessionId req sessionChannelDB
             return question
-        fullSessionH cookie = withError <=< liftIO . fullSessionHandler app cookie
+        fullSessionH cookie sessionId = appToServant $ fullSessionHandler app cookie sessionId
 
-newSessionHandler :: AcidState App -> SessionReq -> IO Answerer
-newSessionHandler app (SessionReq name expiration answererName) = update app (NewSession name expiration answererName)
+newSessionHandler :: AcidState App -> SessionReq -> TVar SessionChannelDB -> IO Answerer
+newSessionHandler app (SessionReq name expiration answererName) sessionChannelDB = do
+    answerer@(Answerer _ sId _) <- update app (NewSession name expiration answererName)
+    sessionChan <- mkSessionChannel sId
+    atomically $ modifyTVar' sessionChannelDB (Ix.insert sessionChan)
+    return answerer
 
-sessionLockHandler :: AcidState App -> AnswererCookie -> SessionId -> IO (Either AppError ())
-sessionLockHandler app (AnswererCookie id) sessionId = update app (LockSession id sessionId)
+sessionLockHandler :: MonadIO m => AcidState App -> AnswererCookie -> SessionId -> TVar SessionChannelDB -> ExceptT AppError m ()
+sessionLockHandler app (AnswererCookie id) sessionId sessionChannelDB = do
+    withAppError <=< liftIO $ update app (LockSession id sessionId)
+    sendSessionMessage sessionChannelDB sessionId (const SessionLocked) ()
 
-sessionDeleteHandler :: AcidState App -> AnswererCookie -> SessionId -> IO (Either AppError ())
-sessionDeleteHandler app (AnswererCookie id) sessionId = update app (DeleteSession id sessionId)
+sessionDeleteHandler :: MonadIO m => AcidState App -> AnswererCookie -> SessionId -> TVar SessionChannelDB -> ExceptT AppError m ()
+sessionDeleteHandler app (AnswererCookie id) sessionId sessionChannelDB = do
+    withAppError <=< liftIO $ update app (DeleteSession id sessionId)
+    sendSessionMessage sessionChannelDB sessionId (const SessionClosed) ()
 
-sessionJoinHandler :: AcidState App -> JoinReq -> SessionId -> IO (Either AppError Questioner)
-sessionJoinHandler app (JoinReq name) sessionId = update app (JoinSession sessionId name)
+sessionJoinHandler :: MonadIO m => AcidState App -> JoinReq -> SessionId -> ExceptT AppError m Questioner
+sessionJoinHandler app (JoinReq name) sessionId = withAppError <=< liftIO $ update app (JoinSession sessionId name)
 
-askQuestionHandler :: AcidState App -> QuestionerCookie -> SessionId -> QuestionReq -> IO (Either AppError Question)
-askQuestionHandler app (QuestionerCookie questionerId) sessionId (QuestionReq question) = update app (AddQuestion question sessionId questionerId)
+askQuestionHandler :: MonadIO m => AcidState App -> QuestionerCookie -> SessionId -> QuestionReq -> TVar SessionChannelDB -> ExceptT AppError m Question
+askQuestionHandler app (QuestionerCookie questionerId) sessionId (QuestionReq question) sessionChannelDB = do
+    q <- withAppError <=< liftIO $ update app (AddQuestion question sessionId questionerId)
+    sendSessionMessage sessionChannelDB sessionId QuestionAsked q
+    return q
 
-upvoteQuestionHandler :: AcidState App -> QuestionerCookie -> SessionId -> QuestionId -> IO (Either AppError Question)
-upvoteQuestionHandler app (QuestionerCookie questionerId) sessionId questionId = update app (UpvoteQuestion questionId sessionId questionerId)
+upvoteQuestionHandler :: MonadIO m => AcidState App -> QuestionerCookie -> SessionId -> QuestionId -> TVar SessionChannelDB -> ExceptT AppError m Question
+upvoteQuestionHandler app (QuestionerCookie questionerId) sessionId questionId sessionChannelDB = do
+    q <- withAppError <=< liftIO $ update app (UpvoteQuestion questionId sessionId questionerId)
+    sendSessionMessage sessionChannelDB sessionId QuestionUpvoted q
+    return q
 
-answerQuestionHandler :: AcidState App -> AnswererCookie -> SessionId -> QuestionId -> IO (Either AppError Question)
-answerQuestionHandler app (AnswererCookie  answererId) sessionId questionId = update app (AnswerQuestion questionId sessionId answererId)
+answerQuestionHandler :: MonadIO m => AcidState App -> AnswererCookie -> SessionId -> QuestionId -> TVar SessionChannelDB -> ExceptT AppError m Question
+answerQuestionHandler app (AnswererCookie  answererId) sessionId questionId sessionChannelDB = do
+    q <- withAppError <=< liftIO $ update app (AnswerQuestion questionId sessionId answererId)
+    sendSessionMessage sessionChannelDB sessionId QuestionAnswered q
+    return q
 
-fullSessionHandler :: AcidState App -> AnyCookie -> SessionId -> IO (Either AppError FullSession)
-fullSessionHandler app cookie sessionId = query app (GetFullSession (anyCookieToIds cookie) sessionId)
+fullSessionHandler :: MonadIO m => AcidState App -> AnyCookie -> SessionId -> ExceptT AppError m FullSession
+fullSessionHandler app cookie sessionId = withAppError <=< liftIO $ query app (GetFullSession (anyCookieToIds cookie) sessionId)
 
 instance ToParamSchema ByteString where
     toParamSchema _ = toParamSchema (Proxy :: Proxy String)

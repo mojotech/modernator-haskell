@@ -6,6 +6,7 @@ import Modernator.Commands
 import Modernator.API
 import Network.Wai (Application)
 import Data.Acid
+import Data.Acid.Memory (openMemoryState)
 import Servant
 import Servant.Server.Experimental.Auth
 import Servant.Server.Experimental.Auth.Cookie
@@ -27,6 +28,9 @@ app rng aKey qKey state sessionChannelDB =
 mkApp :: Maybe FilePath -> IO Application
 mkApp Nothing = openLocalState emptyApp >>= commonAppSetup
 mkApp (Just path) = openLocalStateFrom path emptyApp >>= commonAppSetup
+
+mkTransientApp :: IO Application
+mkTransientApp = openMemoryState emptyApp >>= commonAppSetup
 
 commonAppSetup state = do
     rng <- mkRandomSource drgNew 1000

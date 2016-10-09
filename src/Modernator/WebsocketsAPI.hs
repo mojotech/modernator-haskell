@@ -5,7 +5,7 @@ import Modernator.Types
 import Modernator.Commands
 import Modernator.APIUtils
 import Modernator.Cookies
-import Modernator.SessionsAPI (fullSessionHandler)
+import Modernator.SessionsAPI (fullSessionHandler, appToServant)
 
 import Servant
 import Servant.Server.Experimental.Auth
@@ -16,6 +16,7 @@ import Data.Foldable (forM_)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad ((<=<), forever)
 import Control.Monad.STM (atomically, STM)
+import Control.Monad.Trans.Except (runExceptT)
 import Control.Concurrent.STM.TChan (newBroadcastTChan, writeTChan, dupTChan, readTChan, tryReadTChan, peekTChan, TChan, unGetTChan, cloneTChan)
 import Control.Concurrent.STM.TVar (readTVar, TVar, modifyTVar')
 import Network.Wai.Handler.WebSockets (websocketsOr)
@@ -68,7 +69,7 @@ websocketsServer app sessionChannelDB cookie sessionId =
 websocketsApp :: AcidState App -> TVar SessionChannelDB -> AnyCookie -> SessionId -> PendingConnection -> IO ()
 websocketsApp app sessionChannelDB cookie sessionId pending = do
     conn <- acceptRequest pending
-    fullSessionE <- fullSessionHandler app cookie sessionId
+    fullSessionE <- runExceptT $ fullSessionHandler app cookie sessionId
     let close m = sendClose conn (encode m)
     case fullSessionE of
         Left err -> close $ SessionExceptionMessage err
@@ -96,6 +97,4 @@ backupAPI = Proxy
 
 backupApp app cookie sessionId = serve backupAPI handler
     where
-        handler = do
-            resp <- liftIO $ fullSessionHandler app cookie sessionId
-            withError (fmap SessionState resp)
+        handler = fmap SessionState $ appToServant $ fullSessionHandler app cookie sessionId
