@@ -6,6 +6,7 @@
 , quickcheck-instances
 , servant-aeson-specs
 , servant-mock
+, free
 , buildTools ? []
 }:
 mkDerivation {
@@ -23,6 +24,7 @@ mkDerivation {
     quickcheck-instances
     servant-aeson-specs
     servant-mock
+    free
   ];
   buildTools = buildTools;
   description = "An application for hosting targeted Q&A sessions like Reddit AMA's";
