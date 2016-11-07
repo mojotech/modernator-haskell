@@ -10,6 +10,7 @@ import Data.Text (Text)
 import Data.Time.Clock
 import qualified Data.IxSet as Ix
 import Control.Monad.Trans.Either
+import Data.Maybe (mapMaybe)
 
 -- | Add a question. New questions start unanswered and with no votes.
 addQuestion :: Text -> SessionId -> QuestionerId -> Update App (Either AppError Question)
@@ -191,4 +192,9 @@ getFullSession authId sId = do
         hoistEither $ authed
         hoistEither $ maybe (Left SessionNotFound) Right $ getFullSessionFromApp app sId
 
-$(makeAcidic ''App ['addQuestion, 'upvoteQuestion, 'answerQuestion, 'newSession, 'lockSession, 'getState, 'deleteSession, 'joinSession, 'getFullSession])
+getAllSessions :: Query App [FullSession]
+getAllSessions = do
+    app <- ask
+    return $ mapMaybe (getFullSessionFromApp app) . map (\ (Session id _ _ _) -> id) . Ix.toList . sessions $ app
+
+$(makeAcidic ''App ['addQuestion, 'upvoteQuestion, 'answerQuestion, 'newSession, 'lockSession, 'getState, 'deleteSession, 'joinSession, 'getFullSession, 'getAllSessions])

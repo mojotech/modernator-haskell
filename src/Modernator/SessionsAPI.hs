@@ -29,7 +29,8 @@ type instance AuthServerData (AuthProtect "questioner-auth") = QuestionerCookie
 type instance AuthServerData (AuthProtect "any-auth") = AnyCookie
 
 type SessionsAPI =
-    ReqBody '[JSON] SessionReq :> Post '[JSON] (Headers '[Header "Set-Cookie" ByteString] Answerer)
+    Get '[JSON] [FullSession]
+    :<|> ReqBody '[JSON] SessionReq :> Post '[JSON] (Headers '[Header "Set-Cookie" ByteString] Answerer)
     :<|> AuthProtect "answerer-auth" :> Capture "session_id" SessionId :> "lock" :> PostNoContent '[PlainText] NoContent
     :<|> AuthProtect "answerer-auth" :> Capture "session_id" SessionId :> DeleteNoContent '[PlainText] NoContent
     :<|> ReqBody '[JSON] JoinReq :> Capture "session_id" SessionId :> "join" :> Post '[JSON] (Headers '[Header "Set-Cookie" ByteString] Questioner)
@@ -53,8 +54,9 @@ sessionsServer ::
     AcidState App ->
     TVar SessionChannelDB ->
     Server SessionsAPI
-sessionsServer addAnswererSession addQuestionerSession app sessionChannelDB = newSessionH :<|> lockSessionH :<|> deleteSessionH :<|> joinSessionH :<|> askQH :<|> upvoteQH :<|> answerQH :<|> fullSessionH
+sessionsServer addAnswererSession addQuestionerSession app sessionChannelDB = allSessionsH :<|> newSessionH :<|> lockSessionH :<|> deleteSessionH :<|> joinSessionH :<|> askQH :<|> upvoteQH :<|> answerQH :<|> fullSessionH
     where
+        allSessionsH = liftIO . allSessionsHandler $ app
         newSessionH req = do
             answerer@(Answerer id sId _) <- liftIO . newSessionHandler app $ req
             sessionChan <- liftIO $ mkSessionChannel sId
@@ -108,6 +110,9 @@ answerQuestionHandler app (AnswererCookie  answererId) sessionId questionId = up
 
 fullSessionHandler :: AcidState App -> AnyCookie -> SessionId -> IO (Either AppError FullSession)
 fullSessionHandler app cookie sessionId = query app (GetFullSession (anyCookieToIds cookie) sessionId)
+
+allSessionsHandler :: AcidState App -> IO [FullSession]
+allSessionsHandler app = query app GetAllSessions
 
 instance ToParamSchema ByteString where
     toParamSchema _ = toParamSchema (Proxy :: Proxy String)
