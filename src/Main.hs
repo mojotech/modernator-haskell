@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
 import Modernator.App
@@ -7,6 +8,7 @@ import Text.Read (readMaybe)
 import Data.Maybe (fromMaybe, mapMaybe)
 import Data.List (intersperse)
 import Network.Wai.Middleware.RequestLogger
+import Network.Wai.Middleware.Cors (cors, simpleCorsResourcePolicy, corsOrigins, corsRequestHeaders)
 
 prettyArg s = fmap ((s ++) . show)
 
@@ -18,4 +20,11 @@ main = do
                            ]
     putStrLn $ "Running modernator-haskell on " ++ (concat $ intersperse " and " args)
     app <- mkApp stateDir
-    run port $ logStdoutDev app
+    run port $ logStdoutDev $ myCors app
+
+myCors = cors (const $ Just policy)
+
+policy = simpleCorsResourcePolicy
+    { corsOrigins = Just (["http://localhost:3000", "http://localhost:8080"], True)
+    , corsRequestHeaders = ["Content-Type"]
+    }
