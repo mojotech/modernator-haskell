@@ -1,5 +1,23 @@
 This is an implementation of an application for Reddit AMA style Q&A sessions.
 
+# Motivation
+
+While I think Modernator is itself a pretty useful and neat application, my
+primary purpose for creating this is to experiment and push the boundaries of
+how to design a React application. If you're familiar with client-side
+Javascript development, you might be familiar with
+[TodoMVC](http://todomvc.com). It's a small little application that can be built
+from scratch in a few hours to help experiment with client-side frameworks and
+libraries. It's very useful, but I've found that it's not complex enough to
+accurately weigh what different frameworks bring to the table. With that in mind
+I created Modernator. The Modernator specification is intended to be complex
+enough such that it requires careful design and forethought during its
+implementation on both client and server. However, it's not so complex as to
+require a major time investment in understanding and implementing it. A
+functioning, complete implementation (without polish and optimization) should be
+possible in a few days to a week for reasonably experienced developers. Whereas
+something like TodoMVC might be doable in a few hours.
+
 # Building
 
 ## Nix
