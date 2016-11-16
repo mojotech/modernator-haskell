@@ -1,4 +1,4 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving, DeriveGeneric, FlexibleInstances, OverloadedStrings, OverloadedLists, TemplateHaskell #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving, DeriveGeneric, FlexibleInstances, OverloadedStrings, OverloadedLists #-}
 module Modernator.Types where
 
 import Data.Time.Clock (UTCTime)
@@ -18,11 +18,7 @@ import Data.Swagger.ParamSchema (ToParamSchema, toParamSchema)
 import Data.Serialize (Serialize)
 
 -- | For custom Swagger Schemas
-import Data.Aeson hiding ((.=))
-import qualified Data.Aeson as Aeson
 import qualified Data.Aeson.Types as Aeson
-import qualified Data.Aeson.TH as Aeson
-import Data.Aeson.TH (deriveJSON, defaultOptions)
 import Data.Swagger.Schema hiding (SchemaOptions)
 import Control.Lens hiding (Indexable)
 import Data.Swagger.Internal
@@ -44,8 +40,6 @@ data AppError = QuestionNotFound
               | SessionAlreadyLocked
     deriving (Show, Generic, Eq, Ord, Enum, Bounded)
 
-instance FromJSON AppError
-instance ToJSON AppError
 instance ToSchema AppError
 
 -- | A question has an id, number of votes, text, and answered status
@@ -67,29 +61,12 @@ instance ToSchema Question where
                             , ("questionAnswered", answeredSchema)
                             ]
             & required .~ ["questionId", "sessionId", "questionVotes", "questionText", "questionAnswered"]
-instance FromJSON Question where
-    parseJSON (Aeson.Object v) =
-        Question <$>
-            v Aeson..: "questionId" <*>
-            v Aeson..: "sessionId" <*>
-            v Aeson..: "questionVotes" <*>
-            v Aeson..: "questionText" <*>
-            v Aeson..: "questionAnswered"
-    parseJSON wat = Aeson.typeMismatch "Question" wat
-instance ToJSON Question where
-    toJSON (Question qId sId votes text answered) =
-        object [ "questionId" Aeson..= qId
-               , "sessionId" Aeson..= sId
-               , "questionVotes" Aeson..= votes
-               , "questionText" Aeson..= text
-               , "questionAnswered" Aeson..= answered
-               ]
 
 -- | A QuestionId is represented as an integer, but we should not be able to
 -- perform arithmetic and other numeric operations on it, as it's not a number
 -- in our domain, it's an identifier.
 newtype QuestionId = QuestionId Integer
-    deriving (Show, FromHttpApiData, ToJSON, FromJSON, Enum, Eq, Ord, Generic)
+    deriving (Show, FromHttpApiData, Enum, Eq, Ord, Generic)
 instance ToParamSchema QuestionId
 instance ToSchema QuestionId
 
@@ -98,7 +75,7 @@ instance ToSchema QuestionId
 -- domain, votes can only be incremented, which is functionality provided by
 -- the Enum typeclass.
 newtype Votes = Votes Integer
-    deriving (Show, ToJSON, Enum, Eq, Ord, Generic, FromJSON)
+    deriving (Show, Enum, Eq, Ord, Generic)
 instance ToSchema Votes
 
 -- | A question's answered status is conceptually a boolean, but we use a more
@@ -109,13 +86,6 @@ instance ToSchema Answered where
     declareNamedSchema _ = do
         boolSchema <- declareSchema (Proxy :: Proxy Bool)
         return $ NamedSchema (Just "Answered") boolSchema
-instance FromJSON Answered where
-    parseJSON (Aeson.Bool True) = pure Answered
-    parseJSON (Aeson.Bool False) = pure NotAnswered
-    parseJSON wat = Aeson.typeMismatch "Answered" wat
-instance ToJSON Answered where
-    toJSON Answered = toJSON True
-    toJSON NotAnswered = toJSON False
 
 -- | We represent the set of questions as an indexed set, which allows
 -- efficient queries and updates using custom indexes; similar to SQL indexes.
@@ -126,26 +96,14 @@ instance Indexable Question where
                   , ixFun (\ (Question _ _ _ _ a) -> [a])
                   , ixFun (\ (Question _ sid _ _ _) -> [sid])
                   ]
-
 newtype AnswererId = AnswererId Integer
-    deriving (Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromJSON, Generic, Serialize)
+    deriving (Show, FromHttpApiData, Enum, Eq, Ord, Generic, Serialize)
 instance ToParamSchema AnswererId
 instance ToSchema AnswererId
 
 data Answerer = Answerer AnswererId SessionId Text
     deriving (Show, Generic, Eq, Ord)
 
-instance FromJSON Answerer where
-    parseJSON (Aeson.Object v) =
-        Answerer <$>
-            v Aeson..: "answererId" <*>
-            v Aeson..: "sessionId" <*>
-            v Aeson..: "name"
-    parseJSON wat = Aeson.typeMismatch "Answerer" wat
-
-instance ToJSON Answerer where
-    toJSON (Answerer aId sId name) =
-        object ["answererId" Aeson..= aId, "sessionId" Aeson..= sId, "name" Aeson..= name]
 instance ToSchema Answerer where
     declareNamedSchema _ = do
         answererIdSchema <- declareSchemaRef (Proxy :: Proxy AnswererId)
@@ -166,14 +124,12 @@ instance Indexable Answerer where
                   ]
 
 newtype SessionId = SessionId Integer
-    deriving (Generic, Show, FromHttpApiData, ToJSON, Enum, Eq, Ord, FromJSON)
+    deriving (Generic, Show, FromHttpApiData, Enum, Eq, Ord)
 instance ToParamSchema SessionId
 instance ToSchema SessionId
 
 data LockedStatus = Locked | Unlocked
     deriving (Show, Generic, Eq, Ord, Bounded, Enum)
-instance ToJSON LockedStatus
-instance FromJSON LockedStatus
 instance ToSchema LockedStatus
 
 data Session = Session SessionId Text (Maybe UTCTime) LockedStatus
@@ -194,23 +150,6 @@ instance ToSchema Session where
                             ]
             & required .~ [ "sessionId", "name", "locked"]
 
-instance FromJSON Session where
-    parseJSON (Aeson.Object v) =
-        Session <$>
-            v Aeson..: "sessionId" <*>
-            v Aeson..: "name" <*>
-            v Aeson..: "expiresAt" <*>
-            v Aeson..: "locked"
-    parseJSON wat = Aeson.typeMismatch "Session" wat
-instance ToJSON Session where
-    toJSON (Session sId name expires locked) =
-        object
-            [ "sessionId" Aeson..= sId
-            , "name" Aeson..= name
-            , "expiresAt" Aeson..= expires
-            , "locked" Aeson..= locked
-            ]
-
 type SessionDB = IxSet Session
 instance Indexable Session where
     empty = ixSet [ ixFun (\ (Session id _ _ _) -> [id])
@@ -218,22 +157,12 @@ instance Indexable Session where
                   ]
 
 newtype QuestionerId = QuestionerId Integer
-    deriving (Show, FromHttpApiData, ToJSON, FromJSON, Enum, Eq, Ord, Generic, Serialize)
+    deriving (Show, FromHttpApiData, Enum, Eq, Ord, Generic, Serialize)
 instance ToParamSchema QuestionerId
 instance ToSchema QuestionerId
 
 data Questioner = Questioner QuestionerId SessionId (Maybe Text)
     deriving (Show, Generic, Eq, Ord)
-instance FromJSON Questioner where
-    parseJSON (Aeson.Object v) =
-        Questioner <$>
-            v Aeson..: "questionerId" <*>
-            v Aeson..: "sessionId" <*>
-            v Aeson..: "name"
-    parseJSON wat = Aeson.typeMismatch "Questioner" wat
-instance ToJSON Questioner where
-    toJSON (Questioner qId sId name) =
-        object ["questionerId" Aeson..= qId, "sessionId" Aeson..= sId, "name" Aeson..= name]
 instance ToSchema Questioner where
     declareNamedSchema _ = do
         questionerIdSchema <- declareSchemaRef (Proxy :: Proxy QuestionerId)
@@ -298,7 +227,6 @@ data FullSession = FullSession
     }
     deriving (Show, Eq)
 
-$(Aeson.deriveJSON Aeson.defaultOptions{ Aeson.fieldLabelModifier = drop 12 } ''FullSession)
 instance ToSchema FullSession where
     declareNamedSchema _ = do
         sessionSchema <- declareSchemaRef (Proxy :: Proxy Session)
@@ -332,14 +260,14 @@ instance ToSchema SessionMessage where
         questionSchema <- declareSchemaRef (Proxy :: Proxy Question)
         sessionSchema <- declareSchemaRef (Proxy :: Proxy FullSession)
         let tagSchema = mempty
-                & enum_ .~ Just [ String "SessionLocked"
-                                , String "SessionExpired"
-                                , String "SessionClosed"
-                                , String "SessionExceptionMessage"
-                                , String "QuestionAsked"
-                                , String "QuestionUpvoted"
-                                , String "QuestionAnswered"
-                                , String "SessionState"
+                & enum_ .~ Just [ Aeson.String "SessionLocked"
+                                , Aeson.String "SessionExpired"
+                                , Aeson.String "SessionClosed"
+                                , Aeson.String "SessionExceptionMessage"
+                                , Aeson.String "QuestionAsked"
+                                , Aeson.String "QuestionUpvoted"
+                                , Aeson.String "QuestionAnswered"
+                                , Aeson.String "SessionState"
                                 ]
                 & type_ .~ SwaggerString
         return $ NamedSchema (Just "SessionMessage") $ mempty
@@ -352,34 +280,6 @@ instance ToSchema SessionMessage where
                             ]
             & required .~ ["tag"]
             & description .~ (Just "This is a variant type (sum type, discriminated union) representing the possible session messages. The `tag` field determines which fields are additionally present. Unless otherwise specified, only the `tag` field is present. If `tag` is `SessionStarted`, `answerer` is present. If `tag` is `SessionExceptionMessage`, `exception` is present. If `tag` is `QuestionAsked`, `QuestionUpvoted` or `QuestionAnswered`, `question` is present. If `tag` is `SessionState`, `session` is present.")
-
-nullaryObject tag = object [ "tag" Aeson..= (Aeson.String tag) ]
-
-instance ToJSON SessionMessage where
-    toJSON SessionLocked = nullaryObject "SessionLocked"
-    toJSON SessionExpired = nullaryObject "SessionExpired"
-    toJSON SessionClosed = nullaryObject "SessionClosed"
-    toJSON (SessionExceptionMessage e) = object [ "tag" Aeson..= (Aeson.String "SessionExceptionMessage"), "exception" Aeson..= e ]
-    toJSON (QuestionAsked q) = object [ "tag" Aeson..= (Aeson.String "QuestionAsked"), "question" Aeson..= q ]
-    toJSON (QuestionUpvoted q) = object [ "tag" Aeson..= (Aeson.String "QuestionUpvoted"), "question" Aeson..= q ]
-    toJSON (QuestionAnswered q) = object [ "tag" Aeson..= (Aeson.String "QuestionAnswered"), "question" Aeson..= q ]
-    toJSON (SessionState s) = object [ "tag" Aeson..= (Aeson.String "SessionState"), "session" Aeson..= s ]
-
-instance FromJSON SessionMessage where
-    parseJSON (Object o) = do
-        tag <- o .: "tag"
-        case tag of
-            Just (String "SessionLocked") -> pure SessionLocked
-            Just (String "SessionExpired") -> pure SessionExpired
-            Just (String "SessionClosed") -> pure SessionClosed
-            Just (String "SessionExceptionMessage") -> SessionExceptionMessage <$> o .: "exception"
-            Just (String "QuestionAsked") -> QuestionAsked <$> o .: "question"
-            Just (String "QuestionUpvoted") -> QuestionUpvoted <$> o .: "question"
-            Just (String "QuestionAnswered") -> QuestionAnswered <$> o .: "question"
-            Just (String "SessionState") -> SessionState <$> o .: "session"
-            Just wat -> Aeson.typeMismatch "SessionMessage" wat
-            wat -> fail "tag field must be present"
-    parseJSON wat = Aeson.typeMismatch "SessionMessage" wat
 
 mkSessionChannel sessionId = do
     chan <- atomically newBroadcastTChan
