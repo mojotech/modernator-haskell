@@ -3,6 +3,7 @@ module Modernator.Cookies where
 
 import Modernator.Types
 import Modernator.Types.Json
+import Modernator.Types.Swagger
 import Data.Aeson
 import GHC.Generics (Generic)
 import Data.Swagger.ParamSchema (ToParamSchema)
