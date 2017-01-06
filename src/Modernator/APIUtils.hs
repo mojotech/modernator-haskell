@@ -16,6 +16,7 @@ withError (Left NotAuthorizedForSession) = throwError $ err401 { errBody = "Not 
 withError (Left MustBeAnswerer) = throwError $ err401 { errBody = "Requires answerer" }
 withError (Left MustBeQuestioner) = throwError $ err401 { errBody = "Requires questioner" }
 withError (Left SessionAlreadyLocked) = throwError $ err400 { errBody = "Cannot lock session. Already locked." }
+withError (Left QuestionAlreadyUpvoted) = throwError $ err400 { errBody = "Cannot upvote question. You've already upvoted it." }
 
 unitToNoContent :: () -> NoContent
 unitToNoContent () = NoContent

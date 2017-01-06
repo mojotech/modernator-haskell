@@ -26,6 +26,7 @@ data AppError = QuestionNotFound
               | QuestionerNotFound
               | SessionNotFound
               | SessionAlreadyLocked
+              | QuestionAlreadyUpvoted
     deriving (Show, Generic, Eq, Ord, Enum, Bounded)
 
 -- | A question has an id, number of votes, text, and answered status
@@ -38,12 +39,8 @@ data Question = Question QuestionId SessionId Votes Text Answered
 newtype QuestionId = QuestionId Integer
     deriving (Show, FromHttpApiData, Enum, Eq, Ord, Generic)
 
--- | The number of votes is represented as an integer. Like the QuestionId, it
--- also disallows arithmetic and other mathematical operations on it. In our
--- domain, votes can only be incremented, which is functionality provided by
--- the Enum typeclass.
-newtype Votes = Votes Integer
-    deriving (Show, Enum, Eq, Ord, Generic)
+newtype Votes = Votes [QuestionerId]
+    deriving (Show, Eq, Ord, Generic)
 
 -- | A question's answered status is conceptually a boolean, but we use a more
 -- descriptive type here for better documenting code.
@@ -125,8 +122,8 @@ emptyApp = App
     }
 
 -- | A helper to upvote a question.
-upvote :: Question -> Question
-upvote (Question id sid v t a) = Question id sid (succ v) t a
+upvote :: QuestionerId -> Question -> Question
+upvote qId (Question id sid (Votes v) t a) = Question id sid (Votes (qId:v)) t a
 
 -- | A helper to answer a question. Note that we don't specify that only
 -- unanswered questions can be answered. Fortunately this is idempotent now so

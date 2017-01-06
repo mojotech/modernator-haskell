@@ -27,7 +27,7 @@ addQuestion qtext sessionId questionerId = do
         hoistEither $ joined questioner session
         -- session can't be locked already
         hoistEither $ sessionUnlocked session
-        let question = Question nextId sessionId (Votes 0) qtext NotAnswered
+        let question = Question nextId sessionId (Votes []) qtext NotAnswered
         return question
     case question of
         Right question -> do
@@ -42,6 +42,9 @@ addQuestion qtext sessionId questionerId = do
 questionInSession :: Question -> Session -> Either AppError ()
 questionInSession (Question _ id _ _ _) (Session id' _ _ _) = if id == id' then Right () else Left NotAuthorizedForSession
 
+questionNotUpvotedByQuestioner :: QuestionerId -> Question -> Either AppError ()
+questionNotUpvotedByQuestioner qId (Question _ _ (Votes vs) _ _) = if qId `elem` vs then Left QuestionAlreadyUpvoted else Right ()
+
 upvoteQuestion :: QuestionId -> SessionId -> QuestionerId -> Update App (Either AppError Question)
 upvoteQuestion questionId sessionId questionerId = do
     app <- get
@@ -55,7 +58,8 @@ upvoteQuestion questionId sessionId questionerId = do
         hoistEither $ questionInSession question session
         hoistEither $ joined questioner session
         hoistEither $ sessionUnlocked session
-        return $ upvote question
+        hoistEither $ questionNotUpvotedByQuestioner questionerId question
+        return $ upvote questionerId question
     case newQuestion of
         Right question -> do
             let newState = app { questions = Ix.updateIx questionId question (questions app) }
