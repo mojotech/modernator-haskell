@@ -19,7 +19,7 @@ import Control.Monad.STM (atomically, STM)
 import Control.Concurrent.STM.TChan (newBroadcastTChan, writeTChan, dupTChan, readTChan, tryReadTChan, peekTChan, TChan, unGetTChan, cloneTChan)
 import Control.Concurrent.STM.TVar (readTVar, TVar, modifyTVar')
 import Network.Wai.Handler.WebSockets (websocketsOr)
-import Network.WebSockets (defaultConnectionOptions, acceptRequest, sendBinaryData, sendTextData, PendingConnection, sendClose)
+import Network.WebSockets (defaultConnectionOptions, acceptRequest, sendBinaryData, sendTextData, PendingConnection, sendClose, forkPingThread)
 import Network.Wai (Application)
 import Data.Text (Text)
 import qualified Data.Text as Text
@@ -78,6 +78,8 @@ websocketsApp app sessionChannelDB cookie sessionId pending = do
                 (\ channel -> do
                     duped <- atomically $ dupTChan channel
                     sendStartingMessage fullSession conn
+                    -- keep the connection alive so wai doesn't kill it, TODO: this doesn't seem to actually require a pong
+                    forkPingThread conn 30
                     sendMessages duped conn)
 
 sendJsonData conn x = sendTextData conn (Text.decodeUtf8 (encode x))
