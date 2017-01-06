@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric, OverloadedStrings, OverloadedLists #-}
 module Modernator.RequestBodies where
 
-import Modernator.Types
+import Modernator.Types()
 import Data.Text
 import Data.Time.Clock
 import Data.Aeson
@@ -10,7 +10,6 @@ import Data.Swagger.Schema
 import Control.Lens
 import Data.Swagger.Internal
 import Data.Swagger.Lens
-import Data.Monoid (mempty)
 import Data.Proxy
 
 data SessionReq = SessionReq

@@ -2,12 +2,11 @@
 module Modernator.Cookies where
 
 import Modernator.Types
-import Modernator.Types.Json
-import Modernator.Types.Swagger
+import Modernator.Types.Json()
+import Modernator.Types.Swagger()
 import Data.Aeson
 import GHC.Generics (Generic)
 import Data.Swagger.ParamSchema (ToParamSchema)
-import Data.Proxy
 import Data.Serialize (Serialize)
 
 data AnswererCookie = AnswererCookie

@@ -21,7 +21,6 @@ import Data.Aeson hiding ((.=))
 import qualified Data.Aeson as Aeson
 import qualified Data.Aeson.Types as Aeson
 import qualified Data.Aeson.TH as Aeson
-import Data.Aeson.TH (deriveJSON, defaultOptions)
 
 -- TH instances
 $(Aeson.deriveJSON Aeson.defaultOptions{ Aeson.fieldLabelModifier = drop 12 } ''FullSession)
@@ -137,7 +136,7 @@ instance FromJSON SessionMessage where
             Just (String "QuestionAnswered") -> QuestionAnswered <$> o .: "question"
             Just (String "SessionState") -> SessionState <$> o .: "session"
             Just wat -> Aeson.typeMismatch "SessionMessage" wat
-            wat -> fail "tag field must be present"
+            _ -> fail "tag field must be present"
     parseJSON wat = Aeson.typeMismatch "SessionMessage" wat
 
 -- utility functions

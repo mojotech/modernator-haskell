@@ -14,25 +14,16 @@ module Modernator.MockApp where
  - https://github.com/haskell-servant/servant/issues/596 for ongoing details
  - and solutions to those two problems.
  -}
-import Modernator.Types
-import Modernator.Commands
 import Modernator.SessionsAPI
 import Network.Wai (Application)
-import Modernator.App (appContext, AppContext)
-import Data.Acid
+import Modernator.App (AppContext)
 import Servant
 import Servant.Server.Experimental.Auth
-import Servant.Server.Experimental.Auth.Cookie
-import Crypto.Random (drgNew)
-import Data.Default (def)
 import Modernator.Cookies
 import Network.Wai (Request)
-import Control.Concurrent.STM.TVar (newTVarIO, TVar)
-import qualified Data.IxSet as IxSet
-import Control.Applicative ((<|>))
 import Control.Monad.IO.Class (liftIO)
 import Servant.Mock
-import Test.QuickCheck.Instances -- for ByteString instance
+import Test.QuickCheck.Instances() -- for ByteString instance
 import Modernator.QuickCheck
 import GHC.TypeLits
 import Test.QuickCheck

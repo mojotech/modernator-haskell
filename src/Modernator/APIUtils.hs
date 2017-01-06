@@ -3,7 +3,7 @@ module Modernator.APIUtils where
 
 import Modernator.Types
 import Servant
-import Control.Monad.Error.Class (MonadError, throwError)
+import Control.Monad.Error.Class (MonadError)
 
 -- | A helper to translate between application errors and servant errors
 withError :: MonadError ServantErr m => Either AppError a -> m a

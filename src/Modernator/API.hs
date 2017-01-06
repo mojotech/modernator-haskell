@@ -6,16 +6,12 @@ import Modernator.SessionsAPI
 import Modernator.WebsocketsAPI
 import Modernator.Types
 import Modernator.Cookies
-import Data.Proxy
 import Data.Swagger
 import Servant.Swagger
 import Servant.Swagger.UI
-import Data.Swagger.Lens
 import Control.Lens
-import Servant.Server.Experimental.Auth
 import Servant.Server.Experimental.Auth.Cookie
 import Data.ByteString (ByteString)
-import GHC.TypeLits (KnownSymbol)
 import Control.Monad.IO.Class
 import Control.Monad.Catch
 import Data.Acid

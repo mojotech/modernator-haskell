@@ -8,21 +8,15 @@ import Modernator.RequestBodies
 import Modernator.Cookies
 import Servant
 import Servant.Server.Experimental.Auth
-import Servant.Server.Experimental.Auth.Cookie
-import Data.Proxy
 import Data.Acid
-import Data.Time.Clock
-import Data.Aeson
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad ((<=<))
 import Data.ByteString (ByteString)
 import Data.Swagger.ParamSchema (ToParamSchema, toParamSchema)
 import Control.Monad.STM (atomically)
-import Control.Concurrent.STM.TChan (newBroadcastTChan, writeTChan, dupTChan)
-import Control.Concurrent.STM.TVar (readTVar, TVar, modifyTVar')
+import Control.Concurrent.STM.TChan (writeTChan)
+import Control.Concurrent.STM.TVar (TVar, modifyTVar')
 import qualified Data.IxSet as Ix
-import Data.Maybe (fromJust)
-import Control.Monad.Error.Class (MonadError)
 
 type instance AuthServerData (AuthProtect "answerer-auth") = AnswererCookie
 type instance AuthServerData (AuthProtect "questioner-auth") = QuestionerCookie

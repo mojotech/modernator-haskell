@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, TypeFamilies #-}
 module Modernator.Commands where
 
-import Modernator.Migrations
+import Modernator.Migrations()
 import Modernator.Types
 import Control.Monad.State
 import Control.Monad.Reader
@@ -158,7 +158,7 @@ joinSession sessionId name = do
     qs <- gets questioners
     case Ix.getOne (Ix.getEQ sessionId ss) of
         Nothing -> return (Left SessionNotFound)
-        Just s -> do
+        Just _ -> do
             let questioner = Questioner nextId sessionId name
             modify (\ a -> a { questioners = (Ix.insert questioner qs), nextQuestionerId = succ nextId})
             return (Right questioner)

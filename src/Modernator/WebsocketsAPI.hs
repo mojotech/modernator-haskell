@@ -2,36 +2,28 @@
 module Modernator.WebsocketsAPI where
 
 import Modernator.Types
-import Modernator.Commands
 import Modernator.APIUtils
 import Modernator.Cookies
 import Modernator.SessionsAPI (fullSessionHandler)
 
 import Servant
-import Servant.Server.Experimental.Auth
-import Servant.Server.Experimental.Auth.Cookie
-import Data.Proxy
 import Data.Acid
-import Data.Foldable (forM_)
 import Control.Monad.IO.Class (liftIO)
-import Control.Monad ((<=<), forever)
-import Control.Monad.STM (atomically, STM)
-import Control.Concurrent.STM.TChan (newBroadcastTChan, writeTChan, dupTChan, readTChan, tryReadTChan, peekTChan, TChan, unGetTChan, cloneTChan)
-import Control.Concurrent.STM.TVar (readTVar, TVar, modifyTVar')
+import Control.Monad (forever)
+import Control.Monad.STM (atomically)
+import Control.Concurrent.STM.TChan (dupTChan, readTChan)
+import Control.Concurrent.STM.TVar (TVar)
 import Network.Wai.Handler.WebSockets (websocketsOr)
-import Network.WebSockets (defaultConnectionOptions, acceptRequest, sendBinaryData, sendTextData, PendingConnection, sendClose, forkPingThread)
+import Network.WebSockets (defaultConnectionOptions, acceptRequest, sendTextData, PendingConnection, sendClose, forkPingThread)
 import Network.Wai (Application)
 import Data.Text (Text)
-import qualified Data.Text as Text
 import qualified Data.Text.Lazy.Encoding as Text
-import Servant.API.Verbs
+import Servant.API.Verbs()
 import Data.Aeson (encode)
-import qualified Data.IxSet as Ix
 import Servant.Swagger
 import Data.Swagger.Lens
 import Data.Swagger
 import Control.Lens
-import Data.Maybe (fromMaybe)
 import Data.HashMap.Strict.InsOrd (adjust)
 
 data Websocket a = Websocket

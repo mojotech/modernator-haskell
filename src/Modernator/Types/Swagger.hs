@@ -25,9 +25,8 @@ import qualified Data.Aeson.Types as Aeson
 import Data.Swagger.Schema hiding (SchemaOptions)
 import Data.Swagger.Internal
 import Data.Swagger.Lens
-import Data.Swagger.ParamSchema (ToParamSchema, toParamSchema)
+import Data.Swagger.ParamSchema (ToParamSchema)
 import Control.Lens hiding (Indexable)
-import Data.Monoid (mempty)
 import Data.Proxy
 
 -- Generic instances

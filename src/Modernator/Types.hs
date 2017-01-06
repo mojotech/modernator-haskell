@@ -8,7 +8,6 @@ import qualified Data.IxSet as Ix
 import Control.Concurrent.STM.TChan (TChan, newBroadcastTChan)
 import Control.Monad.STM (atomically)
 import Control.Concurrent.STM.TVar (TVar, readTVar)
-import Control.Monad (fail)
 
 -- | GHC.Generics used for deriving ToJSON instances
 import GHC.Generics (Generic)

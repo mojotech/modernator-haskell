@@ -1,7 +1,7 @@
 module Modernator.QuickCheck where
 
 import Test.QuickCheck
-import Test.QuickCheck.Instances
+import Test.QuickCheck.Instances()
 import Modernator.Types
 import Modernator.RequestBodies
 import Modernator.Cookies
