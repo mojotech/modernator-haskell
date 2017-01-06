@@ -52,6 +52,10 @@ instance Arbitrary SessionMessage where
         , constArb SessionExpired
         , fmap SessionExceptionMessage arbitrary
         , fmap SessionState arbitrary
+        , fmap QuestionAsked arbitrary
+        , fmap QuestionUpvoted arbitrary
+        , fmap QuestionAnswered arbitrary
+        , fmap QuestionerJoined arbitrary
         ]
 
 instance Arbitrary AppError where

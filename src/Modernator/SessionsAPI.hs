@@ -66,6 +66,7 @@ sessionsServer addAnswererSession addQuestionerSession app sessionChannelDB = al
             return NoContent
         joinSessionH req sessionId = do
             questioner@(Questioner id _ _) <- withError <=< liftIO . sessionJoinHandler app req $ sessionId
+            withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionerJoined $ questioner
             addQuestionerSession (QuestionerCookie id) questioner
         askQH cookie sessionId req = do
             question <- withError <=< liftIO . askQuestionHandler app cookie sessionId $ req

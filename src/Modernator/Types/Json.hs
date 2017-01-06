@@ -123,6 +123,7 @@ instance ToJSON SessionMessage where
     toJSON (QuestionUpvoted q) = object [ "tag" Aeson..= (Aeson.String "QuestionUpvoted"), "question" Aeson..= q ]
     toJSON (QuestionAnswered q) = object [ "tag" Aeson..= (Aeson.String "QuestionAnswered"), "question" Aeson..= q ]
     toJSON (SessionState s) = object [ "tag" Aeson..= (Aeson.String "SessionState"), "session" Aeson..= s ]
+    toJSON (QuestionerJoined q) = object [ "tag" Aeson..= (Aeson.String "QuestionerJoined"), "questioner" Aeson..= q ]
 instance FromJSON SessionMessage where
     parseJSON (Object o) = do
         tag <- o .: "tag"
@@ -135,6 +136,7 @@ instance FromJSON SessionMessage where
             Just (String "QuestionUpvoted") -> QuestionUpvoted <$> o .: "question"
             Just (String "QuestionAnswered") -> QuestionAnswered <$> o .: "question"
             Just (String "SessionState") -> SessionState <$> o .: "session"
+            Just (String "QuestionerJoined") -> QuestionerJoined <$> o .: "questioner"
             Just wat -> Aeson.typeMismatch "SessionMessage" wat
             _ -> fail "tag field must be present"
     parseJSON wat = Aeson.typeMismatch "SessionMessage" wat

@@ -128,6 +128,7 @@ instance ToSchema SessionMessage where
         exceptionSchema <- declareSchemaRef (Proxy :: Proxy AppError)
         questionSchema <- declareSchemaRef (Proxy :: Proxy Question)
         sessionSchema <- declareSchemaRef (Proxy :: Proxy FullSession)
+        questionerSchema <- declareSchemaRef (Proxy :: Proxy Questioner)
         let tagSchema = mempty
                 & enum_ .~ Just [ Aeson.String "SessionLocked"
                                 , Aeson.String "SessionExpired"
@@ -137,6 +138,7 @@ instance ToSchema SessionMessage where
                                 , Aeson.String "QuestionUpvoted"
                                 , Aeson.String "QuestionAnswered"
                                 , Aeson.String "SessionState"
+                                , Aeson.String "QuestionerJoined"
                                 ]
                 & type_ .~ SwaggerString
         return $ NamedSchema (Just "SessionMessage") $ mempty
@@ -146,6 +148,7 @@ instance ToSchema SessionMessage where
                             , ("exception", exceptionSchema)
                             , ("question", questionSchema)
                             , ("session", sessionSchema)
+                            , ("questioner", questionerSchema)
                             ]
             & required .~ ["tag"]
-            & description .~ (Just "This is a variant type (sum type, discriminated union) representing the possible session messages. The `tag` field determines which fields are additionally present. Unless otherwise specified, only the `tag` field is present. If `tag` is `SessionStarted`, `answerer` is present. If `tag` is `SessionExceptionMessage`, `exception` is present. If `tag` is `QuestionAsked`, `QuestionUpvoted` or `QuestionAnswered`, `question` is present. If `tag` is `SessionState`, `session` is present.")
+            & description .~ (Just "This is a variant type (sum type, discriminated union) representing the possible session messages. The `tag` field determines which fields are additionally present. Unless otherwise specified, only the `tag` field is present. If `tag` is `SessionStarted`, `answerer` is present. If `tag` is `SessionExceptionMessage`, `exception` is present. If `tag` is `QuestionAsked`, `QuestionUpvoted` or `QuestionAnswered`, `question` is present. If `tag` is `SessionState`, `session` is present. If `tag` is `QuestionerJoined`, `questioner` is present.")

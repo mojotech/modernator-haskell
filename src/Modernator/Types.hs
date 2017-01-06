@@ -152,7 +152,7 @@ getFullSessionFromApp  app sessionId =
         <*> pure (Ix.toList . Ix.getEQ sessionId . questions $ app)
 
 -- | Our Websocket message type. SessionExceptionMessages should be more specific than AppError
-data SessionMessage = SessionLocked | SessionExpired | SessionClosed | SessionExceptionMessage AppError | QuestionAsked Question | QuestionUpvoted Question | QuestionAnswered Question | SessionState FullSession
+data SessionMessage = SessionLocked | SessionExpired | SessionClosed | SessionExceptionMessage AppError | QuestionAsked Question | QuestionUpvoted Question | QuestionAnswered Question | SessionState FullSession | QuestionerJoined Questioner
     deriving (Show, Eq, Generic)
 
 mkSessionChannel sessionId = do
