@@ -17,6 +17,9 @@ import Control.Concurrent.STM.TVar (newTVarIO, TVar)
 import qualified Data.IxSet as IxSet
 import Control.Applicative ((<|>))
 import Control.Monad.IO.Class (liftIO)
+import System.Directory (doesFileExist)
+import qualified Data.ByteString as BS
+import Data.Maybe (fromMaybe)
 
 -- | Serve our app
 app :: RandomSource -> ServerKey -> ServerKey -> AcidState App -> TVar SessionChannelDB -> Application
@@ -28,10 +31,32 @@ mkApp :: Maybe FilePath -> IO Application
 mkApp Nothing = openLocalState emptyApp >>= commonAppSetup
 mkApp (Just path) = openLocalStateFrom path emptyApp >>= commonAppSetup
 
+boolToMaybe True = Just ()
+boolToMaybe False = Nothing
+
+getKeys :: IO (ServerKey, ServerKey)
+getKeys = do
+    questionerKeyM <- getKeyFromFile questionerPath
+    answererKeyM <- getKeyFromFile answererPath
+    qKey <- fromMaybe <$> mkServerKey 16 Nothing <*> pure questionerKeyM
+    aKey <- fromMaybe <$> mkServerKey 16 Nothing <*> pure answererKeyM
+    writeKey qKey questionerPath
+    writeKey aKey answererPath
+    return (aKey, qKey)
+    where
+        questionerPath = "questioner.key"
+        answererPath = "answerer.key"
+        writeKey key path = getServerKey key >>= \k -> BS.writeFile path k
+
+getKeyFromFile path = do
+    pathM <- fmap (fmap (const path) . boolToMaybe) <$> doesFileExist $ path
+    case pathM of
+        Just p -> Just <$> (BS.readFile p >>= \bs -> mkServerKeyFromBytes bs)
+        Nothing -> return Nothing
+
 commonAppSetup state = do
     rng <- mkRandomSource drgNew 1000
-    aKey <- mkServerKey 16 Nothing
-    qKey <- mkServerKey 16 Nothing
+    (aKey, qKey) <- getKeys
 
     -- Initialize session channels for existing sessions
     sessionIds <- fmap (map (\ (Session id _ _ _) -> id) . IxSet.toList . sessions) $ query state GetState
