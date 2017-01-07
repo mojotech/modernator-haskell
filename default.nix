@@ -8,6 +8,7 @@ let haskellPackages = nixpkgs.pkgs.haskell.packages.${compiler};
     } // ( if system == null then {} else { inherit system; } ));
     packageOverrides = {
       servant-aeson-specs = lib.dontCheck haskellPackages.servant-aeson-specs;
+      servant-auth-cookie = callPackage ./servant-auth-cookie.nix {};
     };
     lib = nixpkgs.pkgs.haskell.lib;
 in
