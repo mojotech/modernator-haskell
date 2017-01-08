@@ -8,6 +8,7 @@ let haskellPackages = nixpkgs.pkgs.haskell.packages.${compiler};
     } // ( if system == null then {} else { inherit system; } ));
     packageOverrides = rec {
       servant-aeson-specs = lib.dontCheck haskellPackages.servant-aeson-specs;
+      # This version has a removeSession function
       servant-auth-cookie = callPackage ./servant-auth-cookie.nix {};
       # There's a bug in haddock that needs fixing, until then these are necessary
       # see https://github.com/haskell/haddock/issues/508, should be fixed with ghc802
