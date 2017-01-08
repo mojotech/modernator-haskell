@@ -5,6 +5,7 @@ import Test.QuickCheck.Instances()
 import Modernator.Types
 import Modernator.RequestBodies
 import Modernator.Cookies
+import Servant.Server.Experimental.Auth.Cookie (EncryptedSession(..))
 
 instance Arbitrary SessionReq where
     arbitrary = SessionReq <$> arbitrary <*> arbitrary <*> arbitrary
@@ -75,3 +76,7 @@ instance Arbitrary QuestionerCookie where
 
 instance Arbitrary AnswererCookie where
     arbitrary = AnswererCookie <$> arbitrary
+
+-- for session cookies
+instance Arbitrary EncryptedSession where
+    arbitrary = EncryptedSession <$> arbitrary

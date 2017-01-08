@@ -24,7 +24,7 @@ import Network.Wai (Request)
 import Control.Monad.IO.Class (liftIO)
 import Servant.Mock
 import Test.QuickCheck.Instances() -- for ByteString instance
-import Modernator.QuickCheck
+import Modernator.QuickCheck()
 import GHC.TypeLits
 import Test.QuickCheck
 
@@ -44,9 +44,6 @@ mockContext =
     ((mockAuthHandler :: AuthHandler Request AnswererCookie) :.
      (mockAuthHandler :: AuthHandler Request QuestionerCookie) :.
      (mockAuthHandler :: AuthHandler Request AnyCookie) :. EmptyContext)
-
-instance Arbitrary NoContent where
-    arbitrary = constArb NoContent
 
 -- Mocking servers doesn't play well with auth
 -- this needs undecidable instances but it seems to work okay?

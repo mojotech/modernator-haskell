@@ -20,14 +20,20 @@ import Modernator.Types ( FullSession
 import Data.Text (Text)
 import Data.Time.Clock (UTCTime)
 
+import Servant.Server.Experimental.Auth.Cookie (EncryptedSession)
+
 -- | For custom Swagger Schemas
 import qualified Data.Aeson.Types as Aeson
 import Data.Swagger.Schema hiding (SchemaOptions)
 import Data.Swagger.Internal
 import Data.Swagger.Lens
-import Data.Swagger.ParamSchema (ToParamSchema)
+import Data.Swagger.ParamSchema (ToParamSchema, toParamSchema, binaryParamSchema)
 import Control.Lens hiding (Indexable)
 import Data.Proxy
+
+-- Required external instances
+instance ToParamSchema EncryptedSession where
+    toParamSchema _ = binaryParamSchema
 
 -- Generic instances
 instance ToSchema AppError

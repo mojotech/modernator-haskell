@@ -2,8 +2,8 @@ let source = ''
       {
         "owner": "NixOS",
         "repo": "nixpkgs-channels",
-        "rev": "4574f22841d23a12fc135af74f198c4313002f4a",
-        "sha256": "0xmvwg4j2yc18658y1afdl1yrgkpmh7zwx590mgzbgvr7c6claqk"
+        "rev": "7ee897a3b3aa75dc53bd408ceea5f9e4e98822b2",
+        "sha256": "1bz6kdrvhm5dpv1b415qh1sl3xxard372axqavfd0xdqkqj5lywk"
       }
       '';
 in

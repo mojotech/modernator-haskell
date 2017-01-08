@@ -11,22 +11,15 @@ import Servant.Swagger
 import Servant.Swagger.UI
 import Control.Lens
 import Servant.Server.Experimental.Auth.Cookie
-import Data.ByteString (ByteString)
 import Control.Monad.IO.Class
 import Control.Monad.Catch
 import Data.Acid
 import Control.Concurrent.STM.TVar (TVar)
 
-type SwaggerSchemaEndpoint = "swagger.js" :> Get '[JSON] Swagger
-
 type BasicAPI = "sessions" :> (SessionsAPI :<|> WebsocketsAPI)
 
-data API'
-type API = SwaggerUI "ui" SwaggerSchemaEndpoint API'
-           :<|> SwaggerSchemaEndpoint
+type API = SwaggerSchemaUI "swagger.js" "ui"
            :<|> BasicAPI
-
-type instance IsElem' e API' = IsElem e API
 
 api :: Proxy API
 api = Proxy
@@ -35,11 +28,11 @@ basicAPI :: Proxy BasicAPI
 basicAPI = Proxy
 
 server :: RandomSource -> ServerKey -> ServerKey -> AuthCookieSettings -> AuthCookieSettings -> AcidState App -> TVar SessionChannelDB -> Server API
-server rng answererKey questionerKey answererSettings questionerSettings app sessionChannelDB = swaggerUIServer :<|> return swaggerDoc :<|> sessionsServer answererSession questionerSession app sessionChannelDB :<|> websocketsServer app sessionChannelDB
+server rng answererKey questionerKey answererSettings questionerSettings app sessionChannelDB = swaggerSchemaUIServer swaggerDoc :<|> sessionsServer answererSession questionerSession app sessionChannelDB :<|> websocketsServer app sessionChannelDB
     where
-        answererSession :: (MonadIO m, MonadThrow m) => AnswererCookie -> Answerer -> m (Headers '[Servant.Header "Set-Cookie" ByteString] Answerer)
+        answererSession :: (MonadIO m, MonadThrow m) => AnswererCookie -> Answerer -> m (Headers '[Servant.Header "Set-Cookie" EncryptedSession] Answerer)
         answererSession = addSession answererSettings rng answererKey
-        questionerSession :: (MonadIO m, MonadThrow m) => QuestionerCookie -> Questioner -> m (Headers '[Servant.Header "Set-Cookie" ByteString] Questioner)
+        questionerSession :: (MonadIO m, MonadThrow m) => QuestionerCookie -> Questioner -> m (Headers '[Servant.Header "Set-Cookie" EncryptedSession] Questioner)
         questionerSession = addSession questionerSettings rng questionerKey
 
 swaggerDoc :: Swagger
@@ -50,10 +43,10 @@ swaggerDoc = toSwagger (Proxy :: Proxy BasicAPI)
     & info.license ?~ "MIT"
 
 instance (HasSwagger sub) => HasSwagger (AuthProtect "answerer-auth" :> sub) where
-    toSwagger _ = toSwagger (Proxy :: Proxy (Servant.Header "Cookie" ByteString :> sub))
+    toSwagger _ = toSwagger (Proxy :: Proxy (Servant.Header "Cookie" EncryptedSession :> sub))
 
 instance (HasSwagger sub) => HasSwagger (AuthProtect "questioner-auth" :> sub) where
-    toSwagger _ = toSwagger (Proxy :: Proxy (Servant.Header "Cookie" ByteString :> sub))
+    toSwagger _ = toSwagger (Proxy :: Proxy (Servant.Header "Cookie" EncryptedSession :> sub))
 
 instance (HasSwagger sub) => HasSwagger (AuthProtect "any-auth" :> sub) where
-    toSwagger _ = toSwagger (Proxy :: Proxy (Servant.Header "Cookie" ByteString :> sub))
+    toSwagger _ = toSwagger (Proxy :: Proxy (Servant.Header "Cookie" EncryptedSession :> sub))

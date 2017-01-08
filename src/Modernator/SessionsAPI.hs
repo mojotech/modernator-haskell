@@ -8,11 +8,10 @@ import Modernator.RequestBodies
 import Modernator.Cookies
 import Servant
 import Servant.Server.Experimental.Auth
+import Servant.Server.Experimental.Auth.Cookie
 import Data.Acid
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad ((<=<))
-import Data.ByteString (ByteString)
-import Data.Swagger.ParamSchema (ToParamSchema, toParamSchema)
 import Control.Monad.STM (atomically)
 import Control.Concurrent.STM.TChan (writeTChan)
 import Control.Concurrent.STM.TVar (TVar, modifyTVar')
@@ -24,10 +23,10 @@ type instance AuthServerData (AuthProtect "any-auth") = AnyCookie
 
 type SessionsAPI =
     Get '[JSON] [FullSession]
-    :<|> ReqBody '[JSON] SessionReq :> Post '[JSON] (Headers '[Header "Set-Cookie" ByteString] Answerer)
+    :<|> ReqBody '[JSON] SessionReq :> Post '[JSON] (Headers '[Header "Set-Cookie" EncryptedSession] Answerer)
     :<|> AuthProtect "answerer-auth" :> Capture "session_id" SessionId :> "lock" :> PostNoContent '[PlainText] NoContent
     :<|> AuthProtect "answerer-auth" :> Capture "session_id" SessionId :> DeleteNoContent '[PlainText] NoContent
-    :<|> ReqBody '[JSON] JoinReq :> Capture "session_id" SessionId :> "join" :> Post '[JSON] (Headers '[Header "Set-Cookie" ByteString] Questioner)
+    :<|> ReqBody '[JSON] JoinReq :> Capture "session_id" SessionId :> "join" :> Post '[JSON] (Headers '[Header "Set-Cookie" EncryptedSession] Questioner)
     :<|> AuthProtect "questioner-auth" :> Capture "session_id" SessionId :> "questions" :> "ask" :> ReqBody '[JSON] QuestionReq :> Post '[JSON] Question
     :<|> AuthProtect "questioner-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "upvote" :> Post '[JSON] Question
     :<|> AuthProtect "answerer-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "answer" :> Post '[JSON] Question
@@ -43,8 +42,8 @@ sendSessionMessage sessionChannelDB sessionId messageFn a =
         (\ chan -> atomically (writeTChan chan (messageFn a)) >> return (Right a))
 
 sessionsServer ::
-    (AnswererCookie -> Answerer -> Handler (Headers '[Header "Set-Cookie" ByteString] Answerer)) ->
-    (QuestionerCookie -> Questioner -> Handler (Headers '[Header "Set-Cookie" ByteString] Questioner)) ->
+    (AnswererCookie -> Answerer -> Handler (Headers '[Header "Set-Cookie" EncryptedSession] Answerer)) ->
+    (QuestionerCookie -> Questioner -> Handler (Headers '[Header "Set-Cookie" EncryptedSession] Questioner)) ->
     AcidState App ->
     TVar SessionChannelDB ->
     Server SessionsAPI
@@ -108,6 +107,3 @@ fullSessionHandler app cookie sessionId = query app (GetFullSession (anyCookieTo
 
 allSessionsHandler :: AcidState App -> IO [FullSession]
 allSessionsHandler app = query app GetAllSessions
-
-instance ToParamSchema ByteString where
-    toParamSchema _ = toParamSchema (Proxy :: Proxy String)
