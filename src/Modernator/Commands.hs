@@ -205,4 +205,11 @@ getAllSessions = do
     app <- ask
     return $ mapMaybe (getFullSessionFromApp app) . map (\ (Session id _ _ _) -> id) . Ix.toList . sessions $ app
 
-$(makeAcidic ''App ['addQuestion, 'upvoteQuestion, 'answerQuestion, 'newSession, 'lockSession, 'getState, 'deleteSession, 'joinSession, 'getFullSession, 'getAllSessions])
+getMeForSession :: Either AnswererId QuestionerId -> SessionId -> Query App (Either AppError (Either Answerer Questioner))
+getMeForSession authId sId = do
+    app <- ask
+    case authId of
+        Left aId -> runEitherT $ hoistEither $ doAuthorizeAnswerer app sId aId >>= return . Left
+        Right qId -> runEitherT $ hoistEither $ doAuthorizeQuestioner app sId qId >>= return . Right
+
+$(makeAcidic ''App ['addQuestion, 'upvoteQuestion, 'answerQuestion, 'newSession, 'lockSession, 'getState, 'deleteSession, 'joinSession, 'getFullSession, 'getAllSessions, 'getMeForSession])
