@@ -170,28 +170,32 @@ joinSession sessionId name = do
 getState :: Query App App
 getState = ask
 
-doAuthorizeAnswerer :: App -> SessionId -> AnswererId -> Either AppError ()
+doAuthorizeAnswerer :: App -> SessionId -> AnswererId -> Either AppError Answerer
 doAuthorizeAnswerer app sId aId = do
     let answererM = Ix.getOne (Ix.getEQ aId (answerers app))
         sessionM = Ix.getOne (Ix.getEQ sId (sessions app))
     answerer <- maybe (Left AnswererNotFound) Right answererM
     session <- maybe (Left SessionNotFound) Right sessionM
     authorized answerer session
-    return ()
+    return answerer
 
-doAuthorizeQuestioner :: App -> SessionId -> QuestionerId -> Either AppError ()
+doAuthorizeAnswerer_ app sId aId = doAuthorizeAnswerer app sId aId >> return ()
+
+doAuthorizeQuestioner :: App -> SessionId -> QuestionerId -> Either AppError Questioner
 doAuthorizeQuestioner app sId qId = do
     let questionerM = Ix.getOne (Ix.getEQ qId (questioners app))
         sessionM = Ix.getOne (Ix.getEQ sId (sessions app))
     questioner <- maybe (Left QuestionerNotFound) Right questionerM
     session <- maybe (Left SessionNotFound) Right sessionM
     joined questioner session
-    return ()
+    return questioner
+
+doAuthorizeQuestioner_ app sId qId = doAuthorizeQuestioner app sId qId >> return ()
 
 getFullSession :: Either AnswererId QuestionerId -> SessionId -> Query App (Either AppError FullSession)
 getFullSession authId sId = do
     app <- ask
-    let authed = either (doAuthorizeAnswerer app sId) (doAuthorizeQuestioner app sId) authId
+    let authed = either (doAuthorizeAnswerer_ app sId) (doAuthorizeQuestioner_ app sId) authId
     runEitherT $ do
         hoistEither $ authed
         hoistEither $ maybe (Left SessionNotFound) Right $ getFullSessionFromApp app sId
