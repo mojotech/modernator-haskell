@@ -31,7 +31,7 @@
         # Start the service after the network is available
         after = [ "network.target" ];
 
-        environment = {
+        environment = with (import ./env.nix); {
           MODERNATOR_PORT = port;
           MODERNATOR_STATE_DIR = "/home/modernator/state";
           MODERNATOR_KEY_DIR = "/home/modernator/";
