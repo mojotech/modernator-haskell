@@ -27,15 +27,15 @@ app rng aKey qKey state sessionChannelDB =
     serveWithContext api (appContext aKey qKey) (server rng aKey qKey answererSettings questionerSettings state sessionChannelDB)
 
 -- | Set up our application potentially with a path to the application state.
-mkApp :: Maybe FilePath -> IO Application
-mkApp Nothing = openLocalState emptyApp >>= commonAppSetup
-mkApp (Just path) = openLocalStateFrom path emptyApp >>= commonAppSetup
+mkApp :: Maybe FilePath -> FilePath -> IO Application
+mkApp Nothing keyDir = openLocalState emptyApp >>= commonAppSetup keyDir
+mkApp (Just path) keyDir = openLocalStateFrom path emptyApp >>= commonAppSetup keyDir
 
 boolToMaybe True = Just ()
 boolToMaybe False = Nothing
 
-getKeys :: IO (ServerKey, ServerKey)
-getKeys = do
+getKeys :: FilePath -> IO (ServerKey, ServerKey)
+getKeys keyDir = do
     questionerKeyM <- getKeyFromFile questionerPath
     answererKeyM <- getKeyFromFile answererPath
     qKey <- fromMaybe <$> mkServerKey 16 Nothing <*> pure questionerKeyM
@@ -44,8 +44,8 @@ getKeys = do
     writeKey aKey answererPath
     return (aKey, qKey)
     where
-        questionerPath = "questioner.key"
-        answererPath = "answerer.key"
+        questionerPath = keyDir ++ "questioner.key"
+        answererPath = keyDir ++ "answerer.key"
         writeKey key path = getServerKey key >>= \k -> BS.writeFile path k
 
 getKeyFromFile path = do
@@ -54,9 +54,9 @@ getKeyFromFile path = do
         Just p -> Just <$> (BS.readFile p >>= \bs -> mkServerKeyFromBytes bs)
         Nothing -> return Nothing
 
-commonAppSetup state = do
+commonAppSetup keyDir state = do
     rng <- mkRandomSource drgNew 1000
-    (aKey, qKey) <- getKeys
+    (aKey, qKey) <- getKeys keyDir
 
     -- Initialize session channels for existing sessions
     sessionIds <- fmap (map (\ (Session id _ _ _) -> id) . IxSet.toList . sessions) $ query state GetState

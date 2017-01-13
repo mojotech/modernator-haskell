@@ -15,11 +15,12 @@ prettyArg s = fmap ((s ++) . show)
 main = do
     port <- fmap (fromMaybe 8080 . (>>= readMaybe)) $ lookupEnv "MODERNATOR_PORT"
     stateDir <- lookupEnv "MODERNATOR_STATE_DIR"
+    keyDir <- fmap (fromMaybe "./") $ lookupEnv "MODERNATOR_KEY_DIR"
     let args = mapMaybe id [ prettyArg "port: " (pure port)
                            , prettyArg "state directory: " stateDir
                            ]
     putStrLn $ "Running modernator-haskell on " ++ (concat $ intersperse " and " args)
-    app <- mkApp stateDir
+    app <- mkApp stateDir keyDir
     run port $ logStdoutDev $ myCors app
 
 myCors = cors (const $ Just policy)
