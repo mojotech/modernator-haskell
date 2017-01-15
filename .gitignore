@@ -1,0 +1,7 @@
+answerer.key
+questioner.key
+env.nix
+ec2-config.nix
+gc-roots/
+dist/
+state/
