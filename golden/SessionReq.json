@@ -1,0 +1,30 @@
+{
+    "seed": 1883620941418603369,
+    "samples": [
+        {
+            "sessionExpiration": "1864-05-17T19:27:26.494550547839Z",
+            "answererName": "^R)ü3\u0006\u001c",
+            "sessionName": "\u0001#2"
+        },
+        {
+            "sessionExpiration": null,
+            "answererName": "\"9Ò\"",
+            "sessionName": ""
+        },
+        {
+            "sessionExpiration": null,
+            "answererName": "FÇDP3¦n7",
+            "sessionName": "½À\u00120\u0003\u0008Iw\u0011Ï?=£/#¢'@}Â"
+        },
+        {
+            "sessionExpiration": "1864-05-31T05:29:03.794432215294Z",
+            "answererName": "\u001c\u0007è`#Ýû/\u0011,Wyß",
+            "sessionName": "zq&é\u0011þ(\u00071=<y)¨Z"
+        },
+        {
+            "sessionExpiration": "1864-06-04T03:03:49.164674939594Z",
+            "answererName": "Î}r~\n\u000cVr\u00056\u0019Ir[Y<",
+            "sessionName": "!`l\u0007\rêQ+\u0012n2"
+        }
+    ]
+}

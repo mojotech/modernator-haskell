@@ -1,0 +1,40 @@
+{
+    "seed": 6691865294392563159,
+    "samples": [
+        {
+            "Left": {
+                "answererId": -12,
+                "name": "",
+                "sessionId": -10
+            }
+        },
+        {
+            "Left": {
+                "answererId": 9,
+                "name": "",
+                "sessionId": -1
+            }
+        },
+        {
+            "Right": {
+                "questionerId": 25,
+                "name": "\u0014PJ\u0016o8.`B\\§X9Û\u0005u\u0008»o>\u0011\u0017[\u001f",
+                "sessionId": 26
+            }
+        },
+        {
+            "Left": {
+                "answererId": -14,
+                "name": "W",
+                "sessionId": 27
+            }
+        },
+        {
+            "Left": {
+                "answererId": -22,
+                "name": "6Eî1ë\u0015¾AMR\u001döMOn@@V\u0014eP\u0004",
+                "sessionId": -3
+            }
+        }
+    ]
+}

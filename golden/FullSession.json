@@ -1,0 +1,1538 @@
+{
+    "seed": 6078740873937004585,
+    "samples": [
+        {
+            "answerer": {
+                "answererId": -10,
+                "name": "1E",
+                "sessionId": -9
+            },
+            "questioners": [
+                {
+                    "questionerId": 12,
+                    "name": null,
+                    "sessionId": -30
+                },
+                {
+                    "questionerId": 4,
+                    "name": "[À\u0019",
+                    "sessionId": 9
+                },
+                {
+                    "questionerId": 30,
+                    "name": "\u0018V \u0014\u000bÕ(.å¿\u001d´àko¶9p¤HCT\u0010z]\u0016",
+                    "sessionId": 29
+                },
+                {
+                    "questionerId": -8,
+                    "name": null,
+                    "sessionId": 19
+                },
+                {
+                    "questionerId": 13,
+                    "name": "ûT\u001eE",
+                    "sessionId": 3
+                },
+                {
+                    "questionerId": 18,
+                    "name": "Á\u0006Û8¿bX vV\r\u001dvK'²l(P¢]",
+                    "sessionId": 13
+                },
+                {
+                    "questionerId": 23,
+                    "name": "O",
+                    "sessionId": -22
+                },
+                {
+                    "questionerId": -24,
+                    "name": null,
+                    "sessionId": -8
+                },
+                {
+                    "questionerId": -12,
+                    "name": "®}*O_i\t\u0008l}]?K0\u0013mÖVbyþuSø?",
+                    "sessionId": -5
+                },
+                {
+                    "questionerId": -9,
+                    "name": "\u0012\u000f`6f\u001eò\u0014\"\u0000[1¥hÐ\u001b",
+                    "sessionId": 30
+                },
+                {
+                    "questionerId": 5,
+                    "name": "\u001f \\,p\u001a+±\u000c]rÙ\r¬X4\u0019õÂR\n\"",
+                    "sessionId": -21
+                },
+                {
+                    "questionerId": 21,
+                    "name": "];­&æ<\u000c}{lh\u0019i\u0002w\ti\u0000:u",
+                    "sessionId": 20
+                },
+                {
+                    "questionerId": -3,
+                    "name": null,
+                    "sessionId": -1
+                },
+                {
+                    "questionerId": 11,
+                    "name": "\\t1v\tE?qfv\t5_\u001dt;K\u0004g",
+                    "sessionId": -9
+                },
+                {
+                    "questionerId": 3,
+                    "name": "\"+¶!",
+                    "sessionId": 20
+                },
+                {
+                    "questionerId": 27,
+                    "name": "äôdil¿\n\\\t\u001f\u0003",
+                    "sessionId": -17
+                },
+                {
+                    "questionerId": 29,
+                    "name": "R\u000e CMX\u0013\u0013)äÎ",
+                    "sessionId": 5
+                },
+                {
+                    "questionerId": 24,
+                    "name": "¤\u0001Ý¤7õp\t",
+                    "sessionId": -13
+                },
+                {
+                    "questionerId": 12,
+                    "name": "",
+                    "sessionId": -26
+                },
+                {
+                    "questionerId": 15,
+                    "name": "jtä¤\u0012\u001fÈ;³Dm^Jq£ð",
+                    "sessionId": 17
+                },
+                {
+                    "questionerId": -10,
+                    "name": null,
+                    "sessionId": 17
+                },
+                {
+                    "questionerId": 23,
+                    "name": "õ²\u0012r",
+                    "sessionId": -20
+                },
+                {
+                    "questionerId": -28,
+                    "name": "æ\u001c",
+                    "sessionId": 12
+                },
+                {
+                    "questionerId": 16,
+                    "name": "\u000e -/×tyf;S^{\u0019\u001eµb\u001d µ)",
+                    "sessionId": 11
+                }
+            ],
+            "questions": [
+                {
+                    "questionVotes": [
+                        -11,
+                        9,
+                        17,
+                        -26,
+                        -21,
+                        -30,
+                        14,
+                        23,
+                        7,
+                        -19,
+                        -28,
+                        -17,
+                        -26,
+                        -7,
+                        3,
+                        -3
+                    ],
+                    "questionText": "az#?PT19lg\u0014lj\u0005<",
+                    "questionAnswered": false,
+                    "sessionId": 12,
+                    "questionId": 16
+                },
+                {
+                    "questionVotes": [
+                        16,
+                        21,
+                        25,
+                        10,
+                        21
+                    ],
+                    "questionText": "è\u0015oL+À\u000fmk\u0017\u0015ñ{",
+                    "questionAnswered": true,
+                    "sessionId": -30,
+                    "questionId": -9
+                },
+                {
+                    "questionVotes": [
+                        -6,
+                        6,
+                        9,
+                        18,
+                        22,
+                        -20,
+                        -3,
+                        8,
+                        25,
+                        12,
+                        -26,
+                        14,
+                        10,
+                        -3,
+                        -6,
+                        26,
+                        23,
+                        -18,
+                        14,
+                        -28,
+                        -8,
+                        5,
+                        -27,
+                        -28,
+                        -24,
+                        13,
+                        -19,
+                        1,
+                        -7,
+                        -10
+                    ],
+                    "questionText": "%\u001a\u001a(\u001aÝlB\u0011üÊX?\u001b\u0007\u001epÆOX6\u000c\u0013c",
+                    "questionAnswered": true,
+                    "sessionId": -2,
+                    "questionId": 19
+                },
+                {
+                    "questionVotes": [
+                        2,
+                        -15,
+                        -4,
+                        -5,
+                        -5,
+                        29,
+                        10,
+                        -14,
+                        1,
+                        -21,
+                        -18,
+                        16,
+                        -7,
+                        -27,
+                        2,
+                        1,
+                        20
+                    ],
+                    "questionText": "\u0015\\",
+                    "questionAnswered": true,
+                    "sessionId": -8,
+                    "questionId": -14
+                },
+                {
+                    "questionVotes": [
+                        5,
+                        11,
+                        1,
+                        0
+                    ],
+                    "questionText": "æ3\u0015µ'\u0014",
+                    "questionAnswered": false,
+                    "sessionId": 6,
+                    "questionId": 15
+                },
+                {
+                    "questionVotes": [
+                        -10,
+                        -17,
+                        -15,
+                        12,
+                        24,
+                        -20,
+                        15,
+                        6,
+                        27,
+                        9,
+                        -3,
+                        -3,
+                        26,
+                        -4,
+                        -19,
+                        14,
+                        -27,
+                        -12,
+                        5,
+                        21,
+                        -14,
+                        25,
+                        -21,
+                        -3,
+                        -20
+                    ],
+                    "questionText": "\u001f\u000e",
+                    "questionAnswered": false,
+                    "sessionId": 12,
+                    "questionId": -11
+                },
+                {
+                    "questionVotes": [
+                        -16,
+                        20,
+                        15,
+                        -7,
+                        -30,
+                        30,
+                        -28,
+                        -9,
+                        -8,
+                        8,
+                        16,
+                        -1,
+                        14,
+                        15,
+                        -2,
+                        4,
+                        15,
+                        25,
+                        17,
+                        20,
+                        9,
+                        -9
+                    ],
+                    "questionText": "UÛ\\H",
+                    "questionAnswered": false,
+                    "sessionId": -6,
+                    "questionId": 24
+                },
+                {
+                    "questionVotes": [
+                        -29,
+                        -20,
+                        19,
+                        29,
+                        -9,
+                        -16,
+                        8,
+                        -7,
+                        -11,
+                        -22,
+                        18,
+                        14,
+                        19,
+                        15
+                    ],
+                    "questionText": "ÍLÖG\u0002))~\u0007@\u0007Kjb>=wdàO",
+                    "questionAnswered": true,
+                    "sessionId": -3,
+                    "questionId": 23
+                },
+                {
+                    "questionVotes": [
+                        -12,
+                        21,
+                        6
+                    ],
+                    "questionText": "HùE¿9(~c ¿h\u0012zHQ7DqWóC\n`\u0002<\u0001>",
+                    "questionAnswered": false,
+                    "sessionId": -18,
+                    "questionId": 3
+                },
+                {
+                    "questionVotes": [
+                        -29,
+                        -8,
+                        23,
+                        8,
+                        3,
+                        14,
+                        -24,
+                        1,
+                        11,
+                        21,
+                        10,
+                        -1,
+                        9,
+                        21,
+                        -21,
+                        -4,
+                        6,
+                        -26,
+                        -1,
+                        4,
+                        -6,
+                        -21
+                    ],
+                    "questionText": "z\u0017",
+                    "questionAnswered": false,
+                    "sessionId": 10,
+                    "questionId": -17
+                }
+            ],
+            "session": {
+                "locked": "Locked",
+                "expiresAt": null,
+                "name": "\u000bm©Y\nTy]\n2xe\nr\u0007\u001e\u001fh×§\u0010ùÌ3",
+                "sessionId": -29
+            }
+        },
+        {
+            "answerer": {
+                "answererId": -4,
+                "name": "i£­:ÖO8",
+                "sessionId": 27
+            },
+            "questioners": [
+                {
+                    "questionerId": -18,
+                    "name": "e+®ñT@Ù~@æà",
+                    "sessionId": -17
+                },
+                {
+                    "questionerId": 22,
+                    "name": null,
+                    "sessionId": -11
+                },
+                {
+                    "questionerId": 26,
+                    "name": "V\u0019ÎØXlN",
+                    "sessionId": 27
+                },
+                {
+                    "questionerId": 3,
+                    "name": "\u0017",
+                    "sessionId": 30
+                },
+                {
+                    "questionerId": 26,
+                    "name": null,
+                    "sessionId": -8
+                },
+                {
+                    "questionerId": 16,
+                    "name": "a0qn",
+                    "sessionId": -3
+                },
+                {
+                    "questionerId": -5,
+                    "name": null,
+                    "sessionId": -4
+                },
+                {
+                    "questionerId": -12,
+                    "name": "",
+                    "sessionId": -9
+                },
+                {
+                    "questionerId": 3,
+                    "name": "¶(Åf¼`\n\u0003",
+                    "sessionId": 19
+                },
+                {
+                    "questionerId": -12,
+                    "name": null,
+                    "sessionId": -14
+                },
+                {
+                    "questionerId": -28,
+                    "name": "ÉBR`\u0014Y\r:Oy·x.2ÉMh\u001c",
+                    "sessionId": -7
+                },
+                {
+                    "questionerId": -9,
+                    "name": "\u0001B",
+                    "sessionId": -26
+                },
+                {
+                    "questionerId": 4,
+                    "name": "\u001f7=\u0019×F\u0014méæo¶\tc;Kõ\u0010÷kwKj",
+                    "sessionId": -22
+                },
+                {
+                    "questionerId": -20,
+                    "name": "Zö\u001b÷\u0001GHak>b\u0008\u0016\u0017\u001d:0\u0014-",
+                    "sessionId": -12
+                }
+            ],
+            "questions": [
+                {
+                    "questionVotes": [
+                        19,
+                        19,
+                        -13,
+                        8,
+                        -25,
+                        4,
+                        -16,
+                        22,
+                        -19,
+                        7,
+                        16
+                    ],
+                    "questionText": "HQ\u0006DÕÛO\u0007T:¤>Sn\u001a@\u00074\u000bÒà",
+                    "questionAnswered": true,
+                    "sessionId": 16,
+                    "questionId": -21
+                },
+                {
+                    "questionVotes": [
+                        -11,
+                        -9,
+                        5,
+                        13
+                    ],
+                    "questionText": "]\nq",
+                    "questionAnswered": false,
+                    "sessionId": 14,
+                    "questionId": -22
+                },
+                {
+                    "questionVotes": [],
+                    "questionText": "\u0015d^P\u0015kºú÷\u000eEkâW",
+                    "questionAnswered": false,
+                    "sessionId": 7,
+                    "questionId": 17
+                },
+                {
+                    "questionVotes": [
+                        0,
+                        -22,
+                        -9,
+                        11,
+                        -2,
+                        -22,
+                        -29,
+                        14,
+                        -9
+                    ],
+                    "questionText": "\u0017v.øaV=o9\u0018\u0015drB f²äw\u00110G\u0016o;×}",
+                    "questionAnswered": false,
+                    "sessionId": -1,
+                    "questionId": 8
+                },
+                {
+                    "questionVotes": [],
+                    "questionText": ">\u0002d`\u000c\u001e¿;Dli",
+                    "questionAnswered": false,
+                    "sessionId": 6,
+                    "questionId": 23
+                },
+                {
+                    "questionVotes": [
+                        15,
+                        11,
+                        19,
+                        -8,
+                        7,
+                        29,
+                        -21
+                    ],
+                    "questionText": "JR*ho:\u0018]",
+                    "questionAnswered": true,
+                    "sessionId": -5,
+                    "questionId": -26
+                },
+                {
+                    "questionVotes": [
+                        22,
+                        -2,
+                        -2,
+                        4,
+                        -12,
+                        25,
+                        18,
+                        -12,
+                        -18,
+                        30,
+                        12,
+                        2,
+                        -17,
+                        -3,
+                        -10
+                    ],
+                    "questionText": "tVvÊ!Bb*",
+                    "questionAnswered": false,
+                    "sessionId": 5,
+                    "questionId": 12
+                },
+                {
+                    "questionVotes": [
+                        2,
+                        -5,
+                        -11,
+                        -1,
+                        25,
+                        29,
+                        28,
+                        28,
+                        -12,
+                        -23,
+                        -18,
+                        13,
+                        20
+                    ],
+                    "questionText": "p$\u0004¾\u0019\u001f[\u0018:\u0011Y\u0016b",
+                    "questionAnswered": false,
+                    "sessionId": -5,
+                    "questionId": -9
+                },
+                {
+                    "questionVotes": [
+                        5,
+                        19,
+                        9,
+                        -27,
+                        -30,
+                        19,
+                        6
+                    ],
+                    "questionText": "ðÜæ",
+                    "questionAnswered": true,
+                    "sessionId": -15,
+                    "questionId": -9
+                }
+            ],
+            "session": {
+                "locked": "Locked",
+                "expiresAt": "1864-05-10T20:31:36.759681504554Z",
+                "name": "O4ÐX6\u0008'«7¡\u0006Ðjr\u0006\u0017\u0003\u001bÃ",
+                "sessionId": 24
+            }
+        },
+        {
+            "answerer": {
+                "answererId": 16,
+                "name": "f6N|\tãbM",
+                "sessionId": -23
+            },
+            "questioners": [
+                {
+                    "questionerId": 12,
+                    "name": "Z)\u001f3\u001eEµ4^\u0016þÐh~!\u000fY\u0019.\\Âè7",
+                    "sessionId": 23
+                },
+                {
+                    "questionerId": -30,
+                    "name": "",
+                    "sessionId": -15
+                },
+                {
+                    "questionerId": 22,
+                    "name": "<Ú¿:o2c2Z+1\u0016I\u001a8+?Vìö^Q",
+                    "sessionId": -29
+                },
+                {
+                    "questionerId": -8,
+                    "name": null,
+                    "sessionId": 28
+                },
+                {
+                    "questionerId": 13,
+                    "name": "ÿ\u0006]Ee#f,-\u0007ZeA\u0002",
+                    "sessionId": 1
+                },
+                {
+                    "questionerId": -29,
+                    "name": null,
+                    "sessionId": -18
+                },
+                {
+                    "questionerId": -8,
+                    "name": "\u0002,\u001d-\u0012O\u0008",
+                    "sessionId": 9
+                },
+                {
+                    "questionerId": 29,
+                    "name": "\\,v/Dhv¬XoRQ_L0\u0017D\u0001\u0012\rÞb<V\u0010H",
+                    "sessionId": -1
+                },
+                {
+                    "questionerId": -5,
+                    "name": "+2u\u0003\u000fí 7­\u000e].ñ@4{:f ?Ý",
+                    "sessionId": -21
+                },
+                {
+                    "questionerId": -29,
+                    "name": "JEÂ9d|",
+                    "sessionId": 11
+                },
+                {
+                    "questionerId": 28,
+                    "name": "",
+                    "sessionId": -25
+                },
+                {
+                    "questionerId": -5,
+                    "name": null,
+                    "sessionId": -2
+                },
+                {
+                    "questionerId": 4,
+                    "name": "+]X\u0019_CUNÁ\u0001u\u001cF­m",
+                    "sessionId": 5
+                },
+                {
+                    "questionerId": -17,
+                    "name": "\u0003\u00048\u00065P\\?sè \\\u0005\u001bk9Q;}í",
+                    "sessionId": -9
+                },
+                {
+                    "questionerId": -17,
+                    "name": "?5~Ú\u0006Úlk\u0005!l",
+                    "sessionId": -23
+                },
+                {
+                    "questionerId": -8,
+                    "name": null,
+                    "sessionId": 27
+                },
+                {
+                    "questionerId": 17,
+                    "name": null,
+                    "sessionId": -12
+                },
+                {
+                    "questionerId": -10,
+                    "name": null,
+                    "sessionId": -27
+                },
+                {
+                    "questionerId": 21,
+                    "name": null,
+                    "sessionId": -19
+                }
+            ],
+            "questions": [
+                {
+                    "questionVotes": [
+                        6,
+                        16,
+                        21,
+                        -6,
+                        14,
+                        -12,
+                        -6,
+                        7,
+                        -30,
+                        -3,
+                        29,
+                        23,
+                        30
+                    ],
+                    "questionText": "8U.Pg\u0005¾\u000c¬Ë\\\u0006R\u0005Sâ$sKµ\u001eËLV\u0008[1",
+                    "questionAnswered": false,
+                    "sessionId": 4,
+                    "questionId": 9
+                },
+                {
+                    "questionVotes": [],
+                    "questionText": "t\u0005é$P®&¦\u0017Nú\u0018G\\ï\u000c`lSn­He&\u001eÑ",
+                    "questionAnswered": true,
+                    "sessionId": 16,
+                    "questionId": 19
+                },
+                {
+                    "questionVotes": [
+                        15,
+                        -28,
+                        28,
+                        8,
+                        -14,
+                        29,
+                        -30,
+                        -25,
+                        3,
+                        -28,
+                        28,
+                        29,
+                        14,
+                        20,
+                        -7,
+                        -10,
+                        26,
+                        -29,
+                        -17,
+                        -1,
+                        2,
+                        -2,
+                        21,
+                        -3,
+                        8,
+                        -13,
+                        12,
+                        28,
+                        -20
+                    ],
+                    "questionText": "DF±#ï__\u000f\\*\tL\u0016Á=%\u0018JÁ(ÍÞ+ÍH",
+                    "questionAnswered": false,
+                    "sessionId": 27,
+                    "questionId": -2
+                },
+                {
+                    "questionVotes": [
+                        15,
+                        -13,
+                        -3,
+                        -17,
+                        -10,
+                        28,
+                        -27,
+                        15,
+                        -14,
+                        -7,
+                        30,
+                        21
+                    ],
+                    "questionText": "c\u0001hv.fI.-óH\")\"n\u0012\u000fw°\u0002k,",
+                    "questionAnswered": false,
+                    "sessionId": -15,
+                    "questionId": -3
+                },
+                {
+                    "questionVotes": [],
+                    "questionText": "\u001ae¹È\u0012ÿ\u0014\r¡\u00182",
+                    "questionAnswered": false,
+                    "sessionId": -27,
+                    "questionId": -10
+                },
+                {
+                    "questionVotes": [
+                        24,
+                        -6,
+                        21,
+                        -8,
+                        11,
+                        7,
+                        -4,
+                        -19,
+                        13,
+                        25,
+                        3,
+                        16,
+                        9
+                    ],
+                    "questionText": "r\u0019J:I %¥[?G?ìC\u001b?rZsâÑ\u0010}¯\t\u0007,çh",
+                    "questionAnswered": true,
+                    "sessionId": 17,
+                    "questionId": -9
+                },
+                {
+                    "questionVotes": [
+                        -20,
+                        -15,
+                        29,
+                        18,
+                        -27,
+                        17,
+                        16,
+                        23,
+                        -25,
+                        27,
+                        -8,
+                        1
+                    ],
+                    "questionText": "%k\u0016\u000c7ü´dö^G¤w\n",
+                    "questionAnswered": false,
+                    "sessionId": 23,
+                    "questionId": 12
+                },
+                {
+                    "questionVotes": [
+                        -13,
+                        25,
+                        3,
+                        -15,
+                        18,
+                        22,
+                        9,
+                        -15
+                    ],
+                    "questionText": "¢5\rSr \n^",
+                    "questionAnswered": true,
+                    "sessionId": 21,
+                    "questionId": 16
+                },
+                {
+                    "questionVotes": [
+                        -7,
+                        25,
+                        -7,
+                        -6,
+                        9,
+                        29,
+                        14,
+                        -17,
+                        16,
+                        -22,
+                        27,
+                        0,
+                        -3,
+                        -2,
+                        -2,
+                        23,
+                        30,
+                        -4
+                    ],
+                    "questionText": "¶ß\\ÈÀnwê2çk[H¨\u001aA'\r",
+                    "questionAnswered": false,
+                    "sessionId": 29,
+                    "questionId": -30
+                },
+                {
+                    "questionVotes": [
+                        8,
+                        -7,
+                        14,
+                        1,
+                        17,
+                        -7,
+                        0,
+                        16,
+                        -27,
+                        19,
+                        -3,
+                        1
+                    ],
+                    "questionText": "\u0004~Z»",
+                    "questionAnswered": false,
+                    "sessionId": 9,
+                    "questionId": -10
+                },
+                {
+                    "questionVotes": [
+                        -20,
+                        -25,
+                        -1,
+                        2,
+                        5,
+                        28,
+                        -10,
+                        29,
+                        -2,
+                        13,
+                        6,
+                        12,
+                        -4,
+                        17,
+                        -12,
+                        -20,
+                        -26,
+                        9
+                    ],
+                    "questionText": ":PX",
+                    "questionAnswered": false,
+                    "sessionId": 12,
+                    "questionId": -4
+                },
+                {
+                    "questionVotes": [],
+                    "questionText": "oëaÿ\u0002[xûi]c¯4f\u000c\n88",
+                    "questionAnswered": true,
+                    "sessionId": -12,
+                    "questionId": 8
+                }
+            ],
+            "session": {
+                "locked": "Locked",
+                "expiresAt": "1864-04-12T22:26:44.260139488484Z",
+                "name": "u\u001b<g\t34z:whc;d_gZÕ\u001d-t.æ[",
+                "sessionId": -8
+            }
+        },
+        {
+            "answerer": {
+                "answererId": -22,
+                "name": "af#\\^´>Xb>Å:%À\u0013ü\u001a",
+                "sessionId": 0
+            },
+            "questioners": [
+                {
+                    "questionerId": 13,
+                    "name": "2²\u001eêT;]0ËBjR\u00106NNHwQ\u0000Ô\u001f",
+                    "sessionId": -2
+                }
+            ],
+            "questions": [
+                {
+                    "questionVotes": [
+                        16,
+                        22,
+                        20,
+                        -5,
+                        19,
+                        -19,
+                        23,
+                        27,
+                        12,
+                        26,
+                        19,
+                        16,
+                        -23,
+                        18,
+                        -8,
+                        25,
+                        6,
+                        14,
+                        -24,
+                        25,
+                        -14,
+                        20,
+                        -30,
+                        -19,
+                        13
+                    ],
+                    "questionText": "YË@-ï=§u\u0013­\u00195](\u001f=ÿ\u0013ú5Ý\u0013T+4|¹",
+                    "questionAnswered": false,
+                    "sessionId": -8,
+                    "questionId": 11
+                },
+                {
+                    "questionVotes": [
+                        18,
+                        -17,
+                        29,
+                        -29,
+                        -21,
+                        -15,
+                        4,
+                        8,
+                        -23,
+                        3,
+                        7,
+                        17,
+                        27
+                    ],
+                    "questionText": "&0P\u000e@GäQ\u0012JÃ\u001b<\u0018.áKhTO\u0011/HS",
+                    "questionAnswered": true,
+                    "sessionId": 23,
+                    "questionId": 16
+                },
+                {
+                    "questionVotes": [
+                        24,
+                        26,
+                        30,
+                        6,
+                        -28,
+                        -13,
+                        -8,
+                        -15,
+                        -28,
+                        3,
+                        -27,
+                        -13,
+                        3,
+                        -28,
+                        30,
+                        -25,
+                        -23,
+                        -17,
+                        20,
+                        8,
+                        -22,
+                        3,
+                        25,
+                        12,
+                        -28,
+                        -2,
+                        6,
+                        -4
+                    ],
+                    "questionText": "RZ~Î>¾=\u000bjfA/Xä\u00109bwr\u0000>\u0008\u000f",
+                    "questionAnswered": true,
+                    "sessionId": 13,
+                    "questionId": 0
+                },
+                {
+                    "questionVotes": [
+                        -25,
+                        18,
+                        -11,
+                        -17,
+                        -9
+                    ],
+                    "questionText": "P/gyª\u0007ÀQ#e/|\u0006­EÞsü@\n\"À¥a",
+                    "questionAnswered": false,
+                    "sessionId": -19,
+                    "questionId": -6
+                },
+                {
+                    "questionVotes": [
+                        -19,
+                        3,
+                        22,
+                        -8
+                    ],
+                    "questionText": "\u000f@BI\"\\DÃß¼\tv\u001bJ6",
+                    "questionAnswered": true,
+                    "sessionId": 11,
+                    "questionId": 14
+                },
+                {
+                    "questionVotes": [
+                        -24,
+                        -1,
+                        -30,
+                        -10,
+                        20,
+                        -21,
+                        13
+                    ],
+                    "questionText": "}Åvå",
+                    "questionAnswered": true,
+                    "sessionId": 10,
+                    "questionId": -22
+                },
+                {
+                    "questionVotes": [
+                        6,
+                        -2,
+                        -9,
+                        25,
+                        -24,
+                        -17,
+                        0,
+                        21,
+                        7,
+                        21,
+                        22,
+                        -24,
+                        -5,
+                        27,
+                        -25,
+                        21,
+                        8,
+                        21,
+                        0,
+                        23,
+                        -7,
+                        22,
+                        -25,
+                        17
+                    ],
+                    "questionText": "\u0000OkÄ|d{2ã5y',\u0001\u001aB0k&~K\u0003V\\¹Y¼>3",
+                    "questionAnswered": false,
+                    "sessionId": 9,
+                    "questionId": 11
+                },
+                {
+                    "questionVotes": [
+                        16,
+                        -27,
+                        -24,
+                        -4,
+                        -4,
+                        26,
+                        25,
+                        21,
+                        28,
+                        -8,
+                        4,
+                        -3,
+                        11,
+                        -29
+                    ],
+                    "questionText": " ö\u0011®ã`\u001f\u0003\u0016-a\u0017^¹û\u001b>Õìe",
+                    "questionAnswered": false,
+                    "sessionId": -10,
+                    "questionId": 23
+                },
+                {
+                    "questionVotes": [
+                        17,
+                        18,
+                        13,
+                        7,
+                        -5,
+                        -10,
+                        -16,
+                        30,
+                        11,
+                        -20,
+                        -18,
+                        12
+                    ],
+                    "questionText": "\u001a\u0003\n^\u000b\u001cxr\u0014\u0010\u0002z»%2\u0011II<Æ x\u0016\u0005\u0001C",
+                    "questionAnswered": true,
+                    "sessionId": 0,
+                    "questionId": 14
+                },
+                {
+                    "questionVotes": [
+                        -14,
+                        -16,
+                        12,
+                        10,
+                        27,
+                        -22,
+                        -13,
+                        -20,
+                        16,
+                        -25,
+                        -28,
+                        9,
+                        8,
+                        24,
+                        -23,
+                        18,
+                        7,
+                        26,
+                        8,
+                        -18,
+                        -13,
+                        -4,
+                        0,
+                        9,
+                        27,
+                        -24,
+                        19
+                    ],
+                    "questionText": "/#\u0010a$<F\u0011ßb",
+                    "questionAnswered": false,
+                    "sessionId": -10,
+                    "questionId": -16
+                },
+                {
+                    "questionVotes": [
+                        -30
+                    ],
+                    "questionText": "ÜÅd\u0010Ê\u001fº}/\u0017krzð\u0012\u0013ô\u000b\u000cz\u0010",
+                    "questionAnswered": true,
+                    "sessionId": 10,
+                    "questionId": -30
+                },
+                {
+                    "questionVotes": [
+                        4,
+                        -13,
+                        1,
+                        -5,
+                        -4,
+                        9,
+                        6,
+                        -24,
+                        -26,
+                        16,
+                        -19,
+                        28,
+                        -10,
+                        -7,
+                        15,
+                        -20,
+                        9,
+                        -14,
+                        4,
+                        -21,
+                        16,
+                        -23,
+                        -24,
+                        -26,
+                        2,
+                        19,
+                        10,
+                        16,
+                        7
+                    ],
+                    "questionText": "vj\u0013MB?\u0010ã¢",
+                    "questionAnswered": true,
+                    "sessionId": 13,
+                    "questionId": -27
+                },
+                {
+                    "questionVotes": [
+                        3,
+                        10,
+                        -10,
+                        -2,
+                        -11,
+                        29,
+                        24,
+                        -14
+                    ],
+                    "questionText": "\\\u0013\u0016=r2¿\t6Þ\u0002o>eWj{~\u00076X;*ø)J",
+                    "questionAnswered": true,
+                    "sessionId": -24,
+                    "questionId": -24
+                },
+                {
+                    "questionVotes": [
+                        -28,
+                        -8,
+                        -4,
+                        4,
+                        -23,
+                        18,
+                        21,
+                        28,
+                        -1,
+                        -5,
+                        -20
+                    ],
+                    "questionText": "lUx\u0014@U\u0012V'[Cª(Eµ2\rÛ\u0010}\u0000\u0017=K~Xh)",
+                    "questionAnswered": false,
+                    "sessionId": -4,
+                    "questionId": -26
+                },
+                {
+                    "questionVotes": [
+                        -21,
+                        -16,
+                        8,
+                        0,
+                        10,
+                        -20,
+                        -30
+                    ],
+                    "questionText": "@l^\u0016F\u0005PD\u001f´TÃ\u0002\u0011|Z,°",
+                    "questionAnswered": true,
+                    "sessionId": -6,
+                    "questionId": -2
+                },
+                {
+                    "questionVotes": [
+                        -4,
+                        -3,
+                        11,
+                        10
+                    ],
+                    "questionText": "¿¤=\u0012~A-",
+                    "questionAnswered": false,
+                    "sessionId": 21,
+                    "questionId": -14
+                },
+                {
+                    "questionVotes": [
+                        8,
+                        -3,
+                        14,
+                        -21,
+                        -6,
+                        -15,
+                        0,
+                        11,
+                        14,
+                        -11,
+                        -3,
+                        -1,
+                        28,
+                        -16,
+                        -4,
+                        -7,
+                        -15,
+                        8,
+                        20,
+                        17
+                    ],
+                    "questionText": "\u001cQ,CM{0Y¾bt®¹>.",
+                    "questionAnswered": true,
+                    "sessionId": -16,
+                    "questionId": 30
+                },
+                {
+                    "questionVotes": [
+                        20,
+                        -10,
+                        -15,
+                        11,
+                        -29,
+                        -18,
+                        -16,
+                        9,
+                        20,
+                        -26,
+                        -22,
+                        28,
+                        8
+                    ],
+                    "questionText": "35ó",
+                    "questionAnswered": true,
+                    "sessionId": -1,
+                    "questionId": -13
+                },
+                {
+                    "questionVotes": [
+                        -4,
+                        3,
+                        -5,
+                        18,
+                        -15,
+                        -5,
+                        -18,
+                        8,
+                        -14,
+                        -14
+                    ],
+                    "questionText": "è\u0000*l@\u000e\u001f²-\u0004\u000fLâ\u0015N\u0005WX\u0017",
+                    "questionAnswered": false,
+                    "sessionId": 14,
+                    "questionId": 16
+                },
+                {
+                    "questionVotes": [
+                        5,
+                        19,
+                        -6,
+                        -17,
+                        -4,
+                        -29,
+                        -25,
+                        19,
+                        -11,
+                        24
+                    ],
+                    "questionText": "g_Ö%A",
+                    "questionAnswered": true,
+                    "sessionId": -8,
+                    "questionId": -22
+                },
+                {
+                    "questionVotes": [
+                        -3,
+                        -6
+                    ],
+                    "questionText": "aI\u0002Ë>ôDC+ú°>_ M#:zd&:\r#®XY",
+                    "questionAnswered": false,
+                    "sessionId": -18,
+                    "questionId": 16
+                },
+                {
+                    "questionVotes": [
+                        14,
+                        -6,
+                        -17,
+                        17,
+                        27,
+                        0,
+                        -16,
+                        15,
+                        -29,
+                        28,
+                        -5,
+                        -9,
+                        19,
+                        -1,
+                        23,
+                        25,
+                        -28,
+                        -10,
+                        -21,
+                        -2,
+                        -12,
+                        -15,
+                        23,
+                        26,
+                        6,
+                        8,
+                        -13
+                    ],
+                    "questionText": "8vCa³Ewÿ¬x)°npNi´D¦;Á6",
+                    "questionAnswered": true,
+                    "sessionId": -17,
+                    "questionId": -7
+                },
+                {
+                    "questionVotes": [
+                        -25,
+                        -14,
+                        27,
+                        29,
+                        -10
+                    ],
+                    "questionText": "6\r1U\u001fîÎ2UÄÔMÂkaá¢\u0001\u0018\u00055é:\u001a5",
+                    "questionAnswered": true,
+                    "sessionId": 1,
+                    "questionId": 28
+                },
+                {
+                    "questionVotes": [
+                        -8,
+                        1,
+                        -4,
+                        25,
+                        24,
+                        26,
+                        -20,
+                        -29,
+                        30,
+                        -30,
+                        7,
+                        20,
+                        16,
+                        -14,
+                        -10,
+                        -17,
+                        15,
+                        23,
+                        -16,
+                        -24,
+                        -17,
+                        10,
+                        -23,
+                        12
+                    ],
+                    "questionText": "<Nq~G",
+                    "questionAnswered": false,
+                    "sessionId": -15,
+                    "questionId": -30
+                }
+            ],
+            "session": {
+                "locked": "Locked",
+                "expiresAt": null,
+                "name": "/uè-",
+                "sessionId": -16
+            }
+        },
+        {
+            "answerer": {
+                "answererId": 30,
+                "name": "V\u0002\rUh\u0013¿#\u0013eå%e",
+                "sessionId": 6
+            },
+            "questioners": [
+                {
+                    "questionerId": -18,
+                    "name": null,
+                    "sessionId": -11
+                },
+                {
+                    "questionerId": 15,
+                    "name": "¿:Rb\u000eCc\u000e",
+                    "sessionId": 6
+                },
+                {
+                    "questionerId": -22,
+                    "name": "NXv/¥DÚn\u0004ê",
+                    "sessionId": 18
+                },
+                {
+                    "questionerId": -1,
+                    "name": "@°G²Ë×ìB|Çg\u0013",
+                    "sessionId": -4
+                },
+                {
+                    "questionerId": 14,
+                    "name": "Ð~#áANq(;ûö\u0018[)\u0014gH¸",
+                    "sessionId": 21
+                },
+                {
+                    "questionerId": -27,
+                    "name": "x°rÅ{\u0003ÉÞ\u0001^ uH©+P",
+                    "sessionId": -28
+                },
+                {
+                    "questionerId": -16,
+                    "name": null,
+                    "sessionId": 23
+                }
+            ],
+            "questions": [],
+            "session": {
+                "locked": "Unlocked",
+                "expiresAt": "1864-04-20T02:20:29.641354161225Z",
+                "name": "GðyÄá\u0008ÿ\u000cf\u000b\u001c\u000c6L8Ô°ZS\"çLJ)b",
+                "sessionId": 10
+            }
+        }
+    ]
+}

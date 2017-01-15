@@ -1,0 +1,149 @@
+{
+    "seed": 7509332252993867358,
+    "samples": [
+        {
+            "tag": "SessionExpired"
+        },
+        {
+            "tag": "QuestionAsked",
+            "question": {
+                "questionVotes": [
+                    -13,
+                    -27,
+                    -1,
+                    22,
+                    4,
+                    5,
+                    -14,
+                    -15,
+                    -16,
+                    -21,
+                    24,
+                    -28,
+                    3,
+                    -8,
+                    -14,
+                    7,
+                    -8,
+                    3,
+                    3,
+                    24,
+                    -27,
+                    5,
+                    -7,
+                    0
+                ],
+                "questionText": "*A\u001dN6åLûz\u0017\u0006P\u0018\u0004GÍ~\u0011APk×y!Ç",
+                "questionAnswered": true,
+                "sessionId": -2,
+                "questionId": -7
+            }
+        },
+        {
+            "tag": "QuestionUpvoted",
+            "question": {
+                "questionVotes": [
+                    -24,
+                    14,
+                    6,
+                    -1,
+                    29,
+                    -9,
+                    -10,
+                    -22,
+                    -22,
+                    -11,
+                    19,
+                    -27,
+                    16,
+                    11,
+                    -8,
+                    17,
+                    -9,
+                    -15,
+                    16,
+                    -10,
+                    10,
+                    7,
+                    0
+                ],
+                "questionText": "Fzx8\u0005E)=4ühó0<!>.J%Ç\u0010\u001aK0",
+                "questionAnswered": false,
+                "sessionId": 12,
+                "questionId": 1
+            }
+        },
+        {
+            "tag": "SessionState",
+            "session": {
+                "answerer": {
+                    "answererId": -10,
+                    "name": "^Í\u001f\u000f*4hï<x\rW",
+                    "sessionId": -2
+                },
+                "questioners": [
+                    {
+                        "questionerId": -19,
+                        "name": "%<àU^ò\u0001\u001a~FSÏHÏ&ÆZ",
+                        "sessionId": 24
+                    },
+                    {
+                        "questionerId": 18,
+                        "name": null,
+                        "sessionId": 14
+                    },
+                    {
+                        "questionerId": -25,
+                        "name": "\u0002²z\u0000:'nyW\u001eC:ÚA±Ä[}\u0008\u0017Pd¥\u0006",
+                        "sessionId": 16
+                    },
+                    {
+                        "questionerId": 14,
+                        "name": null,
+                        "sessionId": -24
+                    },
+                    {
+                        "questionerId": 18,
+                        "name": "1\u0000F",
+                        "sessionId": -24
+                    },
+                    {
+                        "questionerId": -4,
+                        "name": "Áv©7A",
+                        "sessionId": -30
+                    },
+                    {
+                        "questionerId": -7,
+                        "name": "D\u00068=C5Ï",
+                        "sessionId": -15
+                    },
+                    {
+                        "questionerId": 6,
+                        "name": "³\u0013v&©+\u0012Ã\u0005qp\u0005¬",
+                        "sessionId": -22
+                    },
+                    {
+                        "questionerId": -20,
+                        "name": ",·\u001aN\u001b*'Nð\u000c\"n4Ú<",
+                        "sessionId": 21
+                    }
+                ],
+                "questions": [],
+                "session": {
+                    "locked": "Unlocked",
+                    "expiresAt": null,
+                    "name": "",
+                    "sessionId": 22
+                }
+            }
+        },
+        {
+            "tag": "QuestionerJoined",
+            "questioner": {
+                "questionerId": -21,
+                "name": "9\u000e\u0015\u0002ë¼\\\u001d[¡Gß¼EIÇX|67àd",
+                "sessionId": 11
+            }
+        }
+    ]
+}
