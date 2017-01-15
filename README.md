@@ -71,6 +71,10 @@ executable paths. However this will not make sure any runtime dependencies are
 installed.
 
 ## Deployment
+
+Before deploying, you'll want to follow the directions in env.nix.sample. Talk to the
+project maintainer about appropriate values if necessary.
+
 I've set up the project to be easily deployable using NixOps. You can deploy and
 manipulate the application in a local VirtualBox VM with the following set of
 commands.
@@ -90,6 +94,12 @@ modernator`.
 You can deploy to an EC2 instance by first running `nixops create network.nix
 infrastructure-ec2.nix --name modernator-ec2` and then repeating the deploy
 command.
+
+### Prerequisites for EC2 deployment
+1. You'll require a set of AWS credentials. Talk to the project maintainer about
+   getting those.
+2. You'll want to follow the directions in ec2-config.nix.sample. Talk to the project
+   maintainer about the appropriate values if necessary.
 
 # Useful Commands
 
