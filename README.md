@@ -109,8 +109,10 @@ command.
 
 # Environment Variables
 
-* `MODERNATOR_PORT` - Specify the port to bind to
-* `MODERNATOR_STATE_DIR` - Specify the location of the acid state directory
+* `MODERNATOR_PORT` - Specify the port to bind to, defaults to 8080
+* `MODERNATOR_STATE_DIR` - Specify the location of the acid state directory, defaults to current working directory
+* `MODERRNATOR_KEY_DIR` - Specify the location of cookie encryption keys, defaults to current working directory
+* `MODERNATOR_CORS` - Specify any extra CORS domains, space separated, defaults to empty string
 
 # Dependencies
 
