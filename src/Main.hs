@@ -20,6 +20,8 @@ main = do
     extraCors <- fmap (map BS.pack . words . fromMaybe "") $ lookupEnv "MODERNATOR_CORS"
     let args = mapMaybe id [ prettyArg "port: " (pure port)
                            , prettyArg "state directory: " stateDir
+                           , prettyArg "key directory: " (pure keyDir)
+                           , prettyArg "extra CORS: " (pure extraCors)
                            ]
     putStrLn $ "Running modernator-haskell on " ++ (concat $ intersperse " and " args)
     app <- mkApp stateDir keyDir
