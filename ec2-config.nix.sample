@@ -1,9 +1,9 @@
 # Copy to ec2-config.nix and fill this file in with your relevant credentials
 {
   # AWS credentials profile, find these in ~/.ec2-keys
-  awsProfile =
+  awsProfile = "";
   # AWS VPC subnet, you'll probably have a default created one in your account
-  subnet =
+  subnet = "";
   # Any security groups, you'll probably need at least one for ssh
-  securityGroupIds =
+  securityGroupIds = [""];
 }
