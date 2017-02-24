@@ -1,6 +1,6 @@
 Feature: Once a Session has been created other users will want to join that
-  Session and ask Questions of the Answerer. These new users are called
-  Questioners.
+  Session and make Proposals to the Moderator. These new users are called
+  Proposers.
 
   Users cannot join locked Sessions. Locked Sessions can't be modified, so
   simply previewing that Session fulfills any needs that joining the Session
@@ -8,7 +8,7 @@ Feature: Once a Session has been created other users will want to join that
 
   See the following files for more information:
 
-  - [Questioners](Questioners.feature)
+  - [Proposers](Proposers.feature)
   - [Sessions](Sessions.feature)
 
   Scenario: Authorization
@@ -21,5 +21,5 @@ Feature: Once a Session has been created other users will want to join that
     Given a user
     And a Session that is unlocked
     Then the Session can be joined by the user
-    And the user is now a Questioner for the Session
-    And the user can provide a name for the Questioner
+    And the user is now a Proposer for the Session
+    And the user can provide a name for the Proposer

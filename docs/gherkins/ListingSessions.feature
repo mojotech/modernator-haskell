@@ -3,9 +3,9 @@ Feature: In order to determine which Sessions to join a user may list all
 
   See the following files for more information:
 
-  - [Answerer](Answerers.feature)
-  - [Questioners](Questioners.feature)
-  - [Questions](Questions.feature)
+  - [Moderators](Moderators.feature)
+  - [Proposers](Proposers.feature)
+  - [Proposals](Proposals.feature)
   - [Sessions](Sessions.feature)
   - [Users](Users.feature)
 
@@ -15,4 +15,4 @@ Feature: In order to determine which Sessions to join a user may list all
   Scenario: Listing Sessions
     * Users may list all sessions
     * A Session in the list includes the following information:
-      | Session Name | Session Locked Status | Answerer | Number of Questions | Number of Questioners |
+      | Session Name | Session Locked Status | Moderator | Number of Proposals | Number of Proposers |

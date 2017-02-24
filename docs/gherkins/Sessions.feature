@@ -1,9 +1,8 @@
-Feature: A Question and answer Session is how a group of users (Questioners)
-  can ask Questions with a specific user (Answerer) designated to answer them.
-  Sessions provide a means of collecting these Questions and users into a
-  single place. Sessions can be either unlocked or locked, with locked Sessions
-  prohibiting modification to the Questions within. Sessions can also be
-  deleted entirely.
+Feature: A Session is how a group of users (Proposers) can ask Proposals of a
+  specific user (Moderator) designated to moderate them.  Sessions provide a
+  means of collecting these Proposals and users into a single place. Sessions
+  can be either unlocked or locked, with locked Sessions prohibiting
+  modification to the Proposals within. Sessions can also be deleted entirely.
 
   See the following files for more information:
 
@@ -13,9 +12,9 @@ Feature: A Question and answer Session is how a group of users (Questioners)
   - [Listing all Sessions](ListingSessions.feature)
   - [Locking Sessions](LockingSessions.feature)
   - [Viewing Sessions](ViewingSessions.feature)
-  - [Answerers](Answerers.feature)
-  - [Questioners](Questioners.feature)
-  - [Questions](Questions.feature)
+  - [Moderators](Moderators.feature)
+  - [Proposers](Proposers.feature)
+  - [Proposals](Proposals.feature)
 
   Scenario: A Session can be created
     * See CreatingSessions.feature
@@ -33,13 +32,13 @@ Feature: A Question and answer Session is how a group of users (Questioners)
     * See ViewingSessions.feature
 
   Scenario: Session properties
-    * A Session has a single Answerer
-    * A Session can have many Questioners
-    * A Session can have many Questions
+    * A Session has a single Moderator
+    * A Session can have many Proposers
+    * A Session can have many Proposals
     * A Session can be either locked or unlocked
     * A Session has a name
 
   Scenario: Session defaults
-    * A Session defaults to having no Questioners
-    * A Session defaults to having no Questions
+    * A Session defaults to having no Proposers
+    * A Session defaults to having no Proposals
     * A Session defaults to being unlocked
