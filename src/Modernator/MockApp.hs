@@ -43,6 +43,7 @@ mockContext :: Context AppContext
 mockContext =
     ((mockAuthHandler :: AuthHandler Request AnswererCookie) :.
      (mockAuthHandler :: AuthHandler Request QuestionerCookie) :.
+     (mockAuthHandler :: AuthHandler Request ModernatorCookie) :.
      (mockAuthHandler :: AuthHandler Request AnyCookie) :. EmptyContext)
 
 -- Mocking servers doesn't play well with auth

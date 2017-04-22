@@ -15,6 +15,8 @@ import Modernator.Types ( FullSession
                         , Session(..)
                         , Questioner(..)
                         , SessionMessage(..)
+                        , UserId(..)
+                        , User(..)
                         )
 
 import Data.Aeson hiding ((.=))
@@ -47,6 +49,9 @@ deriving instance FromJSON QuestionerId
 
 deriving instance ToJSON SessionId
 deriving instance FromJSON SessionId
+
+deriving instance ToJSON UserId
+deriving instance FromJSON UserId
 
 -- Manual instances
 instance FromJSON Question where
@@ -140,6 +145,19 @@ instance FromJSON SessionMessage where
             Just wat -> Aeson.typeMismatch "SessionMessage" wat
             _ -> fail "tag field must be present"
     parseJSON wat = Aeson.typeMismatch "SessionMessage" wat
+
+instance FromJSON User where
+    parseJSON (Aeson.Object v) =
+        User <$>
+            v Aeson..: "userId" <*>
+            v Aeson..: "userName" <*>
+            v Aeson..: "answererSessions" <*>
+            v Aeson..: "questionerSessions"
+    parseJSON wat = Aeson.typeMismatch "User" wat
+
+instance ToJSON User where
+    toJSON (User id name answererSessions questionerSessions) =
+        object ["userId" Aeson..= id, "userName" Aeson..= name, "answererSessions" Aeson..= answererSessions, "questionerSessions" Aeson..= questionerSessions]
 
 -- utility functions
 nullaryObject tag = object [ "tag" Aeson..= (Aeson.String tag) ]

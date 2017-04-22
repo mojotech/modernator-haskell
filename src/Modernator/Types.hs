@@ -3,11 +3,14 @@ module Modernator.Types where
 
 import Data.Time.Clock (UTCTime)
 import Data.Text (Text)
+import Data.Text.Encoding (encodeUtf8)
 import Data.IxSet hiding (Proxy)
 import qualified Data.IxSet as Ix
 import Control.Concurrent.STM.TChan (TChan, newBroadcastTChan)
 import Control.Monad.STM (atomically)
 import Control.Concurrent.STM.TVar (TVar, readTVar)
+import Data.List (nub)
+import qualified Crypto.Hash as Crypto
 
 -- | GHC.Generics used for deriving ToJSON instances
 import GHC.Generics (Generic)
@@ -27,6 +30,8 @@ data AppError = QuestionNotFound
               | SessionNotFound
               | SessionAlreadyLocked
               | QuestionAlreadyUpvoted
+              | UserNotFound
+              | InvalidCredentials
     deriving (Show, Generic, Eq, Ord, Enum, Bounded)
 
 -- | A question has an id, number of votes, text, and answered status
@@ -95,6 +100,63 @@ instance Indexable Questioner where
                   , ixFun (\ (Questioner _ sid _) -> [sid])
                   ]
 
+newtype UserId = UserId Integer
+    deriving (Generic, Show, FromHttpApiData, Enum, Eq, Ord, Serialize)
+
+-- Some notes here:
+-- 1. No attempt is made to salt passwords.
+-- 2. No attempt is made to prevent timing attacks.
+-- This is just hashing passwords and comparing them using Haskell's normal
+-- string comparison. I know this has security vulnerabilities. Security isn't,
+-- frankly, all that important here. In the future when people are interested
+-- the security properties can be upgraded.
+--
+-- See the following links:
+-- Cryptonite package, Hash definition http://hackage.haskell.org/package/cryptonite-0.23/docs/Crypto-Hash.html
+-- Memory package, constant time byte comparison http://hackage.haskell.org/package/memory-0.13/docs/Data-ByteArray.html
+-- Bcrypt bindings https://hackage.haskell.org/package/bcrypt-0.0.10/docs/Crypto-BCrypt.html
+-- Older password store library PBKDF https://hackage.haskell.org/package/pwstore-fast-2.4.4/docs/Crypto-PasswordStore.html
+newtype Password = Password String
+    deriving (Generic, Show, Serialize)
+
+verifyUserPassword :: Password -> FullUser -> Bool
+verifyUserPassword (Password a) (FullUser { fullUserPassword = (Password b) }) = a == b
+
+hashPassword :: Text -> Password
+hashPassword t = Password . show $ hash
+    where
+        b = encodeUtf8 t
+        hash :: Crypto.Digest Crypto.SHA3_512
+        hash = Crypto.hash b
+
+data FullUser = FullUser
+    { fullUserUser :: User
+    , fullUserPassword :: Password
+    }
+    deriving (Show, Generic)
+
+data User = User
+    { userId :: UserId
+    , userName :: Text
+    , userAnswererSessions :: [(SessionId, AnswererId)]
+    , userQuestionerSessions :: [(SessionId, QuestionerId)]
+    }
+    deriving (Show, Eq, Generic)
+
+-- reference equality
+instance Eq FullUser where
+    a == b = (userId . fullUserUser) a == (userId . fullUserUser) b
+
+instance Ord FullUser where
+    a <= b = (userId . fullUserUser) a <= (userId . fullUserUser) b
+
+type UserDB = IxSet FullUser
+instance Indexable FullUser where
+    empty = ixSet [ ixFun (\ (FullUser (User id _ _ _) _) -> [id])
+                  , ixFun (\ (FullUser (User _ name _ _) _) -> [name])
+                  , ixFun (\ (FullUser (User _ _ as qs) _) -> nub (map fst as ++ map fst qs)) -- Look up all the users by session id
+                  ]
+
 -- | The state of our application. This is persisted using AcidState and handed
 -- to each request handler.
 data App = App
@@ -106,6 +168,8 @@ data App = App
     , nextSessionId :: SessionId
     , questioners :: QuestionerDB
     , nextQuestionerId :: QuestionerId
+    , users :: UserDB
+    , nextUserId :: UserId
     }
     deriving (Show)
 
@@ -119,6 +183,8 @@ emptyApp = App
     , nextSessionId = SessionId 1
     , questioners = empty
     , nextQuestionerId = QuestionerId 1
+    , users = empty
+    , nextUserId = UserId 1
     }
 
 -- | A helper to upvote a question.

@@ -33,3 +33,13 @@ type AnyCookie = Either AnswererCookie QuestionerCookie
 
 anyCookieToIds (Left a) = Left $ answererId a
 anyCookieToIds (Right q) = Right $ questionerId q
+
+data ModernatorCookie = ModernatorCookie
+    { userId :: UserId
+    }
+    deriving (Generic)
+
+instance ToJSON ModernatorCookie
+instance FromJSON ModernatorCookie
+instance ToParamSchema ModernatorCookie
+instance Serialize ModernatorCookie

@@ -15,6 +15,8 @@ import Modernator.Types ( FullSession
                         , Session(..)
                         , Questioner(..)
                         , SessionMessage(..)
+                        , UserId(..)
+                        , User(..)
                         )
 
 import Data.Text (Text)
@@ -43,11 +45,13 @@ instance ToSchema AnswererId
 instance ToSchema SessionId
 instance ToSchema LockedStatus
 instance ToSchema QuestionerId
+instance ToSchema UserId
 
 instance ToParamSchema QuestionId
 instance ToParamSchema AnswererId
 instance ToParamSchema SessionId
 instance ToParamSchema QuestionerId
+instance ToParamSchema UserId
 
 -- Manual Instances
 instance ToSchema Question where
@@ -158,3 +162,18 @@ instance ToSchema SessionMessage where
                             ]
             & required .~ ["tag"]
             & description .~ (Just "This is a variant type (sum type, discriminated union) representing the possible session messages. The `tag` field determines which fields are additionally present. Unless otherwise specified, only the `tag` field is present. If `tag` is `SessionStarted`, `answerer` is present. If `tag` is `SessionExceptionMessage`, `exception` is present. If `tag` is `QuestionAsked`, `QuestionUpvoted` or `QuestionAnswered`, `question` is present. If `tag` is `SessionState`, `session` is present. If `tag` is `QuestionerJoined`, `questioner` is present.")
+
+instance ToSchema User where
+    declareNamedSchema _ = do
+        userIdSchema <- declareSchemaRef (Proxy :: Proxy UserId)
+        textSchema <- declareSchemaRef (Proxy :: Proxy Text)
+        asSchema <- declareSchemaRef (Proxy :: Proxy [(SessionId, AnswererId)])
+        qsSchema <- declareSchemaRef (Proxy :: Proxy [(SessionId, QuestionerId)])
+        return $ NamedSchema (Just "User") $ mempty
+            & type_ .~ SwaggerObject
+            & properties .~ [ ("userId", userIdSchema)
+                            , ("userName", textSchema)
+                            , ("answererSessions", asSchema)
+                            , ("questionerSessions", qsSchema)
+                            ]
+            & required .~ [ "userId", "userName", "answererSessions", "questionerSessions" ]

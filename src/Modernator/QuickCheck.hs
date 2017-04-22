@@ -16,6 +16,12 @@ instance Arbitrary QuestionReq where
 instance Arbitrary JoinReq where
     arbitrary = JoinReq <$> arbitrary
 
+instance Arbitrary UserReq where
+    arbitrary = UserReq <$> arbitrary <*> arbitrary
+
+instance Arbitrary LoginReq where
+    arbitrary = LoginReq <$> arbitrary <*> arbitrary
+
 instance Arbitrary Questioner where
     arbitrary = Questioner <$> arbitrary <*> arbitrary <*> arbitrary
 
@@ -42,6 +48,12 @@ instance Arbitrary Answerer where
 
 instance Arbitrary AnswererId where
     arbitrary = AnswererId <$> arbitrary
+
+instance Arbitrary User where
+    arbitrary = User <$> arbitrary <*> arbitrary <*> arbitrary <*> arbitrary
+
+instance Arbitrary UserId where
+    arbitrary = UserId <$> arbitrary
 
 constArb a = fmap (const a) (arbitrary :: Gen ())
 
@@ -76,6 +88,9 @@ instance Arbitrary QuestionerCookie where
 
 instance Arbitrary AnswererCookie where
     arbitrary = AnswererCookie <$> arbitrary
+
+instance Arbitrary ModernatorCookie where
+    arbitrary = ModernatorCookie <$> arbitrary
 
 -- for session cookies
 instance Arbitrary EncryptedSession where

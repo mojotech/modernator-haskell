@@ -22,9 +22,9 @@ import qualified Data.ByteString as BS
 import Data.Maybe (fromMaybe)
 
 -- | Serve our app
-app :: RandomSource -> ServerKey -> ServerKey -> AcidState App -> TVar SessionChannelDB -> Application
-app rng aKey qKey state sessionChannelDB =
-    serveWithContext api (appContext aKey qKey) (server rng aKey qKey answererSettings questionerSettings state sessionChannelDB)
+app :: RandomSource -> ServerKey -> ServerKey -> ServerKey -> AcidState App -> TVar SessionChannelDB -> Application
+app rng aKey qKey uKey state sessionChannelDB =
+    serveWithContext api (appContext aKey qKey uKey) (server rng aKey qKey uKey answererSettings questionerSettings userSettings state sessionChannelDB)
 
 -- | Set up our application potentially with a path to the application state.
 mkApp :: Maybe FilePath -> FilePath -> IO Application
@@ -34,18 +34,22 @@ mkApp (Just path) keyDir = openLocalStateFrom path emptyApp >>= commonAppSetup k
 boolToMaybe True = Just ()
 boolToMaybe False = Nothing
 
-getKeys :: FilePath -> IO (ServerKey, ServerKey)
+getKeys :: FilePath -> IO (ServerKey, ServerKey, ServerKey)
 getKeys keyDir = do
     questionerKeyM <- getKeyFromFile questionerPath
     answererKeyM <- getKeyFromFile answererPath
+    userKeyM <- getKeyFromFile userPath
     qKey <- fromMaybe <$> mkServerKey 16 Nothing <*> pure questionerKeyM
     aKey <- fromMaybe <$> mkServerKey 16 Nothing <*> pure answererKeyM
+    uKey <- fromMaybe <$> mkServerKey 16 Nothing <*> pure userKeyM
     writeKey qKey questionerPath
     writeKey aKey answererPath
-    return (aKey, qKey)
+    writeKey uKey userPath
+    return (aKey, qKey, uKey)
     where
         questionerPath = keyDir ++ "questioner.key"
         answererPath = keyDir ++ "answerer.key"
+        userPath = keyDir ++ "user.key"
         writeKey key path = getServerKey key >>= \k -> BS.writeFile path k
 
 getKeyFromFile path = do
@@ -56,25 +60,27 @@ getKeyFromFile path = do
 
 commonAppSetup keyDir state = do
     rng <- mkRandomSource drgNew 1000
-    (aKey, qKey) <- getKeys keyDir
+    (aKey, qKey, uKey) <- getKeys keyDir
 
     -- Initialize session channels for existing sessions
     sessionIds <- fmap (map (\ (Session id _ _ _) -> id) . IxSet.toList . sessions) $ query state GetState
     channels <- mapM mkSessionChannel sessionIds
     sessionChannelDB <- newTVarIO $ IxSet.fromList channels
 
-    return $ app rng aKey qKey state sessionChannelDB
+    return $ app rng aKey qKey uKey state sessionChannelDB
 
 type AppContext =
     '[ AuthHandler Request AnswererCookie
      , AuthHandler Request QuestionerCookie
+     , AuthHandler Request ModernatorCookie
      , AuthHandler Request AnyCookie
      ]
 
-appContext :: ServerKey -> ServerKey -> Context AppContext
-appContext aKey qKey =
+appContext :: ServerKey -> ServerKey -> ServerKey -> Context AppContext
+appContext aKey qKey uKey =
     ((defaultAuthHandler answererSettings aKey :: AuthHandler Request AnswererCookie) :.
      (defaultAuthHandler questionerSettings qKey :: AuthHandler Request QuestionerCookie) :.
+     (defaultAuthHandler userSettings uKey :: AuthHandler Request ModernatorCookie) :.
      (anyAuthHandler (answererSettings, aKey) (questionerSettings, qKey) :: AuthHandler Request AnyCookie) :. EmptyContext)
 
 -- cookies are valid for 1 week
@@ -84,6 +90,7 @@ appContext aKey qKey =
 -- TODO: Should also have SecureOnly flag, but without https on localhost cookies won't be set
 answererSettings = def { acsCookieFlags = ["HttpOnly"], acsSessionField = "modernator_answerer", acsMaxAge = fromIntegral (3600 * 24 * 7 :: Integer) }
 questionerSettings = def { acsCookieFlags = ["HttpOnly"], acsSessionField = "modernator_questioner", acsMaxAge = fromIntegral (3600 * 24 * 7 :: Integer) }
+userSettings = def { acsCookieFlags = ["HttpOnly"], acsSessionField = "modernator", acsMaxAge = fromIntegral (3600 * 24 * 365 :: Integer) }
 
 anyAuthHandler :: (AuthCookieSettings, ServerKey) -> (AuthCookieSettings, ServerKey) -> AuthHandler Request AnyCookie
 anyAuthHandler (aSettings, aKey) (qSettings, qKey) = mkAuthHandler $ \ request -> do

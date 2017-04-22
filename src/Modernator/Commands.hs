@@ -212,4 +212,27 @@ getMeForSession authId sId = do
         Left aId -> runEitherT $ hoistEither $ doAuthorizeAnswerer app sId aId >>= return . Left
         Right qId -> runEitherT $ hoistEither $ doAuthorizeQuestioner app sId qId >>= return . Right
 
-$(makeAcidic ''App ['addQuestion, 'upvoteQuestion, 'answerQuestion, 'newSession, 'lockSession, 'getState, 'deleteSession, 'joinSession, 'getFullSession, 'getAllSessions, 'getMeForSession])
+newUser :: Text -> Text -> Update App User
+newUser name password = do
+    us <- gets users
+    nextId <- gets nextUserId
+    let user = User nextId name [] []
+        fullUser = FullUser user (hashPassword password)
+    modify (\ a -> a { users = (Ix.insert fullUser us), nextUserId = succ nextId })
+    return user
+
+getUser :: UserId -> Query App (Either AppError User)
+getUser id = do
+    app <- ask
+    case Ix.getOne (Ix.getEQ id (users app)) of
+        Nothing -> return (Left UserNotFound)
+        Just u -> return (Right (fullUserUser u))
+
+authenticateUser :: Text -> Password -> Query App (Either AppError User)
+authenticateUser name password = do
+    app <- ask
+    case Ix.getOne (Ix.getEQ name (users app)) of
+        Nothing -> return (Left InvalidCredentials)
+        Just u -> return $ if verifyUserPassword password u then Right (fullUserUser u) else Left InvalidCredentials
+
+$(makeAcidic ''App ['addQuestion, 'upvoteQuestion, 'answerQuestion, 'newSession, 'lockSession, 'getState, 'deleteSession, 'joinSession, 'getFullSession, 'getAllSessions, 'getMeForSession, 'newUser, 'getUser, 'authenticateUser])
