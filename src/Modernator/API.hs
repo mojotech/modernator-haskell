@@ -20,7 +20,7 @@ import Control.Concurrent.STM.TVar (TVar)
 type BasicAPI = "sessions" :> (SessionsAPI :<|> WebsocketsAPI)
                 :<|> "users" :> UsersAPI
 
-type API = SwaggerSchemaUI "swagger.js" "ui"
+type API = SwaggerSchemaUI "ui" "swagger.js"
            :<|> BasicAPI
 
 api :: Proxy API
