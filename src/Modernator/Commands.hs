@@ -165,12 +165,10 @@ joinSession sessionId userId = do
 getState :: Query App App
 getState = ask
 
-getFullSession :: UserId -> SessionId -> Query App (Either AppError FullSession)
-getFullSession userId sId = do
+getFullSession :: SessionId -> Query App (Either AppError FullSession)
+getFullSession sId = do
     app <- ask
-    let userM = Ix.getOne (Ix.getEQ sId $ Ix.getEQ userId (users app))
     runEitherT $ do
-        hoistEither $ maybe (Left UserNotFound) Right userM
         hoistEither $ maybe (Left SessionNotFound) Right $ getFullSessionFromApp app sId
 
 getAllSessions :: Query App [FullSession]

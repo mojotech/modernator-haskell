@@ -25,7 +25,7 @@ type SessionsAPI =
     :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> "questions" :> "ask" :> ReqBody '[JSON] QuestionReq :> Post '[JSON] Question
     :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "upvote" :> Post '[JSON] Question
     :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "answer" :> Post '[JSON] Question
-    :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> Get '[JSON] FullSession
+    :<|> Capture "session_id" SessionId :> Get '[JSON] FullSession
     :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> "me" :> Get '[JSON] User
 
 sessionsAPI :: Proxy SessionsAPI
@@ -73,7 +73,7 @@ sessionsServer app sessionChannelDB = allSessionsH :<|> newSessionH :<|> lockSes
             question <- withError <=< liftIO . answerQuestionHandler app cookie sessionId $ req
             withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionAnswered $ question
             return question
-        fullSessionH cookie = withError <=< liftIO . fullSessionHandler app cookie
+        fullSessionH = withError <=< liftIO . fullSessionHandler app
         meH cookie = withError <=< liftIO . meHandler app cookie
 
 newSessionHandler :: AcidState App -> SessionReq -> ModernatorCookie -> IO (Either AppError Session)
@@ -97,8 +97,8 @@ upvoteQuestionHandler app (ModernatorCookie userId) sessionId questionId = updat
 answerQuestionHandler :: AcidState App -> ModernatorCookie -> SessionId -> QuestionId -> IO (Either AppError Question)
 answerQuestionHandler app (ModernatorCookie userId) sessionId questionId = update app (AnswerQuestion questionId sessionId userId)
 
-fullSessionHandler :: AcidState App -> ModernatorCookie -> SessionId -> IO (Either AppError FullSession)
-fullSessionHandler app (ModernatorCookie userId) sessionId = query app (GetFullSession userId sessionId)
+fullSessionHandler :: AcidState App -> SessionId -> IO (Either AppError FullSession)
+fullSessionHandler app sessionId = query app (GetFullSession sessionId)
 
 allSessionsHandler :: AcidState App -> IO [FullSession]
 allSessionsHandler app = query app GetAllSessions

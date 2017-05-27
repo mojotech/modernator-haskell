@@ -3,7 +3,6 @@ module Modernator.WebsocketsAPI where
 
 import Modernator.Types
 import Modernator.APIUtils
-import Modernator.Cookies
 import Modernator.SessionsAPI (fullSessionHandler)
 
 import Servant
@@ -42,7 +41,7 @@ instance HasSwagger (Websocket a) where
         & adjustPathItemOperation get (schemes .~ Just [Ws, Http]) "/"
 
 type WebsocketsAPI =
-    AuthProtect "user-auth" :> Capture "session_id" SessionId :> "messages" :> Websocket SessionMessage
+    Capture "session_id" SessionId :> "messages" :> Websocket SessionMessage
 
 websocketsAPI :: Proxy WebsocketsAPI
 websocketsAPI = Proxy
@@ -51,16 +50,16 @@ websocketsServer ::
     AcidState App ->
     TVar SessionChannelDB ->
     Server WebsocketsAPI
-websocketsServer app sessionChannelDB cookie sessionId =
+websocketsServer app sessionChannelDB sessionId =
     websocketsOr
         defaultConnectionOptions
-        (websocketsApp app sessionChannelDB cookie sessionId)
-        (backupApp app cookie sessionId)
+        (websocketsApp app sessionChannelDB sessionId)
+        (backupApp app sessionId)
 
-websocketsApp :: AcidState App -> TVar SessionChannelDB -> ModernatorCookie -> SessionId -> PendingConnection -> IO ()
-websocketsApp app sessionChannelDB cookie sessionId pending = do
+websocketsApp :: AcidState App -> TVar SessionChannelDB -> SessionId -> PendingConnection -> IO ()
+websocketsApp app sessionChannelDB sessionId pending = do
     conn <- acceptRequest pending
-    fullSessionE <- fullSessionHandler app cookie sessionId
+    fullSessionE <- fullSessionHandler app sessionId
     let close m = sendClose conn (encode m)
     case fullSessionE of
         Left err -> close $ SessionExceptionMessage err
@@ -88,8 +87,8 @@ type BackupAPI = Get '[JSON] SessionMessage
 backupAPI :: Proxy BackupAPI
 backupAPI = Proxy
 
-backupApp app cookie sessionId = serve backupAPI handler
+backupApp app sessionId = serve backupAPI handler
     where
         handler = do
-            resp <- liftIO $ fullSessionHandler app cookie sessionId
+            resp <- liftIO $ fullSessionHandler app sessionId
             withError (fmap SessionState resp)
