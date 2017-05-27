@@ -39,7 +39,7 @@ swaggerDoc :: Swagger
 swaggerDoc = toSwagger (Proxy :: Proxy BasicAPI)
     & info.title .~ "Sessions API"
     & info.version .~ "0.1"
-    & info.description ?~ "This is an API for creating/joining Q&A sessions and asking questions. Authentication is handled by encrypted session cookies. When you create a session you are automatically authed as an answerer for that session. When you join a session you are automatically authed as a questioner for that session. You can only be authed to one session at a time, and creating new sessions will revoke your authentication for previous sessions. The authorization for a questioner and an answerer are two different cookies. The questioner cookie contains a JSON representation of a QuestionerId. The answerer cookie contains a JSON representation of an AnswererId."
+    & info.description ?~ "This is an API for creating/joining Q&A sessions and asking questions. Authentication is handled by encrypted session cookies. First create a user account. You will be given a session cookie for the new account after it is successful. You can also login to an existing account to get a session cookie. To perform actions on a specific session you must be a part of it. This is done by either creating the session or joining the session. If you create a session you can answer questions. If you join a session you can ask and upvote questions. Anyone can view the current state of a session at any time."
     & info.license ?~ "MIT"
 
 instance (HasSwagger sub) => HasSwagger (AuthProtect "answerer-auth" :> sub) where
