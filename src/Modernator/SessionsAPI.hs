@@ -6,9 +6,8 @@ import Modernator.Commands
 import Modernator.APIUtils
 import Modernator.RequestBodies
 import Modernator.Cookies
+import Modernator.APIAuth()
 import Servant
-import Servant.Server.Experimental.Auth
-import Servant.Server.Experimental.Auth.Cookie
 import Data.Acid
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad ((<=<))
@@ -17,21 +16,16 @@ import Control.Concurrent.STM.TChan (writeTChan)
 import Control.Concurrent.STM.TVar (TVar, modifyTVar')
 import qualified Data.IxSet as Ix
 
-type instance AuthServerData (AuthProtect "answerer-auth") = AnswererCookie
-type instance AuthServerData (AuthProtect "questioner-auth") = QuestionerCookie
-type instance AuthServerData (AuthProtect "any-auth") = AnyCookie
-
 type SessionsAPI =
     Get '[JSON] [FullSession]
-    :<|> ReqBody '[JSON] SessionReq :> Post '[JSON] (Headers '[Header "Set-Cookie" EncryptedSession] Answerer)
-    :<|> AuthProtect "answerer-auth" :> Capture "session_id" SessionId :> "lock" :> PostNoContent '[PlainText] NoContent
-    :<|> AuthProtect "answerer-auth" :> Capture "session_id" SessionId :> DeleteNoContent '[PlainText] NoContent
-    :<|> ReqBody '[JSON] JoinReq :> Capture "session_id" SessionId :> "join" :> Post '[JSON] (Headers '[Header "Set-Cookie" EncryptedSession] Questioner)
-    :<|> AuthProtect "questioner-auth" :> Capture "session_id" SessionId :> "questions" :> "ask" :> ReqBody '[JSON] QuestionReq :> Post '[JSON] Question
-    :<|> AuthProtect "questioner-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "upvote" :> Post '[JSON] Question
-    :<|> AuthProtect "answerer-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "answer" :> Post '[JSON] Question
-    :<|> AuthProtect "any-auth" :> Capture "session_id" SessionId :> Get '[JSON] FullSession
-    :<|> AuthProtect "any-auth" :> Capture "session_id" SessionId :> "me" :> Get '[JSON] (Either Answerer Questioner)
+    :<|> AuthProtect "user-auth" :> ReqBody '[JSON] SessionReq :> Post '[JSON] Session
+    :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> "lock" :> PostNoContent '[PlainText] NoContent
+    :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> DeleteNoContent '[PlainText] NoContent
+    :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> "join" :> Post '[JSON] User
+    :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> "questions" :> "ask" :> ReqBody '[JSON] QuestionReq :> Post '[JSON] Question
+    :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "upvote" :> Post '[JSON] Question
+    :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "answer" :> Post '[JSON] Question
+    :<|> Capture "session_id" SessionId :> Get '[JSON] FullSession
 
 sessionsAPI :: Proxy SessionsAPI
 sessionsAPI = Proxy
@@ -43,19 +37,17 @@ sendSessionMessage sessionChannelDB sessionId messageFn a =
         (\ chan -> atomically (writeTChan chan (messageFn a)) >> return (Right a))
 
 sessionsServer ::
-    (AnswererCookie -> Answerer -> Handler (Headers '[Header "Set-Cookie" EncryptedSession] Answerer)) ->
-    (QuestionerCookie -> Questioner -> Handler (Headers '[Header "Set-Cookie" EncryptedSession] Questioner)) ->
     AcidState App ->
     TVar SessionChannelDB ->
     Server SessionsAPI
-sessionsServer addAnswererSession addQuestionerSession app sessionChannelDB = allSessionsH :<|> newSessionH :<|> lockSessionH :<|> deleteSessionH :<|> joinSessionH :<|> askQH :<|> upvoteQH :<|> answerQH :<|> fullSessionH :<|> meH
+sessionsServer app sessionChannelDB = allSessionsH :<|> newSessionH :<|> lockSessionH :<|> deleteSessionH :<|> joinSessionH :<|> askQH :<|> upvoteQH :<|> answerQH :<|> fullSessionH
     where
         allSessionsH = liftIO . allSessionsHandler $ app
-        newSessionH req = do
-            answerer@(Answerer id sId _) <- liftIO . newSessionHandler app $ req
+        newSessionH cookie req = do
+            session@(Session sId _ _ _) <- withError <=< liftIO . newSessionHandler app req $ cookie
             sessionChan <- liftIO $ mkSessionChannel sId
             liftIO $ atomically $ modifyTVar' sessionChannelDB (Ix.insert sessionChan)
-            addAnswererSession (AnswererCookie id) answerer
+            return session
         lockSessionH c id = do
             withError <=< liftIO . sessionLockHandler app c $ id
             withError <=< liftIO . sendSessionMessage sessionChannelDB id (const SessionLocked) $ ()
@@ -64,10 +56,10 @@ sessionsServer addAnswererSession addQuestionerSession app sessionChannelDB = al
             withError <=< liftIO . sessionDeleteHandler app c $ id
             withError <=< liftIO . sendSessionMessage sessionChannelDB id (const SessionClosed) $ ()
             return NoContent
-        joinSessionH req sessionId = do
-            questioner@(Questioner id _ _) <- withError <=< liftIO . sessionJoinHandler app req $ sessionId
-            withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionerJoined $ questioner
-            addQuestionerSession (QuestionerCookie id) questioner
+        joinSessionH cookie sessionId = do
+            user <- withError <=< liftIO . sessionJoinHandler app cookie $ sessionId
+            withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionerJoined $ user
+            return user
         askQH cookie sessionId req = do
             question <- withError <=< liftIO . askQuestionHandler app cookie sessionId $ req
             withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionAsked $ question
@@ -80,35 +72,31 @@ sessionsServer addAnswererSession addQuestionerSession app sessionChannelDB = al
             question <- withError <=< liftIO . answerQuestionHandler app cookie sessionId $ req
             withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionAnswered $ question
             return question
-        fullSessionH cookie = withError <=< liftIO . fullSessionHandler app cookie
-        meH cookie = withError <=< liftIO . meHandler app cookie
+        fullSessionH = withError <=< liftIO . fullSessionHandler app
 
-newSessionHandler :: AcidState App -> SessionReq -> IO Answerer
-newSessionHandler app (SessionReq name expiration answererName) = update app (NewSession name expiration answererName)
+newSessionHandler :: AcidState App -> SessionReq -> ModernatorCookie -> IO (Either AppError Session)
+newSessionHandler app (SessionReq name expiration) (ModernatorCookie userId) = update app (NewSession name expiration userId)
 
-sessionLockHandler :: AcidState App -> AnswererCookie -> SessionId -> IO (Either AppError ())
-sessionLockHandler app (AnswererCookie id) sessionId = update app (LockSession id sessionId)
+sessionLockHandler :: AcidState App -> ModernatorCookie -> SessionId -> IO (Either AppError ())
+sessionLockHandler app (ModernatorCookie userId) sessionId = update app (LockSession userId sessionId)
 
-sessionDeleteHandler :: AcidState App -> AnswererCookie -> SessionId -> IO (Either AppError ())
-sessionDeleteHandler app (AnswererCookie id) sessionId = update app (DeleteSession id sessionId)
+sessionDeleteHandler :: AcidState App -> ModernatorCookie -> SessionId -> IO (Either AppError ())
+sessionDeleteHandler app (ModernatorCookie userId) sessionId = update app (DeleteSession userId sessionId)
 
-sessionJoinHandler :: AcidState App -> JoinReq -> SessionId -> IO (Either AppError Questioner)
-sessionJoinHandler app (JoinReq name) sessionId = update app (JoinSession sessionId name)
+sessionJoinHandler :: AcidState App -> ModernatorCookie -> SessionId -> IO (Either AppError User)
+sessionJoinHandler app (ModernatorCookie uId) sessionId = update app (JoinSession sessionId uId)
 
-askQuestionHandler :: AcidState App -> QuestionerCookie -> SessionId -> QuestionReq -> IO (Either AppError Question)
-askQuestionHandler app (QuestionerCookie questionerId) sessionId (QuestionReq question) = update app (AddQuestion question sessionId questionerId)
+askQuestionHandler :: AcidState App -> ModernatorCookie -> SessionId -> QuestionReq -> IO (Either AppError Question)
+askQuestionHandler app (ModernatorCookie userId) sessionId (QuestionReq question) = update app (AddQuestion question sessionId userId)
 
-upvoteQuestionHandler :: AcidState App -> QuestionerCookie -> SessionId -> QuestionId -> IO (Either AppError Question)
-upvoteQuestionHandler app (QuestionerCookie questionerId) sessionId questionId = update app (UpvoteQuestion questionId sessionId questionerId)
+upvoteQuestionHandler :: AcidState App -> ModernatorCookie -> SessionId -> QuestionId -> IO (Either AppError Question)
+upvoteQuestionHandler app (ModernatorCookie userId) sessionId questionId = update app (UpvoteQuestion questionId sessionId userId)
 
-answerQuestionHandler :: AcidState App -> AnswererCookie -> SessionId -> QuestionId -> IO (Either AppError Question)
-answerQuestionHandler app (AnswererCookie  answererId) sessionId questionId = update app (AnswerQuestion questionId sessionId answererId)
+answerQuestionHandler :: AcidState App -> ModernatorCookie -> SessionId -> QuestionId -> IO (Either AppError Question)
+answerQuestionHandler app (ModernatorCookie userId) sessionId questionId = update app (AnswerQuestion questionId sessionId userId)
 
-fullSessionHandler :: AcidState App -> AnyCookie -> SessionId -> IO (Either AppError FullSession)
-fullSessionHandler app cookie sessionId = query app (GetFullSession (anyCookieToIds cookie) sessionId)
+fullSessionHandler :: AcidState App -> SessionId -> IO (Either AppError FullSession)
+fullSessionHandler app sessionId = query app (GetFullSession sessionId)
 
 allSessionsHandler :: AcidState App -> IO [FullSession]
 allSessionsHandler app = query app GetAllSessions
-
-meHandler :: AcidState App -> AnyCookie -> SessionId -> IO (Either AppError (Either Answerer Questioner))
-meHandler app cookie sessionId = query app (GetMeForSession (anyCookieToIds cookie) sessionId)

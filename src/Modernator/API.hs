@@ -3,6 +3,7 @@ module Modernator.API where
 
 import Servant
 import Modernator.SessionsAPI
+import Modernator.UsersAPI
 import Modernator.WebsocketsAPI
 import Modernator.Types
 import Modernator.Cookies
@@ -17,6 +18,7 @@ import Data.Acid
 import Control.Concurrent.STM.TVar (TVar)
 
 type BasicAPI = "sessions" :> (SessionsAPI :<|> WebsocketsAPI)
+                :<|> "users" :> UsersAPI
 
 type API = SwaggerSchemaUI "swagger.js" "ui"
            :<|> BasicAPI
@@ -27,13 +29,11 @@ api = Proxy
 basicAPI :: Proxy BasicAPI
 basicAPI = Proxy
 
-server :: RandomSource -> ServerKey -> ServerKey -> AuthCookieSettings -> AuthCookieSettings -> AcidState App -> TVar SessionChannelDB -> Server API
-server rng answererKey questionerKey answererSettings questionerSettings app sessionChannelDB = swaggerSchemaUIServer swaggerDoc :<|> sessionsServer answererSession questionerSession app sessionChannelDB :<|> websocketsServer app sessionChannelDB
+server :: RandomSource -> ServerKey -> AuthCookieSettings -> AcidState App -> TVar SessionChannelDB -> Server API
+server rng userKey userSettings app sessionChannelDB = swaggerSchemaUIServer swaggerDoc :<|> (sessionsServer app sessionChannelDB :<|> websocketsServer app sessionChannelDB) :<|> usersServer userSession app
     where
-        answererSession :: (MonadIO m, MonadThrow m) => AnswererCookie -> Answerer -> m (Headers '[Servant.Header "Set-Cookie" EncryptedSession] Answerer)
-        answererSession = addSession answererSettings rng answererKey
-        questionerSession :: (MonadIO m, MonadThrow m) => QuestionerCookie -> Questioner -> m (Headers '[Servant.Header "Set-Cookie" EncryptedSession] Questioner)
-        questionerSession = addSession questionerSettings rng questionerKey
+        userSession :: (MonadIO m, MonadThrow m) => ModernatorCookie -> User -> m (Headers '[Servant.Header "Set-Cookie" EncryptedSession] User)
+        userSession = addSession userSettings rng userKey
 
 swaggerDoc :: Swagger
 swaggerDoc = toSwagger (Proxy :: Proxy BasicAPI)
@@ -49,4 +49,7 @@ instance (HasSwagger sub) => HasSwagger (AuthProtect "questioner-auth" :> sub) w
     toSwagger _ = toSwagger (Proxy :: Proxy (Servant.Header "Cookie" EncryptedSession :> sub))
 
 instance (HasSwagger sub) => HasSwagger (AuthProtect "any-auth" :> sub) where
+    toSwagger _ = toSwagger (Proxy :: Proxy (Servant.Header "Cookie" EncryptedSession :> sub))
+
+instance (HasSwagger sub) => HasSwagger (AuthProtect "user-auth" :> sub) where
     toSwagger _ = toSwagger (Proxy :: Proxy (Servant.Header "Cookie" EncryptedSession :> sub))

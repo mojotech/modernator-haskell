@@ -41,9 +41,7 @@ mockAuthHandler = mkAuthHandler $ \ _ -> liftIO $ generate arbitrary
 
 mockContext :: Context AppContext
 mockContext =
-    ((mockAuthHandler :: AuthHandler Request AnswererCookie) :.
-     (mockAuthHandler :: AuthHandler Request QuestionerCookie) :.
-     (mockAuthHandler :: AuthHandler Request AnyCookie) :. EmptyContext)
+    ((mockAuthHandler :: AuthHandler Request ModernatorCookie) :. EmptyContext)
 
 -- Mocking servers doesn't play well with auth
 -- this needs undecidable instances but it seems to work okay?

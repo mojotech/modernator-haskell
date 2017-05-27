@@ -9,27 +9,12 @@ import GHC.Generics (Generic)
 import Data.Swagger.ParamSchema (ToParamSchema)
 import Data.Serialize (Serialize)
 
-data AnswererCookie = AnswererCookie
-    { answererId :: AnswererId
+data ModernatorCookie = ModernatorCookie
+    { userId :: UserId
     }
     deriving (Generic)
 
-instance ToJSON AnswererCookie
-instance FromJSON AnswererCookie
-instance ToParamSchema AnswererCookie
-instance Serialize AnswererCookie
-
-data QuestionerCookie = QuestionerCookie
-    { questionerId :: QuestionerId
-    }
-    deriving (Generic)
-
-instance ToJSON QuestionerCookie
-instance FromJSON QuestionerCookie
-instance ToParamSchema QuestionerCookie
-instance Serialize QuestionerCookie
-
-type AnyCookie = Either AnswererCookie QuestionerCookie
-
-anyCookieToIds (Left a) = Left $ answererId a
-anyCookieToIds (Right q) = Right $ questionerId q
+instance ToJSON ModernatorCookie
+instance FromJSON ModernatorCookie
+instance ToParamSchema ModernatorCookie
+instance Serialize ModernatorCookie

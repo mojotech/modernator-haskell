@@ -15,7 +15,6 @@ import Data.Proxy
 data SessionReq = SessionReq
     { sessionName :: Text
     , sessionExpiration :: Maybe UTCTime
-    , answererName :: Text
     }
     deriving (Generic, Show, Eq)
 
@@ -46,3 +45,24 @@ data QuestionReq = QuestionReq
 instance ToJSON QuestionReq
 instance FromJSON QuestionReq
 instance ToSchema QuestionReq
+
+data UserReq = UserReq
+    { userName :: Text
+    , userPassword :: Text
+    }
+    deriving (Generic, Show, Eq)
+
+instance ToJSON UserReq
+instance FromJSON UserReq
+instance ToSchema UserReq
+
+data LoginReq = LoginReq
+    { loginName:: Text
+    , loginPassword :: Text
+    }
+    deriving (Generic, Show, Eq)
+
+-- ToJSON needed to pass tests, I don't actually want it as it poses a security risk
+instance ToJSON LoginReq
+instance FromJSON LoginReq
+instance ToSchema LoginReq
