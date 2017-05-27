@@ -26,7 +26,6 @@ type SessionsAPI =
     :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "upvote" :> Post '[JSON] Question
     :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> "questions" :> Capture "question_id" QuestionId :> "answer" :> Post '[JSON] Question
     :<|> Capture "session_id" SessionId :> Get '[JSON] FullSession
-    :<|> AuthProtect "user-auth" :> Capture "session_id" SessionId :> "me" :> Get '[JSON] User
 
 sessionsAPI :: Proxy SessionsAPI
 sessionsAPI = Proxy
@@ -41,7 +40,7 @@ sessionsServer ::
     AcidState App ->
     TVar SessionChannelDB ->
     Server SessionsAPI
-sessionsServer app sessionChannelDB = allSessionsH :<|> newSessionH :<|> lockSessionH :<|> deleteSessionH :<|> joinSessionH :<|> askQH :<|> upvoteQH :<|> answerQH :<|> fullSessionH :<|> meH
+sessionsServer app sessionChannelDB = allSessionsH :<|> newSessionH :<|> lockSessionH :<|> deleteSessionH :<|> joinSessionH :<|> askQH :<|> upvoteQH :<|> answerQH :<|> fullSessionH
     where
         allSessionsH = liftIO . allSessionsHandler $ app
         newSessionH cookie req = do
@@ -74,7 +73,6 @@ sessionsServer app sessionChannelDB = allSessionsH :<|> newSessionH :<|> lockSes
             withError <=< liftIO . sendSessionMessage sessionChannelDB sessionId QuestionAnswered $ question
             return question
         fullSessionH = withError <=< liftIO . fullSessionHandler app
-        meH cookie = withError <=< liftIO . meHandler app cookie
 
 newSessionHandler :: AcidState App -> SessionReq -> ModernatorCookie -> IO (Either AppError Session)
 newSessionHandler app (SessionReq name expiration) (ModernatorCookie userId) = update app (NewSession name expiration userId)
@@ -102,6 +100,3 @@ fullSessionHandler app sessionId = query app (GetFullSession sessionId)
 
 allSessionsHandler :: AcidState App -> IO [FullSession]
 allSessionsHandler app = query app GetAllSessions
-
-meHandler :: AcidState App -> ModernatorCookie -> SessionId -> IO (Either AppError User)
-meHandler app (ModernatorCookie userId) sessionId = query app (GetMeForSession userId sessionId)
