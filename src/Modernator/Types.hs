@@ -25,8 +25,6 @@ data AppError = QuestionNotFound
               | NotAuthorizedForSession
               | MustBeAnswerer
               | MustBeQuestioner
-              | AnswererNotFound
-              | QuestionerNotFound
               | SessionNotFound
               | SessionAlreadyLocked
               | QuestionAlreadyUpvoted
@@ -44,7 +42,7 @@ data Question = Question QuestionId SessionId Votes Text Answered
 newtype QuestionId = QuestionId Integer
     deriving (Show, FromHttpApiData, Enum, Eq, Ord, Generic)
 
-newtype Votes = Votes [QuestionerId]
+newtype Votes = Votes [UserId]
     deriving (Show, Eq, Ord, Generic)
 
 -- | A question's answered status is conceptually a boolean, but we use a more
@@ -61,17 +59,6 @@ instance Indexable Question where
                   , ixFun (\ (Question _ _ _ _ a) -> [a])
                   , ixFun (\ (Question _ sid _ _ _) -> [sid])
                   ]
-newtype AnswererId = AnswererId Integer
-    deriving (Show, FromHttpApiData, Enum, Eq, Ord, Generic, Serialize)
-
-data Answerer = Answerer AnswererId SessionId Text
-    deriving (Show, Generic, Eq, Ord)
-
-type AnswererDB = IxSet Answerer
-instance Indexable Answerer where
-    empty = ixSet [ ixFun (\ (Answerer id _ _) -> [id])
-                  , ixFun (\ (Answerer _ sid _) -> [sid])
-                  ]
 
 newtype SessionId = SessionId Integer
     deriving (Generic, Show, FromHttpApiData, Enum, Eq, Ord)
@@ -86,18 +73,6 @@ type SessionDB = IxSet Session
 instance Indexable Session where
     empty = ixSet [ ixFun (\ (Session id _ _ _) -> [id])
                   , ixFun (\ (Session _ _ _ locked) -> [locked])
-                  ]
-
-newtype QuestionerId = QuestionerId Integer
-    deriving (Show, FromHttpApiData, Enum, Eq, Ord, Generic, Serialize)
-
-data Questioner = Questioner QuestionerId SessionId (Maybe Text)
-    deriving (Show, Generic, Eq, Ord)
-
-type QuestionerDB = IxSet Questioner
-instance Indexable Questioner where
-    empty = ixSet [ ixFun (\ (Questioner id _ _) -> [id])
-                  , ixFun (\ (Questioner _ sid _) -> [sid])
                   ]
 
 newtype UserId = UserId Integer
@@ -135,11 +110,26 @@ data FullUser = FullUser
     }
     deriving (Show, Generic)
 
+newtype QuestionerSessions = QuestionerSessions [SessionId]
+    deriving (Show, Eq, Generic)
+
+newtype AnswererSessions = AnswererSessions [SessionId]
+    deriving (Show, Eq, Generic)
+
+addAnswererSession :: SessionId -> User -> User
+addAnswererSession sId (User id name (AnswererSessions as) qs) = (User id name (AnswererSessions (sId:as)) qs)
+
+addQuestionerSession :: SessionId -> User -> User
+addQuestionerSession sId (User id name as (QuestionerSessions qs)) = (User id name as (QuestionerSessions (sId:qs)))
+
+removeSession :: SessionId -> User -> User
+removeSession sId (User id name (AnswererSessions as) (QuestionerSessions qs)) = (User id name (AnswererSessions (filter (/= sId) as)) (QuestionerSessions (filter (/= sId) qs)))
+
 data User = User
     { userId :: UserId
     , userName :: Text
-    , userAnswererSessions :: [(SessionId, AnswererId)]
-    , userQuestionerSessions :: [(SessionId, QuestionerId)]
+    , userAnswererSessions :: AnswererSessions
+    , userQuestionerSessions :: QuestionerSessions
     }
     deriving (Show, Eq, Generic)
 
@@ -150,11 +140,18 @@ instance Eq FullUser where
 instance Ord FullUser where
     a <= b = (userId . fullUserUser) a <= (userId . fullUserUser) b
 
+newtype AnswererSessionId = AnswererSessionId SessionId
+    deriving (Eq, Ord)
+newtype QuestionerSessionId = QuestionerSessionId SessionId
+    deriving (Eq, Ord)
+
 type UserDB = IxSet FullUser
 instance Indexable FullUser where
     empty = ixSet [ ixFun (\ (FullUser (User id _ _ _) _) -> [id])
                   , ixFun (\ (FullUser (User _ name _ _) _) -> [name])
-                  , ixFun (\ (FullUser (User _ _ as qs) _) -> nub (map fst as ++ map fst qs)) -- Look up all the users by session id
+                  , ixFun (\ (FullUser (User _ _ (AnswererSessions as) _) _) -> map AnswererSessionId as)
+                  , ixFun (\ (FullUser (User _ _ _ (QuestionerSessions qs)) _) -> map QuestionerSessionId qs)
+                  , ixFun (\ (FullUser (User _ _ (AnswererSessions as) (QuestionerSessions qs)) _) -> nub (as ++ qs)) -- Look up all the users by session id
                   ]
 
 -- | The state of our application. This is persisted using AcidState and handed
@@ -162,12 +159,8 @@ instance Indexable FullUser where
 data App = App
     { questions :: QuestionDB
     , nextQuestionId :: QuestionId
-    , answerers :: AnswererDB
-    , nextAnswererId :: AnswererId
     , sessions :: SessionDB
     , nextSessionId :: SessionId
-    , questioners :: QuestionerDB
-    , nextQuestionerId :: QuestionerId
     , users :: UserDB
     , nextUserId :: UserId
     }
@@ -177,19 +170,15 @@ data App = App
 emptyApp = App
     { questions = empty
     , nextQuestionId = QuestionId 1
-    , answerers = empty
-    , nextAnswererId = AnswererId 1
     , sessions = empty
     , nextSessionId = SessionId 1
-    , questioners = empty
-    , nextQuestionerId = QuestionerId 1
     , users = empty
     , nextUserId = UserId 1
     }
 
 -- | A helper to upvote a question.
-upvote :: QuestionerId -> Question -> Question
-upvote qId (Question id sid (Votes v) t a) = Question id sid (Votes (qId:v)) t a
+upvote :: UserId -> Question -> Question
+upvote uId (Question id sid (Votes v) t a) = Question id sid (Votes (uId:v)) t a
 
 -- | A helper to answer a question. Note that we don't specify that only
 -- unanswered questions can be answered. Fortunately this is idempotent now so
@@ -200,8 +189,8 @@ answer (Question id sid v t _) = Question id sid v t Answered
 
 data FullSession = FullSession
     { fullSession_session :: Session
-    , fullSession_answerer :: Answerer
-    , fullSession_questioners :: [Questioner]
+    , fullSession_answerer :: User
+    , fullSession_questioners :: [User]
     , fullSession_questions :: [Question]
     }
     deriving (Show, Eq)
@@ -210,12 +199,12 @@ getFullSessionFromApp :: App -> SessionId -> Maybe FullSession
 getFullSessionFromApp  app sessionId =
     FullSession
         <$> (Ix.getOne . Ix.getEQ sessionId . sessions $ app)
-        <*> (Ix.getOne . Ix.getEQ sessionId . answerers $ app)
-        <*> pure (Ix.toList . Ix.getEQ sessionId . questioners $ app)
+        <*> (fmap fullUserUser . Ix.getOne . Ix.getEQ (AnswererSessionId sessionId) . users $ app)
+        <*> pure (map fullUserUser . Ix.toList . Ix.getEQ (QuestionerSessionId sessionId) . users $ app)
         <*> pure (Ix.toList . Ix.getEQ sessionId . questions $ app)
 
 -- | Our Websocket message type. SessionExceptionMessages should be more specific than AppError
-data SessionMessage = SessionLocked | SessionExpired | SessionClosed | SessionExceptionMessage AppError | QuestionAsked Question | QuestionUpvoted Question | QuestionAnswered Question | SessionState FullSession | QuestionerJoined Questioner
+data SessionMessage = SessionLocked | SessionExpired | SessionClosed | SessionExceptionMessage AppError | QuestionAsked Question | QuestionUpvoted Question | QuestionAnswered Question | SessionState FullSession | QuestionerJoined User
     deriving (Show, Eq, Generic)
 
 mkSessionChannel sessionId = do

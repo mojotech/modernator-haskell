@@ -15,7 +15,6 @@ import Data.Proxy
 data SessionReq = SessionReq
     { sessionName :: Text
     , sessionExpiration :: Maybe UTCTime
-    , answererName :: Text
     }
     deriving (Generic, Show, Eq)
 

@@ -6,14 +6,12 @@ import Modernator.Commands
 import Modernator.APIUtils
 import Modernator.RequestBodies
 import Modernator.Cookies
+import Modernator.APIAuth ()
 import Servant
-import Servant.Server.Experimental.Auth
 import Servant.Server.Experimental.Auth.Cookie
 import Data.Acid
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad ((<=<))
-
-type instance AuthServerData (AuthProtect "user-auth") = ModernatorCookie
 
 type UsersAPI =
     ReqBody '[JSON] LoginReq :> "login" :> Post '[JSON] (Headers '[Header "Set-Cookie" EncryptedSession] User)

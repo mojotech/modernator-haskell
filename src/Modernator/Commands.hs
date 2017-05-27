@@ -13,18 +13,17 @@ import Control.Monad.Trans.Either
 import Data.Maybe (mapMaybe)
 
 -- | Add a question. New questions start unanswered and with no votes.
-addQuestion :: Text -> SessionId -> QuestionerId -> Update App (Either AppError Question)
-addQuestion qtext sessionId questionerId = do
+addQuestion :: Text -> SessionId -> UserId -> Update App (Either AppError Question)
+addQuestion qtext sessionId userId = do
     app <- get
     nextId <- gets nextQuestionId
     qs <- gets questions
-    let questionerM = Ix.getOne (Ix.getEQ questionerId (questioners app))
+        -- authorization
+    let userM = fmap fullUserUser $ Ix.getOne (Ix.getEQ (QuestionerSessionId sessionId) $ Ix.getEQ userId (users app))
         sessionM = Ix.getOne (Ix.getEQ sessionId (sessions app))
     question <- runEitherT $ do  -- presence checks
-        questioner <- hoistEither $ maybe (Left QuestionerNotFound) Right questionerM
+        hoistEither $ maybe (Left UserNotFound) Right userM
         session <- hoistEither $ maybe (Left SessionNotFound) Right sessionM
-        -- authorization
-        hoistEither $ joined questioner session
         -- session can't be locked already
         hoistEither $ sessionUnlocked session
         let question = Question nextId sessionId (Votes []) qtext NotAnswered
@@ -42,24 +41,23 @@ addQuestion qtext sessionId questionerId = do
 questionInSession :: Question -> Session -> Either AppError ()
 questionInSession (Question _ id _ _ _) (Session id' _ _ _) = if id == id' then Right () else Left NotAuthorizedForSession
 
-questionNotUpvotedByQuestioner :: QuestionerId -> Question -> Either AppError ()
-questionNotUpvotedByQuestioner qId (Question _ _ (Votes vs) _ _) = if qId `elem` vs then Left QuestionAlreadyUpvoted else Right ()
+questionNotUpvotedByQuestioner :: UserId -> Question -> Either AppError ()
+questionNotUpvotedByQuestioner uId (Question _ _ (Votes vs) _ _) = if uId `elem` vs then Left QuestionAlreadyUpvoted else Right ()
 
-upvoteQuestion :: QuestionId -> SessionId -> QuestionerId -> Update App (Either AppError Question)
-upvoteQuestion questionId sessionId questionerId = do
+upvoteQuestion :: QuestionId -> SessionId -> UserId -> Update App (Either AppError Question)
+upvoteQuestion questionId sessionId userId = do
     app <- get
     let questionM = Ix.getOne (Ix.getEQ questionId (questions app))
         sessionM = Ix.getOne (Ix.getEQ sessionId (sessions app))
-        questionerM = Ix.getOne (Ix.getEQ questionerId (questioners app))
+        userM = Ix.getOne (Ix.getEQ (QuestionerSessionId sessionId) $ Ix.getEQ userId (users app))
     newQuestion <- runEitherT $ do
-        questioner <- hoistEither $ maybe (Left QuestionerNotFound) Right questionerM
+        hoistEither $ maybe (Left UserNotFound) Right userM
         session <- hoistEither $ maybe (Left SessionNotFound) Right sessionM
         question <- hoistEither $ maybe (Left QuestionNotFound) Right questionM
         hoistEither $ questionInSession question session
-        hoistEither $ joined questioner session
         hoistEither $ sessionUnlocked session
-        hoistEither $ questionNotUpvotedByQuestioner questionerId question
-        return $ upvote questionerId question
+        hoistEither $ questionNotUpvotedByQuestioner userId question
+        return $ upvote userId question
     case newQuestion of
         Right question -> do
             let newState = app { questions = Ix.updateIx questionId question (questions app) }
@@ -67,18 +65,17 @@ upvoteQuestion questionId sessionId questionerId = do
             return $ Right question
         Left e -> return $ Left e
 
-answerQuestion :: QuestionId -> SessionId -> AnswererId -> Update App (Either AppError Question)
-answerQuestion questionId sessionId answererId = do
+answerQuestion :: QuestionId -> SessionId -> UserId -> Update App (Either AppError Question)
+answerQuestion questionId sessionId userId = do
     app <- get
     let questionM = Ix.getOne (Ix.getEQ questionId (questions app))
         sessionM = Ix.getOne (Ix.getEQ sessionId (sessions app))
-        answererM = Ix.getOne (Ix.getEQ answererId (answerers app))
+        userM = Ix.getOne (Ix.getEQ (AnswererSessionId sessionId) $ Ix.getEQ userId (users app))
     newQuestion <- runEitherT $ do
-        answerer <- hoistEither $ maybe (Left AnswererNotFound) Right answererM
+        hoistEither $ maybe (Left UserNotFound) Right userM
         session <- hoistEither $ maybe (Left SessionNotFound) Right sessionM
         question <- hoistEither $ maybe (Left QuestionNotFound) Right questionM
         hoistEither $ questionInSession question session
-        hoistEither $ authorized answerer session
         hoistEither $ sessionUnlocked session
         return $ answer question
     case newQuestion of
@@ -88,25 +85,25 @@ answerQuestion questionId sessionId answererId = do
             return $ Right question
         Left e -> return $ Left e
 
-newSession :: Text -> Maybe UTCTime -> Text -> Update App Answerer
-newSession name expiration answererName = do
+newSession :: Text -> Maybe UTCTime -> UserId -> Update App (Either AppError Session)
+newSession name expiration userId = do
     app <- get
-    let newSession = Session (nextSessionId app) name expiration Unlocked
-        newAnswerer = Answerer (nextAnswererId app) (nextSessionId app) answererName
-        newState = app
-            { sessions = Ix.insert newSession (sessions app)
-            , answerers = Ix.insert newAnswerer (answerers app)
-            , nextSessionId = succ (nextSessionId app)
-            , nextAnswererId = succ (nextAnswererId app)
-            }
-    put newState
-    return newAnswerer
-
-joined :: Questioner -> Session -> Either AppError ()
-joined (Questioner _ sessionId _) (Session sessionId' _ _ _) = if sessionId == sessionId' then Right () else Left NotAuthorizedForSession
-
-authorized :: Answerer -> Session -> Either AppError ()
-authorized (Answerer _ sessionId _) (Session sessionId' _ _ _) = if sessionId == sessionId' then Right () else Left NotAuthorizedForSession
+    newState <- runEitherT $ do
+        (FullUser user p) <- hoistEither $ maybe (Left UserNotFound) Right $ Ix.getOne (Ix.getEQ userId (users app))
+        let newSession = Session newSessionId name expiration Unlocked
+            newSessionId = nextSessionId app
+            newUser = FullUser (addAnswererSession newSessionId user) p
+            newState = app
+                { sessions = Ix.insert newSession (sessions app)
+                , users = Ix.updateIx userId newUser (users app)
+                , nextSessionId = succ newSessionId
+                }
+        return (newSession, newState)
+    case newState of
+        Right (newSession, s) -> do
+            put s
+            return $ Right newSession
+        Left e -> return $ Left e
 
 sessionUnlocked :: Session -> Either AppError ()
 sessionUnlocked (Session _ _ _ Locked) = Left SessionAlreadyLocked
@@ -115,16 +112,14 @@ sessionUnlocked (Session _ _ _ Unlocked) = Right ()
 lockSession' :: Session -> Session
 lockSession' (Session id name exp _) = Session id name exp Locked
 
-lockSession :: AnswererId -> SessionId -> Update App (Either AppError ())
-lockSession answererId sessionId = do
+lockSession :: UserId -> SessionId -> Update App (Either AppError ())
+lockSession userId sessionId = do
     app <- get
-    let answererM = Ix.getOne (Ix.getEQ answererId (answerers app))
+    let userM = Ix.getOne (Ix.getEQ (AnswererSessionId sessionId) $ Ix.getEQ userId (users app))
         sessionM = Ix.getOne (Ix.getEQ sessionId (sessions app))
     newState <- runEitherT $ do  -- presence checks
-        answerer <- hoistEither $ maybe (Left AnswererNotFound) Right answererM
+        hoistEither $ maybe (Left UserNotFound) Right userM
         session <- hoistEither $ maybe (Left SessionNotFound) Right sessionM
-        -- authorization
-        hoistEither $ authorized answerer session
         -- session can't be locked already
         hoistEither $ sessionUnlocked session
         return app { sessions = Ix.updateIx sessionId (lockSession' session) (sessions app) }
@@ -134,19 +129,18 @@ lockSession answererId sessionId = do
             return $ Right ()
         Left e -> return $ Left e
 
-deleteSession :: AnswererId -> SessionId -> Update App (Either AppError ())
-deleteSession answererId sessionId = do
+deleteSession :: UserId -> SessionId -> Update App (Either AppError ())
+deleteSession userId' sessionId = do
     app <- get
-    let answererM = Ix.getOne (Ix.getEQ answererId (answerers app))
+    let userM = Ix.getOne (Ix.getEQ (AnswererSessionId sessionId) $ Ix.getEQ userId' (users app))
         sessionM = Ix.getOne (Ix.getEQ sessionId (sessions app))
     newState <- runEitherT $ do  -- presence checks
-        answerer <- hoistEither $ maybe (Left AnswererNotFound) Right answererM
-        session <- hoistEither $ maybe (Left SessionNotFound) Right sessionM
-        -- authorization
-        hoistEither $ authorized answerer session
+        hoistEither $ maybe (Left UserNotFound) Right userM
+        hoistEither $ maybe (Left SessionNotFound) Right sessionM
+        let allUsers = Ix.toList $ Ix.getEQ sessionId (users app)
+            updatedUsers = map (\ (FullUser u p) -> (FullUser (removeSession sessionId u) p)) allUsers
         return app { sessions = Ix.deleteIx sessionId (sessions app)
-                   , answerers = Ix.deleteIx sessionId (answerers app)
-                   , questioners = Ix.getLT sessionId (questioners app) Ix.||| Ix.getGT sessionId (questioners app)
+                   , users = foldr (\ u i -> Ix.updateIx (userId . fullUserUser $ u) u i) (users app) updatedUsers
                    , questions = Ix.getLT sessionId (questions app) Ix.||| Ix.getGT sessionId (questions app)
                    }
     case newState of
@@ -155,49 +149,28 @@ deleteSession answererId sessionId = do
             return $ Right ()
         Left e -> return $ Left e
 
-joinSession :: SessionId -> Maybe Text -> Update App (Either AppError Questioner)
-joinSession sessionId name = do
-    ss <- gets sessions
-    nextId <- gets nextQuestionerId
-    qs <- gets questioners
-    case Ix.getOne (Ix.getEQ sessionId ss) of
-        Nothing -> return (Left SessionNotFound)
-        Just _ -> do
-            let questioner = Questioner nextId sessionId name
-            modify (\ a -> a { questioners = (Ix.insert questioner qs), nextQuestionerId = succ nextId})
-            return (Right questioner)
+joinSession :: SessionId -> UserId -> Update App (Either AppError User)
+joinSession sessionId userId = do
+    app <- get
+    newUser <- runEitherT $ do
+        (FullUser user p) <- hoistEither $ maybe (Left UserNotFound) Right $ Ix.getOne $ Ix.getEQ userId (users app)
+        hoistEither $ maybe (Left SessionNotFound) Right $ Ix.getOne $ Ix.getEQ sessionId (sessions app)
+        return $ FullUser (addQuestionerSession sessionId user) p
+    case newUser of
+        Right u -> do
+            modify (\ a -> a { users = (Ix.updateIx userId u (users app)) })
+            return (Right (fullUserUser u))
+        Left e -> return $ Left e
 
 getState :: Query App App
 getState = ask
 
-doAuthorizeAnswerer :: App -> SessionId -> AnswererId -> Either AppError Answerer
-doAuthorizeAnswerer app sId aId = do
-    let answererM = Ix.getOne (Ix.getEQ aId (answerers app))
-        sessionM = Ix.getOne (Ix.getEQ sId (sessions app))
-    answerer <- maybe (Left AnswererNotFound) Right answererM
-    session <- maybe (Left SessionNotFound) Right sessionM
-    authorized answerer session
-    return answerer
-
-doAuthorizeAnswerer_ app sId aId = doAuthorizeAnswerer app sId aId >> return ()
-
-doAuthorizeQuestioner :: App -> SessionId -> QuestionerId -> Either AppError Questioner
-doAuthorizeQuestioner app sId qId = do
-    let questionerM = Ix.getOne (Ix.getEQ qId (questioners app))
-        sessionM = Ix.getOne (Ix.getEQ sId (sessions app))
-    questioner <- maybe (Left QuestionerNotFound) Right questionerM
-    session <- maybe (Left SessionNotFound) Right sessionM
-    joined questioner session
-    return questioner
-
-doAuthorizeQuestioner_ app sId qId = doAuthorizeQuestioner app sId qId >> return ()
-
-getFullSession :: Either AnswererId QuestionerId -> SessionId -> Query App (Either AppError FullSession)
-getFullSession authId sId = do
+getFullSession :: UserId -> SessionId -> Query App (Either AppError FullSession)
+getFullSession userId sId = do
     app <- ask
-    let authed = either (doAuthorizeAnswerer_ app sId) (doAuthorizeQuestioner_ app sId) authId
+    let userM = Ix.getOne (Ix.getEQ sId $ Ix.getEQ userId (users app))
     runEitherT $ do
-        hoistEither $ authed
+        hoistEither $ maybe (Left UserNotFound) Right userM
         hoistEither $ maybe (Left SessionNotFound) Right $ getFullSessionFromApp app sId
 
 getAllSessions :: Query App [FullSession]
@@ -205,18 +178,19 @@ getAllSessions = do
     app <- ask
     return $ mapMaybe (getFullSessionFromApp app) . map (\ (Session id _ _ _) -> id) . Ix.toList . sessions $ app
 
-getMeForSession :: Either AnswererId QuestionerId -> SessionId -> Query App (Either AppError (Either Answerer Questioner))
-getMeForSession authId sId = do
+getMeForSession :: UserId -> SessionId -> Query App (Either AppError User)
+getMeForSession userId sId = do
     app <- ask
-    case authId of
-        Left aId -> runEitherT $ hoistEither $ doAuthorizeAnswerer app sId aId >>= return . Left
-        Right qId -> runEitherT $ hoistEither $ doAuthorizeQuestioner app sId qId >>= return . Right
+    let userM = Ix.getOne (Ix.getEQ sId $ Ix.getEQ userId (users app))
+    runEitherT $ do
+        user <- hoistEither $ maybe (Left UserNotFound) Right userM
+        return (fullUserUser user)
 
 newUser :: Text -> Text -> Update App User
 newUser name password = do
     us <- gets users
     nextId <- gets nextUserId
-    let user = User nextId name [] []
+    let user = User nextId name (AnswererSessions []) (QuestionerSessions [])
         fullUser = FullUser user (hashPassword password)
     modify (\ a -> a { users = (Ix.insert fullUser us), nextUserId = succ nextId })
     return user

@@ -8,7 +8,7 @@ import Modernator.Cookies
 import Servant.Server.Experimental.Auth.Cookie (EncryptedSession(..))
 
 instance Arbitrary SessionReq where
-    arbitrary = SessionReq <$> arbitrary <*> arbitrary <*> arbitrary
+    arbitrary = SessionReq <$> arbitrary <*> arbitrary
 
 instance Arbitrary QuestionReq where
     arbitrary = QuestionReq <$> arbitrary
@@ -21,12 +21,6 @@ instance Arbitrary UserReq where
 
 instance Arbitrary LoginReq where
     arbitrary = LoginReq <$> arbitrary <*> arbitrary
-
-instance Arbitrary Questioner where
-    arbitrary = Questioner <$> arbitrary <*> arbitrary <*> arbitrary
-
-instance Arbitrary QuestionerId where
-    arbitrary = QuestionerId <$> arbitrary
 
 instance Arbitrary SessionId where
     arbitrary = SessionId <$> arbitrary
@@ -43,14 +37,14 @@ instance Arbitrary Votes where
 instance Arbitrary Answered where
     arbitrary = arbitraryBoundedEnum
 
-instance Arbitrary Answerer where
-    arbitrary = Answerer <$> arbitrary <*> arbitrary <*> arbitrary
-
-instance Arbitrary AnswererId where
-    arbitrary = AnswererId <$> arbitrary
-
 instance Arbitrary User where
     arbitrary = User <$> arbitrary <*> arbitrary <*> arbitrary <*> arbitrary
+
+instance Arbitrary AnswererSessions where
+    arbitrary = AnswererSessions <$> arbitrary
+
+instance Arbitrary QuestionerSessions where
+    arbitrary = QuestionerSessions <$> arbitrary
 
 instance Arbitrary UserId where
     arbitrary = UserId <$> arbitrary
@@ -82,12 +76,6 @@ instance Arbitrary Session where
 
 instance Arbitrary LockedStatus where
     arbitrary = arbitraryBoundedEnum
-
-instance Arbitrary QuestionerCookie where
-    arbitrary = QuestionerCookie <$> arbitrary
-
-instance Arbitrary AnswererCookie where
-    arbitrary = AnswererCookie <$> arbitrary
 
 instance Arbitrary ModernatorCookie where
     arbitrary = ModernatorCookie <$> arbitrary

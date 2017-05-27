@@ -6,14 +6,10 @@ import Modernator.Types ( FullSession
                         , LockedStatus
                         , Votes
                         , QuestionId
-                        , AnswererId
-                        , QuestionerId
                         , SessionId
                         , Question(..)
                         , Answered(..)
-                        , Answerer(..)
                         , Session(..)
-                        , Questioner(..)
                         , SessionMessage(..)
                         , UserId(..)
                         , User(..)
@@ -41,16 +37,12 @@ instance ToParamSchema EncryptedSession where
 instance ToSchema AppError
 instance ToSchema QuestionId
 instance ToSchema Votes
-instance ToSchema AnswererId
 instance ToSchema SessionId
 instance ToSchema LockedStatus
-instance ToSchema QuestionerId
 instance ToSchema UserId
 
 instance ToParamSchema QuestionId
-instance ToParamSchema AnswererId
 instance ToParamSchema SessionId
-instance ToParamSchema QuestionerId
 instance ToParamSchema UserId
 
 -- Manual Instances
@@ -76,19 +68,6 @@ instance ToSchema Answered where
         boolSchema <- declareSchema (Proxy :: Proxy Bool)
         return $ NamedSchema (Just "Answered") boolSchema
 
-instance ToSchema Answerer where
-    declareNamedSchema _ = do
-        answererIdSchema <- declareSchemaRef (Proxy :: Proxy AnswererId)
-        sessionIdSchema <- declareSchemaRef (Proxy :: Proxy SessionId)
-        textSchema <- declareSchemaRef (Proxy :: Proxy Text)
-        return $ NamedSchema (Just "Answerer") $ mempty
-            & type_ .~ SwaggerObject
-            & properties .~ [ ("answererId", answererIdSchema)
-                            , ("sessionId", sessionIdSchema)
-                            , ("name", textSchema)
-                            ]
-            & required .~ ["answererId", "sessionId", "name"]
-
 instance ToSchema Session where
     declareNamedSchema _ = do
         sessionIdSchema <- declareSchemaRef (Proxy :: Proxy SessionId)
@@ -104,24 +83,11 @@ instance ToSchema Session where
                             ]
             & required .~ [ "sessionId", "name", "locked"]
 
-instance ToSchema Questioner where
-    declareNamedSchema _ = do
-        questionerIdSchema <- declareSchemaRef (Proxy :: Proxy QuestionerId)
-        sessionIdSchema <- declareSchemaRef (Proxy :: Proxy SessionId)
-        textSchema <- declareSchemaRef (Proxy :: Proxy Text)
-        return $ NamedSchema (Just "Questioner") $ mempty
-            & type_ .~ SwaggerObject
-            & properties .~ [ ("questionerId", questionerIdSchema)
-                            , ("sessionId", sessionIdSchema)
-                            , ("name", textSchema)
-                            ]
-            & required .~ ["questionerId", "sessionId"]
-
 instance ToSchema FullSession where
     declareNamedSchema _ = do
         sessionSchema <- declareSchemaRef (Proxy :: Proxy Session)
-        answererSchema <- declareSchemaRef (Proxy :: Proxy Answerer)
-        questionersSchema <- declareSchemaRef (Proxy :: Proxy [Questioner])
+        answererSchema <- declareSchemaRef (Proxy :: Proxy User)
+        questionersSchema <- declareSchemaRef (Proxy :: Proxy [User])
         questionsSchema <- declareSchemaRef (Proxy :: Proxy [Question])
         return $ NamedSchema (Just "FullSession") $ mempty
             & type_ .~ SwaggerObject
@@ -134,11 +100,11 @@ instance ToSchema FullSession where
 
 instance ToSchema SessionMessage where
     declareNamedSchema _ = do
-        answererSchema <- declareSchemaRef (Proxy :: Proxy Answerer)
+        answererSchema <- declareSchemaRef (Proxy :: Proxy User)
         exceptionSchema <- declareSchemaRef (Proxy :: Proxy AppError)
         questionSchema <- declareSchemaRef (Proxy :: Proxy Question)
         sessionSchema <- declareSchemaRef (Proxy :: Proxy FullSession)
-        questionerSchema <- declareSchemaRef (Proxy :: Proxy Questioner)
+        questionerSchema <- declareSchemaRef (Proxy :: Proxy User)
         let tagSchema = mempty
                 & enum_ .~ Just [ Aeson.String "SessionLocked"
                                 , Aeson.String "SessionExpired"
@@ -167,8 +133,8 @@ instance ToSchema User where
     declareNamedSchema _ = do
         userIdSchema <- declareSchemaRef (Proxy :: Proxy UserId)
         textSchema <- declareSchemaRef (Proxy :: Proxy Text)
-        asSchema <- declareSchemaRef (Proxy :: Proxy [(SessionId, AnswererId)])
-        qsSchema <- declareSchemaRef (Proxy :: Proxy [(SessionId, QuestionerId)])
+        asSchema <- declareSchemaRef (Proxy :: Proxy [SessionId])
+        qsSchema <- declareSchemaRef (Proxy :: Proxy [SessionId])
         return $ NamedSchema (Just "User") $ mempty
             & type_ .~ SwaggerObject
             & properties .~ [ ("userId", userIdSchema)

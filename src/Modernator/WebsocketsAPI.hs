@@ -42,7 +42,7 @@ instance HasSwagger (Websocket a) where
         & adjustPathItemOperation get (schemes .~ Just [Ws, Http]) "/"
 
 type WebsocketsAPI =
-    AuthProtect "any-auth" :> Capture "session_id" SessionId :> "messages" :> Websocket SessionMessage
+    AuthProtect "user-auth" :> Capture "session_id" SessionId :> "messages" :> Websocket SessionMessage
 
 websocketsAPI :: Proxy WebsocketsAPI
 websocketsAPI = Proxy
@@ -57,7 +57,7 @@ websocketsServer app sessionChannelDB cookie sessionId =
         (websocketsApp app sessionChannelDB cookie sessionId)
         (backupApp app cookie sessionId)
 
-websocketsApp :: AcidState App -> TVar SessionChannelDB -> AnyCookie -> SessionId -> PendingConnection -> IO ()
+websocketsApp :: AcidState App -> TVar SessionChannelDB -> ModernatorCookie -> SessionId -> PendingConnection -> IO ()
 websocketsApp app sessionChannelDB cookie sessionId pending = do
     conn <- acceptRequest pending
     fullSessionE <- fullSessionHandler app cookie sessionId

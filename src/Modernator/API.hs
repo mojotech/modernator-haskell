@@ -29,13 +29,9 @@ api = Proxy
 basicAPI :: Proxy BasicAPI
 basicAPI = Proxy
 
-server :: RandomSource -> ServerKey -> ServerKey -> ServerKey -> AuthCookieSettings -> AuthCookieSettings -> AuthCookieSettings -> AcidState App -> TVar SessionChannelDB -> Server API
-server rng answererKey questionerKey userKey answererSettings questionerSettings userSettings app sessionChannelDB = swaggerSchemaUIServer swaggerDoc :<|> (sessionsServer answererSession questionerSession app sessionChannelDB :<|> websocketsServer app sessionChannelDB) :<|> usersServer userSession app
+server :: RandomSource -> ServerKey -> AuthCookieSettings -> AcidState App -> TVar SessionChannelDB -> Server API
+server rng userKey userSettings app sessionChannelDB = swaggerSchemaUIServer swaggerDoc :<|> (sessionsServer app sessionChannelDB :<|> websocketsServer app sessionChannelDB) :<|> usersServer userSession app
     where
-        answererSession :: (MonadIO m, MonadThrow m) => AnswererCookie -> Answerer -> m (Headers '[Servant.Header "Set-Cookie" EncryptedSession] Answerer)
-        answererSession = addSession answererSettings rng answererKey
-        questionerSession :: (MonadIO m, MonadThrow m) => QuestionerCookie -> Questioner -> m (Headers '[Servant.Header "Set-Cookie" EncryptedSession] Questioner)
-        questionerSession = addSession questionerSettings rng questionerKey
         userSession :: (MonadIO m, MonadThrow m) => ModernatorCookie -> User -> m (Headers '[Servant.Header "Set-Cookie" EncryptedSession] User)
         userSession = addSession userSettings rng userKey
 

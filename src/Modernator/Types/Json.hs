@@ -6,17 +6,15 @@ import Modernator.Types ( FullSession
                         , LockedStatus
                         , Votes(..)
                         , QuestionId(..)
-                        , AnswererId(..)
-                        , QuestionerId(..)
                         , SessionId(..)
                         , Question(..)
                         , Answered(..)
-                        , Answerer(..)
                         , Session(..)
-                        , Questioner(..)
                         , SessionMessage(..)
                         , UserId(..)
                         , User(..)
+                        , AnswererSessions(..)
+                        , QuestionerSessions(..)
                         )
 
 import Data.Aeson hiding ((.=))
@@ -41,17 +39,17 @@ deriving instance FromJSON QuestionId
 deriving instance ToJSON Votes
 deriving instance FromJSON Votes
 
-deriving instance ToJSON AnswererId
-deriving instance FromJSON AnswererId
-
-deriving instance ToJSON QuestionerId
-deriving instance FromJSON QuestionerId
-
 deriving instance ToJSON SessionId
 deriving instance FromJSON SessionId
 
 deriving instance ToJSON UserId
 deriving instance FromJSON UserId
+
+deriving instance ToJSON AnswererSessions
+deriving instance FromJSON AnswererSessions
+
+deriving instance ToJSON QuestionerSessions
+deriving instance FromJSON QuestionerSessions
 
 -- Manual instances
 instance FromJSON Question where
@@ -80,17 +78,6 @@ instance ToJSON Answered where
     toJSON Answered = toJSON True
     toJSON NotAnswered = toJSON False
 
-instance FromJSON Answerer where
-    parseJSON (Aeson.Object v) =
-        Answerer <$>
-            v Aeson..: "answererId" <*>
-            v Aeson..: "sessionId" <*>
-            v Aeson..: "name"
-    parseJSON wat = Aeson.typeMismatch "Answerer" wat
-instance ToJSON Answerer where
-    toJSON (Answerer aId sId name) =
-        object ["answererId" Aeson..= aId, "sessionId" Aeson..= sId, "name" Aeson..= name]
-
 instance FromJSON Session where
     parseJSON (Aeson.Object v) =
         Session <$>
@@ -107,17 +94,6 @@ instance ToJSON Session where
             , "expiresAt" Aeson..= expires
             , "locked" Aeson..= locked
             ]
-
-instance FromJSON Questioner where
-    parseJSON (Aeson.Object v) =
-        Questioner <$>
-            v Aeson..: "questionerId" <*>
-            v Aeson..: "sessionId" <*>
-            v Aeson..: "name"
-    parseJSON wat = Aeson.typeMismatch "Questioner" wat
-instance ToJSON Questioner where
-    toJSON (Questioner qId sId name) =
-        object ["questionerId" Aeson..= qId, "sessionId" Aeson..= sId, "name" Aeson..= name]
 
 instance ToJSON SessionMessage where
     toJSON SessionLocked = nullaryObject "SessionLocked"
